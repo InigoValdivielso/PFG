@@ -5,7 +5,35 @@ const PrerequisitesPage = () => {
   const [isComplete, setIsComplete] = useState(false);
   let myAppTab = null; 
 
-  const handleOpenTab = () => {
+  const handleOpenTab1 = () => {
+    const baseUrl = 'http://localhost:7102/credentials?ids=VerifiableId&mode=verification'; // La URL base que queremos controlar
+
+    // Si la pestaña ya está abierta
+    if (myAppTab && !myAppTab.closed) {
+      myAppTab.location.replace(baseUrl); // Redirigir a la base URL
+      console.log("Redirigiendo a la pestaña existente a la base URL.");
+      myAppTab.focus(); // Enfocar la pestaña existente
+    } else {
+      // Abrir una nueva pestaña
+      myAppTab = window.open(baseUrl, '_blank');
+      console.log("Se abrió una nueva pestaña.");
+    }
+  };
+  const handleOpenTab2 = () => {
+    const baseUrl = 'http://localhost:7102/credentials?ids=UniversityDegree&mode=verification'; // La URL base que queremos controlar
+
+    // Si la pestaña ya está abierta
+    if (myAppTab && !myAppTab.closed) {
+      myAppTab.location.replace(baseUrl); // Redirigir a la base URL
+      console.log("Redirigiendo a la pestaña existente a la base URL.");
+      myAppTab.focus(); // Enfocar la pestaña existente
+    } else {
+      // Abrir una nueva pestaña
+      myAppTab = window.open(baseUrl, '_blank');
+      console.log("Se abrió una nueva pestaña.");
+    }
+  };
+  const handleOpenTab3 = () => {
     const baseUrl = 'http://localhost:7102'; // La URL base que queremos controlar
 
     // Si la pestaña ya está abierta
@@ -96,7 +124,7 @@ const PrerequisitesPage = () => {
                     checked={isComplete}
                   />
                 </div>
-                <button onClick={handleOpenTab} className="btn btn-primary" id="boton" type="button">
+                <button onClick={handleOpenTab1} className="btn btn-primary" id="boton" type="button">
                   Share your Microcredential
                 </button>
               </div>
@@ -121,7 +149,7 @@ const PrerequisitesPage = () => {
                     disabled
                   />
                 </div>
-                <button onClick={handleOpenTab} className="btn btn-primary" id="boton" type="button">
+                <button onClick={handleOpenTab2} className="btn btn-primary" id="boton" type="button">
                   Share your Microcredential
                 </button>
               </div>
@@ -146,7 +174,7 @@ const PrerequisitesPage = () => {
                     disabled
                   />
                 </div>
-                <button onClick={handleOpenTab} className="btn btn-primary" id="boton" type="button">
+                <button onClick={handleOpenTab3} className="btn btn-primary" id="boton" type="button">
                   Share your Microcredential
                 </button>
               </div>

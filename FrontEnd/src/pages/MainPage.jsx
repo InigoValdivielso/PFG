@@ -44,9 +44,9 @@ const MainPage = () => {
                             </ul>
                         </nav>
                         <div className="tituloCabecera">
-                            <h1>
+                            <h1 style={{color: 'black'}}>
                                 Programa Transformación Digital para la PYME
-                                <span>EDICIÓN 2024 - MATRICULACIÓN ABIERTA</span>
+                                <span>EDICIÓN 2025 - MATRICULACIÓN ABIERTA</span>
                             </h1>
                         </div>
                     </div>
