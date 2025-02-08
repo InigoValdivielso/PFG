@@ -1,52 +1,28 @@
 import ModalCredential from "../components/ModalCredential";
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PrerequisitesPage = () => {
   const [isComplete, setIsComplete] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); 
+  const navigate = useNavigate(); 
   let myAppTab = null; 
 
-  const handleOpenTab1 = () => {
-    const baseUrl = 'http://localhost:7102/credentials?ids=VerifiableId&mode=verification'; // La URL base que queremos controlar
-
-    // Si la pestaña ya está abierta
-    if (myAppTab && !myAppTab.closed) {
-      myAppTab.location.replace(baseUrl); // Redirigir a la base URL
-      console.log("Redirigiendo a la pestaña existente a la base URL.");
-      myAppTab.focus(); // Enfocar la pestaña existente
+  const handleButtonClick = (url) => {
+    if (!isAuthenticated) {
+      // Si NO ha iniciado sesión, lo llevamos a la página de inicio de sesión
+      navigate('/chooseWallet', { state: { redirectTo: url } }); 
     } else {
-      // Abrir una nueva pestaña
-      myAppTab = window.open(baseUrl, '_blank');
-      console.log("Se abrió una nueva pestaña.");
+      // Si ya ha iniciado sesión, abrimos la URL directamente
+      if (myAppTab && !myAppTab.closed) {
+        myAppTab.location.replace(url);
+        myAppTab.focus();
+      } else {
+        myAppTab = window.open(url, '_blank');
+      }
     }
   };
-  const handleOpenTab2 = () => {
-    const baseUrl = 'http://localhost:7102/credentials?ids=UniversityDegree&mode=verification'; // La URL base que queremos controlar
 
-    // Si la pestaña ya está abierta
-    if (myAppTab && !myAppTab.closed) {
-      myAppTab.location.replace(baseUrl); // Redirigir a la base URL
-      console.log("Redirigiendo a la pestaña existente a la base URL.");
-      myAppTab.focus(); // Enfocar la pestaña existente
-    } else {
-      // Abrir una nueva pestaña
-      myAppTab = window.open(baseUrl, '_blank');
-      console.log("Se abrió una nueva pestaña.");
-    }
-  };
-  const handleOpenTab3 = () => {
-    const baseUrl = 'http://localhost:7102'; // La URL base que queremos controlar
-
-    // Si la pestaña ya está abierta
-    if (myAppTab && !myAppTab.closed) {
-      myAppTab.location.replace(baseUrl); // Redirigir a la base URL
-      console.log("Redirigiendo a la pestaña existente a la base URL.");
-      myAppTab.focus(); // Enfocar la pestaña existente
-    } else {
-      // Abrir una nueva pestaña
-      myAppTab = window.open(baseUrl, '_blank');
-      console.log("Se abrió una nueva pestaña.");
-    }
-  };
   useEffect(() => {
     const intervalId = setInterval(() => {
       fetch('http://localhost:7001/wallet-api/wallet/c67db2b8-5142-46f4-8806-b1a07621666d/exchange/matchCredentialsForPresentationDefinition', {
@@ -64,6 +40,11 @@ const PrerequisitesPage = () => {
     }, 3000); // Consulta cada 3 segundos, ajusta según necesites
 
     return () => clearInterval(intervalId); // Limpieza si el componente se desmonta
+  }, []);
+  
+  useEffect(() => {
+    const authStatus = localStorage.getItem('isAuthenticated') === 'true';
+    setIsAuthenticated(authStatus);
   }, []);
 
 
@@ -124,7 +105,7 @@ const PrerequisitesPage = () => {
                     checked={isComplete}
                   />
                 </div>
-                <button onClick={handleOpenTab1} className="btn btn-primary" id="boton" type="button">
+                <button onClick={() => handleButtonClick('http://localhost:5173/chooseWallet')} className="btn btn-primary" id="boton" type="button">
                   Share your Microcredential
                 </button>
               </div>
@@ -149,7 +130,7 @@ const PrerequisitesPage = () => {
                     disabled
                   />
                 </div>
-                <button onClick={handleOpenTab2} className="btn btn-primary" id="boton" type="button">
+                <button onClick={() => handleButtonClick('http://localhost:7102/credentials?ids=UniversityDegree&mode=verification')} className="btn btn-primary" id="boton" type="button">
                   Share your Microcredential
                 </button>
               </div>
@@ -174,7 +155,7 @@ const PrerequisitesPage = () => {
                     disabled
                   />
                 </div>
-                <button onClick={handleOpenTab3} className="btn btn-primary" id="boton" type="button">
+                <button onClick={() => handleButtonClick('http://localhost:7102/credentials?ids=UniversityDegree&mode=verification')} className="btn btn-primary" id="boton" type="button">
                   Share your Microcredential
                 </button>
               </div>

@@ -9,6 +9,7 @@ import StudentLoginPage from './pages/StudentLoginPage';
 import StudentPortalPage from './pages/StudentPortalPage';
 import StudentLayout from './components/StudentLayout';
 import StudentMicrocredentialPage from './pages/StudentMicrocredentialPage';
+import ChooseWalletPage from './pages/ChooseWalletPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -18,6 +19,7 @@ const router = createBrowserRouter(
         <Route path='/prerequisites' element={
         <ScrollToTop><PrerequisitesPage /></ScrollToTop>} />
       </Route>
+      <Route path='/chooseWallet' element={<ChooseWalletPage />} />
       <Route path='/secretary' element={<SecretaryLayout />} />
       <Route path='/studentLogin' element={<StudentLoginPage />} />
 
