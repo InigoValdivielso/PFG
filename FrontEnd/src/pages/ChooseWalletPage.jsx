@@ -6,12 +6,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const ChooseWalletPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const redirectTo = location.state?.redirectTo || "/";
-
-  const handleLogin = () => {
-    localStorage.setItem("isAuthenticated", "true");
-    navigate(redirectTo);
+  
+  const waltid = () => {
+    window.location.href = "http://localhost:7102/verify?ids=UniversityDegree%2CVerifiableId&vps=signature%2Cexpired%2Cnot-before&format=JWT+%2B+W3C+VC";
+  };
+  const gataca = () => {
+    navigate('/');
   };
 
   return (
@@ -19,11 +19,11 @@ const ChooseWalletPage = () => {
       <img src={logoDeusto} alt="Deusto Logo" className="logo-deusto" />
       <div className="wallet-box">
         <h1>¿Con qué wallet quieres iniciar sesión?</h1>
-        <button className="wallet-button" onClick={handleLogin}>
+        <button className="wallet-button" onClick={gataca}>
           <img src={logoGataca} alt="Gataca Logo" className="wallet-logo" />
           Iniciar sesión con Gataca
         </button>
-        <button className="wallet-button" onClick={handleLogin}>
+        <button className="wallet-button" onClick={waltid}>
           <img src={logoWaltid} alt="Waltid Logo" className="wallet-logo" />
           Iniciar sesión con Waltid
         </button>

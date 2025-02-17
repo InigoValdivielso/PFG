@@ -83,17 +83,7 @@ const PrerequisitesPage = () => {
               <div className="invalid-feedback">Please enter your email.</div>
             </div>
           </div>
-          <div className="col-md-6" id="separacion">
-            <div className="row-md-4 d-flex">
-              <label htmlFor="validationCustomUsername" className="form-label">
-                Verifable ID
-              </label>
-              <div className="col">
-
-                <ModalCredential title="Verifiable ID" description="This credential is a digital representation of every day attributes of your identity." id="verifiableid"/>
-
-              </div>
-            </div>
+          <div className="col-md-6" id="separacion" style={{paddingTop: "3%"}}>
             <div className="row">
               <div className="input-group mb-3">
                 <div className="input-group-text">
@@ -105,59 +95,14 @@ const PrerequisitesPage = () => {
                     checked={isComplete}
                   />
                 </div>
-                <button onClick={() => handleButtonClick('http://localhost:5173/chooseWallet')} className="btn btn-primary" id="boton" type="button">
-                  Share your Microcredential
+                <button onClick={() => handleButtonClick('http://localhost:5173/chooseWallet')} className="btn btn-primary" id="boton" type="button" style={{borderTopRightRadius: "10px", borderBottomRightRadius: "10px"}}>
+                    Comparte tus Microcredenciales
                 </button>
-              </div>
-            </div>
-            <div className="row-md-4 d-flex">
-              <label htmlFor="validationCustomUsername" className="form-label">
-                University Degree
-              </label>
-              <div className="col">
+                <div className="col" style={{paddingTop: "2%"}}>
 
-                <ModalCredential title="University Degree" description="This credential is the representation of your previous studies before entering the program." id="university"/>
+                  <ModalCredential title="Comparte tus Microcredenciales" description="Deberás de compartir tanto tu Verifable Id como tu University Degree" id="microcredenciles"/>
 
-              </div>
-            </div>
-            <div className="row">
-              <div className="input-group mb-3">
-                <div className="input-group-text">
-                  <input
-                    type="checkbox"
-                    defaultValue=""
-                    aria-label="Checkbox for following text input"
-                    disabled
-                  />
                 </div>
-                <button onClick={() => handleButtonClick('http://localhost:7102/credentials?ids=UniversityDegree&mode=verification')} className="btn btn-primary" id="boton" type="button">
-                  Share your Microcredential
-                </button>
-              </div>
-            </div>
-            <div className="row-md-4 d-flex">
-              <label htmlFor="validationCustomUsername" className="form-label">
-                Language Skills
-              </label>
-              <div className="col">
-
-                <ModalCredential title="Language Skills" description="This credential represents your english level before entering the program." id="language"/>
-                
-              </div>
-            </div>
-            <div className="row">
-              <div className="input-group mb-3">
-                <div className="input-group-text">
-                  <input
-                    type="checkbox"
-                    defaultValue=""
-                    aria-label="Checkbox for following text input"
-                    disabled
-                  />
-                </div>
-                <button onClick={() => handleButtonClick('http://localhost:7102/credentials?ids=UniversityDegree&mode=verification')} className="btn btn-primary" id="boton" type="button">
-                  Share your Microcredential
-                </button>
               </div>
             </div>
           </div>
