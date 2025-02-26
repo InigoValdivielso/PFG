@@ -64,7 +64,7 @@ const PrerequisitesPage = () => {
           color: "#0153CE",
         }}
       >
-        Prerequisites Form
+        Formulario de Solicitud
       </h1>
       <div className="d-flex justify-content-center">
         <form className="row g-3 needs-validation was-validated">
@@ -80,7 +80,7 @@ const PrerequisitesPage = () => {
                 aria-describedby="inputGroupPrepend"
                 required
               />
-              <div className="invalid-feedback">Please enter your email.</div>
+              <div className="invalid-feedback">Porfavor introduce tú email.</div>
             </div>
           </div>
           <div className="col-md-6" id="separacion" style={{paddingTop: "3%"}}>
@@ -117,16 +117,16 @@ const PrerequisitesPage = () => {
                 required
               />
               <label className="form-check-label" htmlFor="invalidCheck">
-                Agree to terms and conditions
+                Acepto los términos y condiciones
               </label>
               <div className="invalid-feedback">
-                You must agree before submitting.
+                Debes de aceptar antes de enviar.
               </div>
             </div>
           </div>
           <div className="col-12">
             <button className="btn btn-primary" id="boton" type="submit">
-              Submit Request
+              Enviar Solicitud
             </button>
           </div>
         </form>
