@@ -95,7 +95,7 @@ const PrerequisitesPage = () => {
                     checked={isComplete}
                   />
                 </div>
-                <button onClick={() => handleButtonClick('http://localhost:5173/chooseWallet')} className="btn btn-primary" id="boton" type="button" style={{borderTopRightRadius: "10px", borderBottomRightRadius: "10px"}}>
+                <button onClick={() => handleButtonClick('http://localhost:5173/comparteCredenciales')} className="btn btn-primary" id="boton" type="button" style={{borderTopRightRadius: "10px", borderBottomRightRadius: "10px"}}>
                     Comparte tus Microcredenciales
                 </button>
                 <div className="col" style={{paddingTop: "2%"}}>

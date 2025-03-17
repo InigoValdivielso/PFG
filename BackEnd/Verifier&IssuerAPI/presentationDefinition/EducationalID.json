@@ -1,0 +1,13 @@
+{
+    "request_credentials":[
+       {
+          "type":"EducationalID",
+          "format":"jwt_vc_json"
+       }
+    ],
+    "vc_policies":[
+       "signature",
+       "expired",
+       "not-before"
+    ]
+}
