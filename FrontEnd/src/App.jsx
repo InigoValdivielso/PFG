@@ -10,6 +10,7 @@ import StudentPortalPage from './pages/StudentPortalPage';
 import StudentLayout from './components/StudentLayout';
 import StudentMicrocredentialPage from './pages/StudentMicrocredentialPage';
 import QRPage from './pages/QRPage';
+import SuccessPage from './pages/SuccessPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
         <ScrollToTop><PrerequisitesPage /></ScrollToTop>} />
       </Route>
       <Route path='/comparteCredenciales' element={<QRPage />} />
+      <Route path='/success/:id' element={<SuccessPage />} />
       <Route path='/secretary' element={<SecretaryLayout />} />
       <Route path='/studentLogin' element={<StudentLoginPage />} />
 

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import logoDeusto from "../assets/images/LogoDeusto.png";
-import logoWaltid from "../assets/images/LogoWaltid.png";
 import QRCode from "react-qr-code";
 
 const QRPage = () => {
   const verificationUrl = `http://localhost:3000/verificar`; // URL de la API de verificación
-  const [verificationStatus, setVerificationStatus] = useState(null);
   const [verificationData, setVerificationData] = useState(null);
   const [copyButtonText, setCopyButtonText] = useState(
     "Copiar respuesta al portapapeles"
@@ -14,7 +12,7 @@ const QRPage = () => {
   useEffect(() => {
     const verifyCredential = async () => {
       try {
-        const response = await fetch(verificationUrl, {method: "POST"});
+        const response = await fetch(verificationUrl, { method: "POST" });
         let data = await response.text(); // Obtener el texto de la respuesta
         data = data.replace(/^"(.*)"$/, "$1");
         setVerificationData(data); // Guardar el texto de la respuesta
@@ -51,7 +49,9 @@ const QRPage = () => {
         {verificationData ? (
           <QRCode value={verificationData} size={200} />
         ) : (
-          <img src="https://i.gifer.com/ZKZx.gif" alt="Cargando..." width="100" />
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
         )}
         <p className="verification-text">
           Escanea el código con walt.id para verificar.
@@ -64,14 +64,7 @@ const QRPage = () => {
         <button onClick={copyToClipboard} className="btnCopiar">
           {copyButtonText}
         </button>
-        {verificationStatus && (
-          <p className={`status ${verificationStatus}`}>
-            Estado:{" "}
-            {verificationStatus === "verified"
-              ? "✅ Verificado"
-              : "❌ No verificado"}
-          </p>
-        )}
+        
       </div>
 
       <style jsx>{`

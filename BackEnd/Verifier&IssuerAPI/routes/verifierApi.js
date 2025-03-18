@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
         'Accept': '*/*',
         'authorizeBaseUrl': 'openid4vp://authorize',
         'responseMode': 'direct_post',
-        'successRedirectUri': 'https://getbootstrap.com/docs/5.3/components/buttons/$id',
+        'successRedirectUri': 'http://localhost:5173/success/$id',
         'Content-Type': 'application/json'
     };
 
@@ -31,5 +31,19 @@ router.post('/', async (req, res) => {
         res.status(500).json({ message: "Error al verificar", error: error.message });
     }
 });
-
-
+router.get('/infoSesionVerificacion/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const response = await axios.get(`https://verifier.demo.walt.id/openid4vc/session/${id}`, {
+          headers: {
+            'accept': 'application/json',
+          },
+        });
+        // Responde con los datos que recibes
+        res.json(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error al hacer la petición', error);
+        res.status(500).send('Error al realizar la solicitud');
+      }
+    });
