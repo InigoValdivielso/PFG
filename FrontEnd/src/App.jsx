@@ -12,6 +12,7 @@ import StudentMicrocredentialPage from './pages/StudentMicrocredentialPage';
 import QRPrerequisitesPage from './pages/QRPrerequisitesPage';
 import SuccessPage from './pages/SuccessPage';
 import QRInicioSesionPage from './pages/QRInicioSesionPage';
+import QREmitirEducationalIDPage from './pages/QREmitirEducationaIDPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
       <Route path='/secretary' element={<SecretaryLayout />} />
       <Route path='/studentLogin' element={<StudentLoginPage />} />
       <Route path='/studentLogin/qr' element={<QRInicioSesionPage />} />
+      <Route path='/microcredentials/solicitar/EducationalID' element={<QREmitirEducationalIDPage />}/>
 
       <Route  element={<StudentLayout />}>
         <Route index path='/studentPortal' element={<StudentPortalPage />} />

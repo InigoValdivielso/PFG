@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import NavBarStudent from "../components/NavBarStudent";
 
 const StudentMicrocredentialPage = ({ nia, dni, nombre, apellido1, apellido2, genero, email, program }) => {
   const [isLoading, setIsLoading] = useState(true);
-
+  const navigate = useNavigate();
   const loadedNia = "123456";
   const loadedDni = "12345678A";
   const loadedName = "Juan";
@@ -20,7 +20,9 @@ const StudentMicrocredentialPage = ({ nia, dni, nombre, apellido1, apellido2, ge
     // We simulate an asynchronous operation with setTimeout
     await new Promise(resolve => setTimeout(resolve, 2000));
   };
-
+  const handleButtonClick = () => {
+    navigate("/microcredentials/solicitar/EducationalID");
+  };
   useEffect(() => {
     const executeInitialization = async () => {
       await initialize();
@@ -90,10 +92,13 @@ const StudentMicrocredentialPage = ({ nia, dni, nombre, apellido1, apellido2, ge
         <div>
           <table class="table-borderless" style={{ width: "55%", marginLeft: "23%" }}>
             <tbody>
-              <tr>
+              <tr style={{ backgroundColor: "white" }}>
                 <td style={{ fontWeight: 'bold', textAlign: "center", paddingTop: "3.5%" }}>{loadedProgram}</td>
-                <td style={{ paddingRight: "1%"}}><button className="btn btn-primary" type="button">Download</button></td>
-                <td><button className="btn btn-primary" type="button">Scan QR</button></td>
+                <td style={{ paddingRight: "1%"}}><button className="btn btn-primary" type="button">Solicitar</button></td>
+              </tr>
+              <tr style={{ backgroundColor: "white" }}>
+                <td style={{ fontWeight: 'bold', textAlign: "center", paddingTop: "3.5%" }}>EducationalID</td>
+                <td style={{ paddingRight: "1%"}}><button onClick={() => handleButtonClick()} className="btn btn-primary" type="button">Solicitar</button></td>
               </tr>
             </tbody>
           </table>
