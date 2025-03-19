@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import logoDeusto from "../assets/images/LogoDeusto.png";
 import QRCode from "react-qr-code";
 
-const QRPage = () => {
+const QRInicioSesionPage = () => {
   const verificationUrl = `http://localhost:3000/verificar`; // URL de la API de verificación
   const [verificationData, setVerificationData] = useState(null);
   const [copyButtonText, setCopyButtonText] = useState(
@@ -203,4 +203,4 @@ const QRPage = () => {
   );
 };
 
-export default QRPage;
+export default QRInicioSesionPage;

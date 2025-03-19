@@ -19,7 +19,7 @@ const StudentPortalPage = () => {
             fontSize: "200%",
           }}
         >
-          Home
+          Inicio
         </p>
         <div
           style={{
@@ -33,30 +33,30 @@ const StudentPortalPage = () => {
             borderBottomWidth: "1px",
           }}
         >
-          <p style={{ paddingLeft: "2%", paddingTop: "1%" }}>Applications</p>
+          <p style={{ paddingLeft: "2%", paddingTop: "1%" }}>Aplicaciones</p>
           <div style={styles.buttonContainer}>
             <button style={styles.buttonBlue}>
-              Undergraduate/Master's/Doctorate
+              Grado /master /doctorado
             </button>
             <button style={styles.buttonOrange}>
-              Continuing Education/Languages
+              Formación continua /idiomas
             </button>
             <button style={styles.buttonRed}>
-              Teaching Evaluation
+              Evaluación docencia
             </button>
             <button style={styles.buttonDark}>
-              Deusto Scholarship Application
+              Solicitud beca deusto
             </button>
             <button style={styles.buttonGreen}>
-              Schedule Publication
+              Publicación horaria
             </button>
             <Link to="/microcredentials">
               <button style={styles.buttonPurple}>
-                Microcredentials Application
+                Solicitud de microcredenciles
               </button>
             </Link>
             <button style={styles.buttonViolet}>
-              Degree Application
+              Solicitud de títulos
             </button>
           </div>
         </div>

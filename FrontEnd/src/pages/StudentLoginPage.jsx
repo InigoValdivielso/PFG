@@ -1,5 +1,6 @@
 import logoDeusto from "../assets/images/LogoDeusto.png";
 import { Link } from "react-router-dom";
+import ModalCredential from "../components/ModalCredential";
 
 const StudentLoginPage = () => {
   return (
@@ -31,22 +32,109 @@ const StudentLoginPage = () => {
             boxShadow: "0px 0px 10px 0px #000000",
           }}
         >
-          <h5 style={{ paddingTop: "8%", textAlign: "center", fontSize: "100%" }}>
-            Access with @opendeusto account
+          <h5
+            style={{ paddingTop: "8%", textAlign: "center", fontSize: "100%" }}
+          >
+            Acceso con cuenta @opendeusto
           </h5>
 
           <Link to="/studentPortal">
-            <button className="btn btn-primary" id="loginButton" style={{ marginLeft: "45%", marginTop: "5%", marginBottom: "5%", fontSize: "90%" }}>
-              Login
+            <button
+              className="btn btn-primary"
+              id="loginButton"
+              style={{
+                marginLeft: "37%",
+                marginTop: "5%",
+                marginBottom: "5%",
+                fontSize: "90%",
+              }}
+            >
+              Iniciar sesión
             </button>
           </Link>
         </div>
-        <div style={{
-          marginTop: "2%", backgroundColor: "#E6E7E8", width: "30%",
-          borderTopStyle: "solid", borderWidth: "2px", borderTopColor: "#1B459A", boxShadow: "0px 0px 10px 0px #000000"
-        }}>
-          <h6 style={{ paddingTop: "8%", textAlign: "center", fontSize: "100%" }}>Access with NIU</h6>
-          <div className="input-group" style={{ display: "flex", flexDirection: "column", padding: "5%" }}>
+        <div
+          className="secondBox"
+          style={{
+            marginTop: "2%",
+            backgroundColor: "#E6E7E8",
+            width: "30%",
+            borderTopStyle: "solid",
+            borderWidth: "2px",
+            borderTopColor: "#1B459A",
+            boxShadow: "0px 0px 10px 0px #000000",
+          }}
+        >
+          <h5
+            style={{
+              paddingTop: "8%",
+              textAlign: "center",
+              fontSize: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            Acceso con EducationalID
+            <div style={{ marginLeft: "5px" }}>
+              <ModalCredential
+                title="Accede con tus Microcredenciales"
+                description="Accede a tu cuenta con tu credencial verificable"
+                id="microcredenciles"
+              />
+            </div>
+          </h5>
+          
+
+          <Link to="/studentLogin/qr">
+            <button
+              className="btn btn-primary"
+              id="loginButton"
+              style={{
+                marginLeft: "40%",
+                marginTop: "5%",
+                marginBottom: "5%",
+                fontSize: "90%",
+              }}
+            >
+              Acceder
+            </button>
+          </Link>
+          <br/>
+          <a
+            href=""
+            style={{ marginLeft: "15%", fontSize: "80%", color: "#6c94e3" }}
+          >
+            No tengo una credencial verificable, solicitarla
+          </a>
+        </div>
+        <div
+          style={{
+            marginTop: "2%",
+            backgroundColor: "#E6E7E8",
+            width: "30%",
+            borderTopStyle: "solid",
+            borderWidth: "2px",
+            borderTopColor: "#1B459A",
+            boxShadow: "0px 0px 10px 0px #000000",
+          }}
+        >
+          <div className="secondBox" style={{ backgroundColor: "#0053CE" }}>
+            <h6
+              style={{
+                padding: "6%",
+                textAlign: "center",
+                fontSize: "100%",
+                color: "white",
+              }}
+            >
+              Acceso con NIU
+            </h6>
+          </div>
+          <div
+            className="input-group"
+            style={{ display: "flex", flexDirection: "column", padding: "5%" }}
+          >
             <div style={{ display: "flex", flexDirection: "row" }}>
               <span className="input-group-text" id="basic-addon1">
                 @
@@ -61,8 +149,14 @@ const StudentLoginPage = () => {
                 placeholder="User"
               />
             </div>
-            <div style={{ display: "flex", flexDirection: "row", marginTop: "8%" }}>
-              <span className="input-group-text" id="basic-addon1">
+            <div
+              style={{ display: "flex", flexDirection: "row", marginTop: "8%" }}
+            >
+              <span
+                className="input-group-text"
+                id="basic-addon1"
+                style={{ backgroundColor: "#f8f9fa" }}
+              >
                 <span className="material-symbols-outlined">lock</span>
               </span>
 
@@ -73,16 +167,32 @@ const StudentLoginPage = () => {
                 maxLength={50}
                 name="password"
                 defaultValue=""
-                placeholder="Password"
+                placeholder="Contraseña"
+                style={{ borderRadius: "0 5px 5px 0" }}
               />
             </div>
           </div>
-          <a href="" style={{ marginLeft: "5%", fontSize: "80%", color: "#6c94e3" }}>I don't have a user account; request registration</a>
+          <a
+            href=""
+            style={{ marginLeft: "5%", fontSize: "80%", color: "#6c94e3" }}
+          >
+            No tengo una cuenta, solicitar registro
+          </a>
           <br />
-          <a href="" style={{ marginLeft: "5%", fontSize: "80%", color: "#6c94e3" }}>I don't know or have forgotten my password</a>
+          <a
+            href=""
+            style={{ marginLeft: "5%", fontSize: "80%", color: "#6c94e3" }}
+          >
+            {" "}
+            No sé o he olvidado mi contraseña
+          </a>
           <br />
-          <button className="btn btn-primary" id="enterButton" style={{ marginLeft: "75%", marginBottom: "5%", marginTop: "3%" }}>
-            Enter
+          <button
+            className="btn btn-primary"
+            id="enterButton"
+            style={{ marginLeft: "35%", marginBottom: "5%", marginTop: "3%" }}
+          >
+            Iniciar sesión
           </button>
         </div>
       </div>
