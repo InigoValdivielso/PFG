@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
   const handleButtonClick = () => {
-    navigate("/choosePrerequisites");
+    navigate("/prerequisites");
   };
   const navigate = useNavigate();
   return (
