@@ -45,28 +45,15 @@ function AccordionItem({ name, email, id, status, onAccept, onReject  }) {
                 <div className="accordion-body">
                     <AccordionTable name="test1" surname="surname1" email="test1@gmail.com" program="Computer Engineering" />
                     <br></br>
-                    <h4>Credentials provided:</h4>
+                    <h4>Credenciales proporcionadas:</h4>
                     <br></br>
                     
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th scope="col" style={{ border: "none", background: "#EBEBEB" }}>Credential</th>
-                                <th scope="col" style={{ border: "none", background: "#EBEBEB" }}></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <CredentialTable name="Verifiable ID" />
-                                <CredentialTable name="Ejemplo" />
-                            </tr>
-                        </tbody>
-                    </table>
+                    <CredentialTable name="EducantionalID" />
                     
                     {status === 'pending' && (
                         <div style={{ marginLeft: "40%" }}>
-                            <button className="btn btn-primary" type="button" style={{ marginRight: "5%" }} onClick={handleAccept}>Accept</button>
-                            <button className="btn btn-danger" type="button" onClick={handleReject}>Reject</button>
+                            <button className="btn btn-primary" type="button" style={{ marginRight: "5%" }} onClick={handleAccept}>Aceptar</button>
+                            <button className="btn btn-danger" type="button" onClick={handleReject}>Rechazar</button>
                         </div>
                     )}
                 </div>

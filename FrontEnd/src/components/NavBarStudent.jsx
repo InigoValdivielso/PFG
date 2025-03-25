@@ -1,6 +1,11 @@
-
+import { useNavigate } from "react-router-dom";
 import logoDeusto from "../assets/images/LogoDeustoBlanco.png";
 function NavBarStudent() {
+  const navigate = useNavigate();
+  
+    const handleButtonClick = () => {
+      navigate("/microcredentials");
+    };
   return (
     <>
       <div style={{backgroundColor: "#313338", width: "100%", position: "fixed", zIndex: "1000", padding: "0", margin: "0"}}>
@@ -19,7 +24,7 @@ function NavBarStudent() {
           <ul class="dropdown-menu dropdown-menu-lg-end" id="submenu" style={{boxShadow: "0px 0px 10px 0px #000000"}}>
             <li><p class="dropdown-item" style={{fontSize: "90%"}}>Hola Iñigo!</p></li>
             <li><hr class="dropdown-divider"/></li>
-            <li><a class="dropdown-item" href="#" style={{fontSize: "90%"}}>Mi perfil</a></li>
+            <li><a class="dropdown-item" href="" onClick={() => handleButtonClick()} style={{fontSize: "90%"}}>Mi perfil</a></li>
             <li><a class="dropdown-item" href="#" style={{fontSize: "90%"}}>Acerca de</a></li>
             <li><a class="dropdown-item" href="#" style={{fontSize: "90%"}}>Contacto</a></li>
             <li><hr class="dropdown-divider"/></li>

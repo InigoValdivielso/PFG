@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import Accordion from "../components/Accordion";
 
 const SecretaryPage = () => {
-  const [componenteSeleccionado, setComponenteSeleccionado] = useState('');
+  const [componenteSeleccionado, setComponenteSeleccionado] = useState("");
 
   const handleSelectChange = (event) => {
     setComponenteSeleccionado(event.target.value);
@@ -10,11 +10,11 @@ const SecretaryPage = () => {
 
   const renderComponente = () => {
     switch (componenteSeleccionado) {
-      case 'Componente1':
+      case "Componente1":
         return <Accordion />;
-      case 'Componente2':
+      case "Componente2":
         return <Accordion />;
-      case 'Componente3':
+      case "Componente3":
         return <Accordion />;
       default:
         return null;
@@ -32,20 +32,37 @@ const SecretaryPage = () => {
           color: "#0153CE",
         }}
       >
-        Enrollment requests
+        Solicitudes de Ingreso
       </h1>
 
-      <select class="form-select form-select-lg mb-3" aria-label="Large select example" onChange={handleSelectChange} value={componenteSeleccionado}>
-        <option selected>Select a program</option>
-        <option value="Componente1">Digital Transformation for SMEs</option>
-        <option value="Componente2">Digital Law Expert</option>
-        <option value="Componente3">Executive in Business Administration-Master of Lifelong Training</option>
-        <option value="3">Executive Master in Business Administration</option>
-        <option value="4">Expert Diploma in Health Law</option>
-        <option value="5">Expert in addiction prevention with adolescents and young people</option>
-        <option value="6">Expert in Ethics of digitalization and applied Artificial Intelligence</option>
-        <option value="7">Expert in General Management (PDG)</option>
-        <option value="8">Expert in Human Rights of Indigenous Peoples</option>
+      <select
+        class="form-select form-select-lg mb-3"
+        aria-label="Large select example"
+        onChange={handleSelectChange}
+        value={componenteSeleccionado}
+      >
+        <option selected>Selecciona un programa</option>
+        <option value="Componente1">Transformación Digital para PYMEs</option>
+        <option value="Componente2">Experto en Derecho Digital</option>
+        <option value="Componente3">
+          Ejecutivo en Administración de Empresas - Máster en Formación a lo
+          Largo de la Vida
+        </option>
+        <option value="3">
+          Máster Ejecutivo en Administración de Empresas
+        </option>
+        <option value="4">Diploma de Experto en Derecho Sanitario</option>
+        <option value="5">
+          Experto en prevención de adicciones con adolescentes y jóvenes
+        </option>
+        <option value="6">
+          Experto en Ética de la digitalización e Inteligencia Artificial
+          aplicada
+        </option>
+        <option value="7">Experto en Dirección General (PDG)</option>
+        <option value="8">
+          Experto en Derechos Humanos de los Pueblos Indígenas
+        </option>
       </select>
 
       <br></br>

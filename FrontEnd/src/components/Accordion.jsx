@@ -51,7 +51,7 @@ function Accordion() {
                 color: "#0153CE",
                 }}
             >
-                Pending requests
+                Solicitantes
             </h3>
             <div className="accordion" id="accordionExample">
                     {pendingItems.length > 0 ? (
@@ -67,7 +67,7 @@ function Accordion() {
                             />
                         ))
                     ) : (
-                        <p>No pending requests</p>
+                        <p>No hay solicitudes</p>
                     )}
             </div>
             <h3
@@ -81,7 +81,7 @@ function Accordion() {
                 color: "#6cd574",
                 }}
             >
-                Accepted requests
+                Solicitudes aceptadas
             </h3>
             <div className="accordion" id="acceptedAccordion">
                     {acceptedItems.length > 0 ? (
@@ -97,7 +97,7 @@ function Accordion() {
                             />
                         ))
                     ) : (
-                        <p>No accepted requests</p>
+                        <p>No hay solicitudes aceptadas</p>
                     )}
             </div>
             <h3
@@ -111,7 +111,7 @@ function Accordion() {
                 color: "#da3737",
                 }}
             >
-                Rejected requests
+                Solicitudes rechazadas
             </h3>
             <div className="accordion" id="rejectedAccordion">
                     {rejectedItems.length > 0 ? (
@@ -127,7 +127,7 @@ function Accordion() {
                             />
                         ))
                     ) : (
-                        <p>No rejected requests</p>
+                        <p> No hay solicitudes rechazadas</p>
                     )}
             </div>
 

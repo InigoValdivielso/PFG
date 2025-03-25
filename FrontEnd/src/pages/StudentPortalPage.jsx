@@ -50,11 +50,6 @@ const StudentPortalPage = () => {
             <button style={styles.buttonGreen}>
               Publicación horaria
             </button>
-            <Link to="/microcredentials">
-              <button style={styles.buttonPurple}>
-                Solicitud de microcredenciles
-              </button>
-            </Link>
             <button style={styles.buttonViolet}>
               Solicitud de títulos
             </button>
@@ -78,12 +73,11 @@ const styles = {
     flex: "1",  // Flexibilidad y tamaño base
     maxWidth: "450px",   /* Limita el tamaño máximo del botón */
     minWidth: "250px",   /* Define un tamaño mínimo para los botones */
-    height: "60px",       /* Altura fija */
+    height: "70px",       /* Altura fija */
     textAlign: "right",
-    paddingTop: "30px",
+    paddingTop: "36px",
     paddingRight: "15px",
-    paddingBottom: "5px",
-    fontSize: "90%",
+    fontSize: "105%",
     color: "white",
     borderRadius: "7px",
     backgroundColor: "#76C4ED",
@@ -93,12 +87,11 @@ const styles = {
     flex: "1",  // Flexibilidad y tamaño base
     maxWidth: "450px",   /* Limita el tamaño máximo del botón */
     minWidth: "257px",   /* Define un tamaño mínimo para los botones */
-    height: "60px",
+    height: "70px",
     textAlign: "right",
-    paddingTop: "30px",
+    paddingTop: "36px",
     paddingRight: "15px",
-    paddingBottom: "5px",
-    fontSize: "90%",
+    fontSize: "105%",
     color: "white",
     borderRadius: "7px",
     backgroundColor: "#EFA131",
@@ -108,12 +101,11 @@ const styles = {
     flex: "1",  // Flexibilidad y tamaño base
     maxWidth: "450px",   /* Limita el tamaño máximo del botón */
     minWidth: "257px",   /* Define un tamaño mínimo para los botones */
-    height: "60px",
+    height: "70px",
     textAlign: "right",
-    paddingTop: "30px",
+    paddingTop: "36px",
     paddingRight: "15px",
-    paddingBottom: "5px",
-    fontSize: "90%",
+    fontSize: "105%",
     color: "white",
     borderRadius: "7px",
     backgroundColor: "#C0392B",
@@ -123,12 +115,11 @@ const styles = {
     flex: "1",  // Flexibilidad y tamaño base
     maxWidth: "450px",   /* Limita el tamaño máximo del botón */
     minWidth: "257px",   /* Define un tamaño mínimo para los botones */
-    height: "60px",
+    height: "70px",
     textAlign: "right",
-    paddingTop: "30px",
+    paddingTop: "36px",
     paddingRight: "15px",
-    paddingBottom: "5px",
-    fontSize: "90%",
+    fontSize: "105%",
     color: "white",
     borderRadius: "7px",
     backgroundColor: "#34495E",
@@ -136,44 +127,27 @@ const styles = {
   },
   buttonGreen: {
     flex: "1",  // Flexibilidad y tamaño base
-    maxWidth: "450px",   /* Limita el tamaño máximo del botón */
+    maxWidth: "270px",   /* Limita el tamaño máximo del botón */
     minWidth: "257px",   /* Define un tamaño mínimo para los botones */
-    height: "60px",
+    height: "70px",
     textAlign: "right",
-    paddingTop: "30px",
+    paddingTop: "36px",
     paddingRight: "15px",
-    paddingBottom: "5px",
-    fontSize: "90%",
+    fontSize: "105%",
     color: "white",
     borderRadius: "7px",
     backgroundColor: "#85C744",
     border: "none",
   },
-  buttonPurple: {
-    flex: "1",  // Flexibilidad y tamaño base
-    maxWidth: "450px",   /* Limita el tamaño máximo del botón */
-    minWidth: "257px",   /* Define un tamaño mínimo para los botones */
-    height: "60px",
-    textAlign: "right",
-    paddingTop: "30px",
-    paddingRight: "15px",
-    paddingBottom: "5px",
-    fontSize: "90%",
-    color: "white",
-    borderRadius: "7px",
-    backgroundColor: "#c06dce",
-    border: "none",
-  },
   buttonViolet: {
     flex: "1",  // Flexibilidad y tamaño base
     maxWidth: "257px",   /* Limita el tamaño máximo del botón */
-    minWidth: "250px",   /* Define un tamaño mínimo para los botones */
-    height: "60px",
+    minWidth: "269px",   /* Define un tamaño mínimo para los botones */
+    height: "70px",
     textAlign: "right",
-    paddingTop: "30px",
+    paddingTop: "36px",
     paddingRight: "15px",
-    paddingBottom: "5px",
-    fontSize: "90%",
+    fontSize: "105%",
     color: "white",
     borderRadius: "7px",
     backgroundColor: "#9358AC",
