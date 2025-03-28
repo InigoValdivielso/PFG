@@ -19,10 +19,10 @@ router.post('/', async (req, res) => {
         'successRedirectUri': 'http://localhost:5173/success/$id',
         'Content-Type': 'application/json'
     };
-
+    //https://verifier.demo.walt.id/openid4vc/verify
     try {
         const response = await axios.post(
-            'https://verifier.demo.walt.id/openid4vc/verify', 
+            'http://localhost:7003/openid4vc/verify', 
             presentationDefinition, // El cuerpo de la petición
             { headers } // Pasando los headers
         );
@@ -32,9 +32,10 @@ router.post('/', async (req, res) => {
     }
 });
 router.get('/infoSesionVerificacion/:id', async (req, res) => {
+  //https://verifier.demo.walt.id/openid4vc/session/${id}
     try {
         const { id } = req.params;
-        const response = await axios.get(`https://verifier.demo.walt.id/openid4vc/session/${id}`, {
+        const response = await axios.get(`http://localhost:7003/openid4vc/session/${id}`, {
           headers: {
             'accept': 'application/json',
           },

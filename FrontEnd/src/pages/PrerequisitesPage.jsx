@@ -96,6 +96,7 @@ const PrerequisitesPage = () => {
               data-bs-target="#collapseOne"
               aria-expanded="true"
               aria-controls="collapseOne"
+              disabled={isComplete}
             >
               Formulario Clásico
             </button>
