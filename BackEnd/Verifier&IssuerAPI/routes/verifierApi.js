@@ -42,7 +42,7 @@ router.get('/infoSesionVerificacion/:id', async (req, res) => {
         });
         // Responde con los datos que recibes
         res.json(response.data);
-        console.log(response.data);
+        console.log(JSON.stringify(response.data, null, 2));
       } catch (error) {
         console.error('Error al hacer la petición', error);
         res.status(500).send('Error al realizar la solicitud');
