@@ -4,6 +4,6 @@ from config.db import meta, engine
 
 meta = MetaData()
 
-curso = Table("curso", meta, Column("id", Integer, primary_key=True), Column("nombre", String))
+curso = Table("curso", meta, Column("id", Integer, primary_key=True, autoincrement=True), Column("nombre", String))
 
 meta.create_all(engine)

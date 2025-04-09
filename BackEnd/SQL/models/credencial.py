@@ -4,6 +4,6 @@ from config.db import meta, engine
 
 meta = MetaData()
 
-credencial = Table("credencial", meta, Column("id", Integer, primary_key=True))
+credencial = Table("credencial", meta, Column("id", String, primary_key=True))
 
 meta.create_all(engine)
