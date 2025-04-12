@@ -52,7 +52,7 @@ const SuccessPage = () => {
     if (clicked) {
       localStorage.setItem("verificationComplete", "true");
       const timer = setTimeout(() => {
-        navigate("/prerequisites"); // Cambia "/otra-pagina" por la ruta deseada
+        navigate("/prerequisites"); 
       }, 3000);
 
       return () => clearTimeout(timer);
@@ -69,7 +69,7 @@ const SuccessPage = () => {
             position: "relative",
             width: "300px",
             height: "180px",
-            perspective: "1000px", // Da la perspectiva para la rotación 3D
+            perspective: "1000px", 
             marginBottom: "1rem",
             marginLeft: "auto",
             marginRight: "auto",
@@ -84,7 +84,7 @@ const SuccessPage = () => {
               height: "100%",
               transformStyle: "preserve-3d",
               transition: "transform 0.6s",
-              transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)", // Voltea la tarjeta solo cuando el cursor entra
+              transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)", 
             }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
@@ -169,14 +169,14 @@ const SuccessPage = () => {
         <div className="position-relative">
           <button
             className={`share-btn position-absolute bottom-0 end-0 p-2 rounded-circle ${
-              clicked ? "bg-success" : "bg-black" // Fondo verde si se hace clic
+              clicked ? "bg-success" : "bg-black" 
             }`}
             onMouseEnter={handleButtonMouseEnter}
             onMouseLeave={handleButtonMouseLeave}
-            onClick={handleButtonClick} // Maneja el clic para cambiar el icono
+            onClick={handleButtonClick} 
           >
             {clicked ? (
-              <CheckCircle size={24} color="white" /> // Ícono blanco cuando se hace clic
+              <CheckCircle size={24} color="white" /> 
             ) : (
               <Share2 size={24} color="white" />
             )}

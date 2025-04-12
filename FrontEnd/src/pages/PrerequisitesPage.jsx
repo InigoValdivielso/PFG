@@ -287,7 +287,7 @@ const PrerequisitesPage = () => {
           <div className="col" style={{ paddingTop: "1%" }}>
             <ModalCredential
               title="Comparte tus Microcredenciales"
-              description="Deberás de compartir tanto tu Verifiable Id como tu University Degree"
+              description="Deberás de compartir tu EducationalID"
               id="microcredenciales"
             />
           </div>
