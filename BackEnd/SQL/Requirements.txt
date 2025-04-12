@@ -2,3 +2,6 @@ fastapi
 uvicorn
 sqlalchemy
 mysql-connector-python
+authlib
+PyJWT
+cryptography

@@ -9,6 +9,6 @@ solicitud = Table("solicitud", meta,
                 Column("id_curso", Integer, ForeignKey("curso.id", ondelete="CASCADE")), 
                 Column("id_solicitud_doc", Integer),
                 Column("estado", String(255)),
-                Column("did", String(255), nullable=False))
+                Column("did_estudiante", String(255), ForeignKey("estudiante.did", ondelete="CASCADE")))
 
 meta.create_all(engine)
