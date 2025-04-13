@@ -4,7 +4,10 @@ from config.db import meta, engine
 
 meta = MetaData()
 
-curso = Table("curso", meta, Column("id", Integer, primary_key=True, autoincrement=True), 
-              Column("nombre", String), Column("descripcion", String), Column("duracion", String) )
+curso = Table("curso", meta, 
+              Column("id", Integer, primary_key=True, autoincrement=True), 
+              Column("nombre", String(255)), 
+              Column("descripcion", String(255)), 
+              Column("duracion", String(255)) )
 
 meta.create_all(engine)

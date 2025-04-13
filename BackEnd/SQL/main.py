@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from routes.credencial import credencial
 from routes.solicitud import solicitud
-from routes.solicitud_doc import solicitud_doc
+from routes.estudiante import estudiante
+from routes.secretaria import secretaria
 from routes.curso import curso
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
@@ -39,7 +40,8 @@ load_dotenv()
 
 app.include_router(credencial)
 app.include_router(solicitud)
-app.include_router(solicitud_doc)
+app.include_router(secretaria)
+app.include_router(estudiante)
 app.include_router(curso)
 
 

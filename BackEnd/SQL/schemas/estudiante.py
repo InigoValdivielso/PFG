@@ -9,7 +9,7 @@ class Estudiante(BaseModel):
     nia: int
     dni: str
     genero: str
-    did: str
+    did: Optional[str]
     cursos: Optional[List[int]] = []
     credenciales: Optional[List[int]] = []
 

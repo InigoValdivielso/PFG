@@ -1,6 +1,8 @@
 from sqlalchemy import ForeignKey, MetaData, Table, Column
 from sqlalchemy.sql.sqltypes import Integer, String
 from config.db import meta, engine
+from models.curso import curso
+from models.estudiante import estudiante
 
 meta = MetaData()
 
