@@ -4,9 +4,9 @@ from config.db import conexion
 from models.solicitud import solicitud
 from schemas.solicitud import Solicitud
 
-solicitud = APIRouter()
+solicitud_routes = APIRouter()
 
-@solicitud.get("/solicitudes", tags=["Gestión de solicitudes"])
+@solicitud_routes.get("/solicitudes", tags=["Gestión de solicitudes"])
 def get_solicitudes():
     try:
         result = conexion.execute(solicitud.select()).fetchall()
@@ -15,7 +15,7 @@ def get_solicitudes():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@solicitud.get("/solicitudes/{did}", tags=["Gestión de solicitudes"])
+@solicitud_routes.get("/solicitudes/{did}", tags=["Gestión de solicitudes"])
 def get_solicitudes_por_did(did: str):
     try:
         result = conexion.execute(solicitud.select().where(solicitud.c.did == did)).fetchall()
@@ -24,7 +24,7 @@ def get_solicitudes_por_did(did: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@solicitud.post("/solicitud", tags=["Gestión de solicitudes"])
+@solicitud_routes.post("/solicitud", tags=["Gestión de solicitudes"])
 def insertar_solicitud(solicitud_data: Solicitud):
     try:
         new_solicitud = solicitud_data.dict()
@@ -34,7 +34,7 @@ def insertar_solicitud(solicitud_data: Solicitud):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@solicitud.delete("/solicitud", tags=["Gestión de solicitudes"])
+@solicitud_routes.delete("/solicitud", tags=["Gestión de solicitudes"])
 def eliminar_solicitud(solicitud_data: Solicitud):
     try:
         result = conexion.execute(solicitud.delete().where(solicitud.c.id == solicitud_data.id))
@@ -45,7 +45,7 @@ def eliminar_solicitud(solicitud_data: Solicitud):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@solicitud.put("/solicitud", tags=["Gestión de solicitudes"])
+@solicitud_routes.put("/solicitud", tags=["Gestión de solicitudes"])
 def update_solicitud(solicitud_data: Solicitud):
     try:
         update_values = solicitud_data.dict(exclude_unset=True)

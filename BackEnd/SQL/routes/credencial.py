@@ -5,9 +5,9 @@ from models.credencial import credencial
 from models.estudiante import estudiante
 from schemas.credencial import Credencial
 
-credencial = APIRouter()
+credencial_routes = APIRouter()
 
-@credencial.get("/credenciales", tags=["Gestión de credenciales"])
+@credencial_routes.get("/credenciales", tags=["Gestión de credenciales"])
 def get_credenciales():
     try:
         result = conexion.execute(credencial.select()).fetchall()
@@ -16,7 +16,7 @@ def get_credenciales():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@credencial.get("/credenciales/{did}", tags=["Gestión de credenciales"])
+@credencial_routes.get("/credenciales/{did}", tags=["Gestión de credenciales"])
 def get_credenciales_por_did(did: str):
     try:
         
@@ -41,7 +41,7 @@ def get_credenciales_por_did(did: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@credencial.post("/credencial", tags=["Gestión de credenciales"])
+@credencial_routes.post("/credencial", tags=["Gestión de credenciales"])
 def insertar_credencial(credencial_data: Credencial):
     try:
         new_credencial = credencial_data.dict()
@@ -51,7 +51,7 @@ def insertar_credencial(credencial_data: Credencial):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@credencial.delete("/credencial", tags=["Gestión de credenciales"])
+@credencial_routes.delete("/credencial", tags=["Gestión de credenciales"])
 def eliminar_credencial(credencial_data: Credencial):
     try:
         result = conexion.execute(credencial.delete().where(credencial.c.id == credencial_data.id))

@@ -16,9 +16,9 @@ if key is None:
    raise ValueError("SECRET_KEY no está configurada correctamente.")
 f = Fernet(key.encode())
 
-secretaria = APIRouter()
+secretaria_routes = APIRouter()
 
-@secretaria.get("/secretaria", tags=["Gestión de usuarios"])
+@secretaria_routes.get("/secretaria", tags=["Gestión de usuarios"])
 def get_users():
     try:
         result = conexion.execute(secretaria.select()).fetchall()
@@ -32,7 +32,7 @@ def get_users():
 
 
 
-@secretaria.post("/register", tags=["Gestión de usuarios"])
+@secretaria_routes.post("/register", tags=["Gestión de usuarios"])
 def create_user(user: Secretaria):
     new_user = {"username": user.username, "email": user.email}
     new_user["password"] = f.encrypt(user.password.encode("utf-8"))
@@ -46,7 +46,7 @@ def create_user(user: Secretaria):
         return {"status": "error", "message": str(e)}
 
 
-@secretaria.delete("/secretaria", tags=["Gestión de usuarios"])
+@secretaria_routes.delete("/secretaria", tags=["Gestión de usuarios"])
 def delete_user(user: Secretaria, token_data: dict = Depends(verify_token)):
     try:
         email = token_data["email"]
@@ -58,7 +58,7 @@ def delete_user(user: Secretaria, token_data: dict = Depends(verify_token)):
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
-@secretaria.put("/secretaria", tags=["Gestión de usuarios"])
+@secretaria_routes.put("/secretaria", tags=["Gestión de usuarios"])
 def update_user(user: Secretaria, token_data: dict = Depends(verify_token)):
     try:
         email = token_data["email"]

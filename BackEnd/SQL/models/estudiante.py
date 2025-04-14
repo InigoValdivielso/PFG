@@ -1,9 +1,9 @@
 from sqlalchemy import ForeignKey, MetaData, Table, Column
 from sqlalchemy.sql.sqltypes import Integer, String
-from config.db import meta, engine
+from config.db import meta
 from models.solicitud import solicitud
 
-meta = MetaData()
+
 
 estudiante = Table("estudiante", meta, 
                 Column("NIA", Integer, primary_key=True, autoincrement=True), 
@@ -13,6 +13,5 @@ estudiante = Table("estudiante", meta,
                 Column("correo", String(255)),
                 Column("dni", String(255)),
                 Column("genero", String(255)),
-                Column("did", String(255), ForeignKey("solicitud.did", ondelete="CASCADE")))
+                Column("did", String(255), ForeignKey("solicitud.did", ondelete="CASCADE"), nullable=True))
 
-meta.create_all(engine)

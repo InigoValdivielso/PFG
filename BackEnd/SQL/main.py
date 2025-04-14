@@ -1,11 +1,12 @@
 from fastapi import FastAPI
-from routes.credencial import credencial
-from routes.solicitud import solicitud
-from routes.estudiante import estudiante
-from routes.secretaria import secretaria
-from routes.curso import curso
+from routes.credencial import credencial_routes
+from routes.solicitud import solicitud_routes
+from routes.estudiante import estudiante_routes
+from routes.secretaria import secretaria_routes
+from routes.curso import curso_routes
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from config.db import meta, engine
 
 app = FastAPI(
     title= "FastAPI CredentiFi",
@@ -18,6 +19,9 @@ app = FastAPI(
     },{
         "name": "Gestión de credenciales",
         "description": "Rutas relacionadas con la gestión de credenciales"
+    },{
+        "name": "Gestión de cursos",
+        "description": "Rutas relacionadas con la gestión de cursos"
     },
     {
         "name": "Gestión de solicitudes",
@@ -38,12 +42,14 @@ app.add_middleware(
 
 load_dotenv()
 
-app.include_router(credencial)
-app.include_router(solicitud)
-app.include_router(secretaria)
-app.include_router(estudiante)
-app.include_router(curso)
+app.include_router(credencial_routes)
+app.include_router(solicitud_routes)
+app.include_router(secretaria_routes)
+app.include_router(estudiante_routes)
+app.include_router(curso_routes)
 
+
+meta.create_all(engine)
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,8 +1,8 @@
 from sqlalchemy import MetaData, Table, Column
 from sqlalchemy.sql.sqltypes import Integer, String
-from config.db import meta, engine
+from config.db import meta
 
-meta = MetaData()
+
 
 secretaria = Table("secretaria", meta, 
                    Column("id", Integer, primary_key=True), 
@@ -10,4 +10,3 @@ secretaria = Table("secretaria", meta,
                    Column("email", String(255)), 
                    Column("password", String(255)))
 
-meta.create_all(engine)

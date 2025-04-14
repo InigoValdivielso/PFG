@@ -5,9 +5,9 @@ from models.curso import curso
 from models.requisitos import requisitos
 from schemas.curso import Curso
 
-curso = APIRouter()
+curso_routes = APIRouter()
 
-@curso.post("/crearCurso")
+@curso_routes.post("/crearCurso", tags=["Gestión de cursos"])
 def crear_curso(data: Curso):
     
     result = conexion.execute(curso.insert().values(
@@ -29,22 +29,23 @@ def crear_curso(data: Curso):
                 curso_id=curso_id,
                 requisito_id=req_id
             ))
-
+    conexion.commit()
     return {
         "message": "Curso creado correctamente",
         "curso_id": curso_id
     }
 
-@curso.get("/cursos")
+@curso_routes.get("/cursos", tags=["Gestión de cursos"])
 def obtener_cursos():
     query = select(curso)
     result = conexion.execute(query).fetchall()
-    return result
+    cursos = [dict(row._mapping) for row in result]  
+    return cursos
 
-@curso.get("/cursos/nombres")
+@curso_routes.get("/cursos/nombres", tags=["Gestión de cursos"])
 def obtener_nombres_cursos():
     
-    cursos = conexion.execute(select([curso.c.nombre])).fetchall()
+    cursos = conexion.execute(select(curso.c.nombre)).fetchall()
 
     if not cursos:
         raise HTTPException(status_code=404, detail="No se encontraron cursos")
@@ -52,7 +53,7 @@ def obtener_nombres_cursos():
    
     return {"cursos": [curso[0] for curso in cursos]}
 
-@curso.get("/curso/{nombre}")
+@curso_routes.get("/curso/{nombre}", tags=["Gestión de cursos"])
 def obtener_curso_por_nombre(nombre: str):
    
     curso_data = conexion.execute(
@@ -77,11 +78,11 @@ def obtener_curso_por_nombre(nombre: str):
         "duracion": curso_data.duracion,
         "requisitos": requisitos_nombres
     }
-@curso.delete("/curso/{id}")
+@curso_routes.delete("/curso/{id}", tags=["Gestión de cursos"])
 def borrar_curso(id: int):
     
     curso_data = conexion.execute(
-        select([curso]).where(curso.c.id == id)
+        select(curso).where(curso.c.id == id)
     ).fetchone()
 
     if not curso_data:
@@ -99,11 +100,11 @@ def borrar_curso(id: int):
 
     return {"message": "Curso eliminado correctamente"}
 
-@curso.put("/curso/{id}")
+@curso_routes.put("/curso/{id}", tags=["Gestión de cursos"])
 def modificar_curso(id: int, data: Curso):
     
     curso_data = conexion.execute(
-        select([curso]).where(curso.c.id == id)
+        select(curso).where(curso.c.id == id)
     ).fetchone()
 
     if not curso_data:
@@ -131,5 +132,7 @@ def modificar_curso(id: int, data: Curso):
             conexion.execute(
                 requisitos.insert().values(curso_id=id, requisito_id=req_id)
             )
+    
+    conexion.commit()
 
     return {"message": "Curso modificado correctamente"}
