@@ -46,15 +46,14 @@ def create_user(user: Secretaria):
         return {"status": "error", "message": str(e)}
 
 
-@secretaria_routes.delete("/secretaria", tags=["Gestión de usuarios"])
-def delete_user(user: Secretaria, token_data: dict = Depends(verify_token)):
+@secretaria_routes.delete("/secretaria/{id}", tags=["Gestión de usuarios"])
+def delete_user(id: int, token_data: dict = Depends(verify_token)):
     try:
-        email = token_data["email"]
-        result = conexion.execute(secretaria.delete().where(secretaria.c.email == email))
-        if result is None:
+        result = conexion.execute(secretaria.delete().where(secretaria.c.id == id))
+        if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="User not found")
-        conexion.commit()  
-        return {"status": "User deleted successfully", "user_email": user.email}
+        conexion.commit()
+        return {"status": "User deleted successfully", "user_id": id}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 

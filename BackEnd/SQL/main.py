@@ -4,6 +4,7 @@ from routes.solicitud import solicitud_routes
 from routes.estudiante import estudiante_routes
 from routes.secretaria import secretaria_routes
 from routes.curso import curso_routes
+from routes.auth import auth_routes
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from config.db import meta, engine
@@ -47,6 +48,7 @@ app.include_router(solicitud_routes)
 app.include_router(secretaria_routes)
 app.include_router(estudiante_routes)
 app.include_router(curso_routes)
+app.include_router(auth_routes)
 
 
 meta.create_all(engine)

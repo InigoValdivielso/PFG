@@ -1,10 +1,17 @@
 from pydantic import BaseModel
 
-class Solicitud(BaseModel):
+class SolicitudCrear(BaseModel):
     id_curso: int
-    id_solicitud_doc: int
+    id_solicitud_doc: str
     estado: str
     did: str
 
+class Solicitud(BaseModel):
+    id: int
+    id_curso: int
+    id_solicitud_doc: str
+    estado: str
+    did: str
+    
     class Config:
-        orm_mode = True
+        from_attributes = True

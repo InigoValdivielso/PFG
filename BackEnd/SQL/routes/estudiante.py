@@ -1,10 +1,12 @@
+from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy import select
 from config.db import conexion
 from models.estudiante import estudiante
 from models.estudiante_curso import estudiante_curso
 from models.credencial import credencial
-from schemas.estudiante import Estudiante
+from models.solicitud import solicitud
+from schemas.estudiante import EstudianteCrear, Estudiante
 
 estudiante_routes = APIRouter()
 
@@ -18,7 +20,7 @@ def get_estudiantes():
         raise HTTPException(status_code=500, detail=str(e))
 
 @estudiante_routes.post("/estudiante", tags=["Gestión de estudiantes"])
-def create_estudiante(estudiante_data: Estudiante):
+def create_estudiante(estudiante_data: EstudianteCrear):
     try:
         datos = estudiante_data.dict()
         
@@ -46,30 +48,87 @@ def create_estudiante(estudiante_data: Estudiante):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@estudiante_routes.delete("/estudiante", tags=["Gestión de estudiantes"])
-def delete_estudiante(estudiante_data: Estudiante):
-    try:
-        result = conexion.execute(estudiante.delete().where(estudiante.c.nia == estudiante_data.nia))
-        if result.rowcount == 0:
-            raise HTTPException(status_code=404, detail="Estudiante no encontrado")
-        conexion.commit()  
-        return {"status": "Estudiante eliminado", "nia": estudiante_data.nia}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@estudiante_routes.delete("/estudiante/{nia}", tags=["Gestión de estudiantes"])
+def borrar_estudiante(nia: int):
+    estudiante_data = conexion.execute(
+        select(estudiante).where(estudiante.c.NIA == nia)
+    ).fetchone()
 
-@estudiante_routes.put("/estudiante", tags=["Gestión de estudiantes"])
-def update_estudiante(estudiante_data: Estudiante):
+    if not estudiante_data:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+
+    # Si tienes relaciones, borra de las tablas intermedias si es necesario
+
+    conexion.execute(
+        estudiante.delete().where(estudiante.c.NIA == nia)
+    )
+    conexion.commit()
+    
+    return {"message": f"Estudiante con NIA {nia} eliminado correctamente"}
+
+@estudiante_routes.put("/estudiante/{nia}", tags=["Gestión de estudiantes"])
+def actualizar_estudiante(nia: int, estudiante_actu: EstudianteCrear):
     try:
-        update_values = estudiante_data.dict(exclude_unset=True)
-        result = conexion.execute(estudiante.update().where(estudiante.c.nia == estudiante_data.nia).values(update_values))
-        if result.rowcount == 0:
-            raise HTTPException(status_code=404, detail="Estudiante no encontrado")
-        conexion.commit()  
-        return {"status": "Estudiante actualizado", "nia": estudiante_data.nia}
+        valores_actualizar = {
+            "nombre": estudiante_actu.nombre,
+            "primer_apellido": estudiante_actu.primer_apellido,
+            "segundo_apellido": estudiante_actu.segundo_apellido,
+            "correo": estudiante_actu.correo,
+            "dni": estudiante_actu.dni,
+            "genero": estudiante_actu.genero
+        }
+
+        # Si se proporciona un DID, comprobar que exista en la tabla solicitud
+        if estudiante_actu.did is not None:
+            did_existente = conexion.execute(
+                select(solicitud.c.did).where(solicitud.c.did == estudiante_actu.did)
+            ).fetchone()
+            if not did_existente:
+                raise HTTPException(status_code=400, detail=f"El DID '{estudiante_actu.did}' no existe en la tabla solicitud")
+            valores_actualizar["did"] = estudiante_actu.did
+        else:
+            valores_actualizar["did"] = None
+
+        conexion.execute(
+            estudiante.update().where(estudiante.c.NIA == nia).values(valores_actualizar)
+        )
+        conexion.commit()
+        return {"status": "Estudiante actualizado correctamente"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+    
     
 @estudiante_routes.get("/estudiantes/{nia}/credenciales", tags=["Gestión de estudiantes"])
 def obtener_credenciales_estudiante(nia: int):
     result = conexion.execute(credencial.select().where(credencial.c.estudiante_id == nia)).fetchall()
+
+    if not result:
+        raise HTTPException(status_code=404, detail="El estudiante no tiene ninguna credencial")
+
     return [dict(row) for row in result]
+
+def añadir_credenciales(nia: int, credenciales: List[int]):
+    try:
+        for cred_id in credenciales:
+            conexion.execute(
+                credencial.update()
+                .where(credencial.c.id == cred_id)
+                .values(estudiante_nia=nia)
+            )
+        conexion.commit()
+        return {"status": f"Credenciales {credenciales} añadidas al estudiante con NIA {nia}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@estudiante_routes.post("/estudiante/{nia}/cursos", tags=["Gestión de estudiantes"])
+def añadir_cursos(nia: int, cursos: List[int]):
+    try:
+        for curso_id in cursos:
+            conexion.execute(
+                estudiante_curso.insert().values(nia=nia, curso_id=curso_id)
+            )
+        conexion.commit()
+        return {"status": f"Cursos {cursos} añadidos al estudiante con NIA {nia}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

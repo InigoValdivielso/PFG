@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy import select
 from config.db import conexion
+from models.curso import curso
 from models.solicitud import solicitud
-from schemas.solicitud import Solicitud
+from schemas.solicitud import Solicitud, SolicitudCrear
 
 solicitud_routes = APIRouter()
 
@@ -25,35 +26,63 @@ def get_solicitudes_por_did(did: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @solicitud_routes.post("/solicitud", tags=["Gestión de solicitudes"])
-def insertar_solicitud(solicitud_data: Solicitud):
+def insertar_solicitud(solicitud_data: SolicitudCrear):
     try:
+        print(solicitud_data)
+        curso_existente = conexion.execute(
+            curso.select().where(curso.c.id == solicitud_data.id_curso)
+        ).fetchone()
+
+        if not curso_existente:
+            raise HTTPException(
+                status_code=400,
+                detail=f"El curso con ID {solicitud_data.id_curso} no existe."
+            )
+
+        
         new_solicitud = solicitud_data.dict()
         result = conexion.execute(solicitud.insert().values(new_solicitud))
         conexion.commit()  
-        return {"status": "Solicitud insertada", "solicitud_id": result.inserted_primary_key[0] if result.inserted_primary_key else None}
+        return {
+            "status": "Solicitud insertada",
+            "solicitud_id": result.inserted_primary_key[0] if result.inserted_primary_key else None
+        }
+
+    except HTTPException as http_exc:
+        raise http_exc  
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@solicitud_routes.delete("/solicitud", tags=["Gestión de solicitudes"])
-def eliminar_solicitud(solicitud_data: Solicitud):
+@solicitud_routes.delete("/solicitud/{id}", tags=["Gestión de solicitudes"])
+def eliminar_solicitud(id: int):
     try:
-        result = conexion.execute(solicitud.delete().where(solicitud.c.id == solicitud_data.id))
+        result = conexion.execute(
+            solicitud.delete().where(solicitud.c.id == id)
+        )
         if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="Solicitud no encontrada")
-        conexion.commit()  
-        return {"status": "Solicitud eliminada", "solicitud_id": solicitud_data.id}
+        conexion.commit()
+        return {"status": "Solicitud eliminada", "solicitud_id": id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@solicitud_routes.put("/solicitud", tags=["Gestión de solicitudes"])
-def update_solicitud(solicitud_data: Solicitud):
+@solicitud_routes.put("/solicitud/{id}", tags=["Gestión de solicitudes"])
+def update_solicitud(id: int, solicitud_data: SolicitudCrear):
     try:
         update_values = solicitud_data.dict(exclude_unset=True)
-        result = conexion.execute(solicitud.update().where(solicitud.c.id == solicitud_data.id).values(update_values))
+
+        result = conexion.execute(
+            solicitud.update().where(solicitud.c.id == id).values(update_values)
+        )
+
         if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="Solicitud no encontrada")
-        conexion.commit()  
-        return {"status": "Solicitud actualizada", "solicitud_id": solicitud_data.id}
+
+        conexion.commit()
+        return {"status": "Solicitud actualizada", "solicitud_id": id}
+
+    except HTTPException as http_exc:
+        raise http_exc
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
