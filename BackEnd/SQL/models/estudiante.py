@@ -13,5 +13,5 @@ estudiante = Table("estudiante", meta,
                 Column("correo", String(255)),
                 Column("dni", String(255)),
                 Column("genero", String(255)),
-                Column("did", String(255), ForeignKey("solicitud.did", ondelete="CASCADE"), nullable=True))
+                Column("did", String(255), nullable=True))
 

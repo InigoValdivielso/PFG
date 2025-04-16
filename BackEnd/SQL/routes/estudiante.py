@@ -75,19 +75,9 @@ def actualizar_estudiante(nia: int, estudiante_actu: EstudianteCrear):
             "segundo_apellido": estudiante_actu.segundo_apellido,
             "correo": estudiante_actu.correo,
             "dni": estudiante_actu.dni,
-            "genero": estudiante_actu.genero
+            "genero": estudiante_actu.genero,
+            "did": estudiante_actu.did 
         }
-
-        # Si se proporciona un DID, comprobar que exista en la tabla solicitud
-        if estudiante_actu.did is not None:
-            did_existente = conexion.execute(
-                select(solicitud.c.did).where(solicitud.c.did == estudiante_actu.did)
-            ).fetchone()
-            if not did_existente:
-                raise HTTPException(status_code=400, detail=f"El DID '{estudiante_actu.did}' no existe en la tabla solicitud")
-            valores_actualizar["did"] = estudiante_actu.did
-        else:
-            valores_actualizar["did"] = None
 
         conexion.execute(
             estudiante.update().where(estudiante.c.NIA == nia).values(valores_actualizar)
@@ -96,6 +86,7 @@ def actualizar_estudiante(nia: int, estudiante_actu: EstudianteCrear):
         return {"status": "Estudiante actualizado correctamente"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
     
     
     

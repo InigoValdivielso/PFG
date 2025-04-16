@@ -51,13 +51,13 @@ def insertar_credencial(credencial_data: Credencial):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@credencial_routes.delete("/credencial", tags=["Gestión de credenciales"])
-def eliminar_credencial(credencial_data: Credencial):
+@credencial_routes.delete("/credencial/{id}", tags=["Gestión de credenciales"])
+def eliminar_credencial(id: str):
     try:
-        result = conexion.execute(credencial.delete().where(credencial.c.id == credencial_data.id))
+        result = conexion.execute(credencial.delete().where(credencial.c.id == id))
         if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="Credencial no encontrada")
         conexion.commit()  
-        return {"status": "Credencial eliminada", "id": credencial_data.id}
+        return {"status": "Credencial eliminada", "id": id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

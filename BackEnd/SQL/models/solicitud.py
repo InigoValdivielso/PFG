@@ -8,7 +8,7 @@ from models.curso import curso
 solicitud = Table("solicitud", meta, 
                 Column("id", Integer, primary_key=True, autoincrement=True), 
                 Column("id_curso", Integer, ForeignKey("curso.id", ondelete="CASCADE")), 
-                Column("id_solicitud_doc", String(255)),
-                Column("estado", String(255)),
-                Column("did", String(255), unique=True))
+                Column("id_solicitud_doc", String(255), ForeignKey("credencial.id", ondelete="CASCADE")),
+                Column("estado", String(255)))
+                
 

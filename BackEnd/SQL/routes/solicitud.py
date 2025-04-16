@@ -15,15 +15,22 @@ def get_solicitudes():
         return solicitudes_list
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-@solicitud_routes.get("/solicitudes/{did}", tags=["Gestión de solicitudes"])
-def get_solicitudes_por_did(did: str):
+
+@solicitud_routes.get("/solicitudes_por_curso", tags=["Gestión de solicitudes"])
+def get_solicitudes_por_curso(id_curso: int):
     try:
-        result = conexion.execute(solicitud.select().where(solicitud.c.did == did)).fetchall()
+        
+        result = conexion.execute(
+            solicitud.select().where(solicitud.c.id_curso == id_curso)
+        ).fetchall()
+
+        
         solicitudes_list = [Solicitud.from_orm(dict(row._mapping)) for row in result]
+        
         return solicitudes_list
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @solicitud_routes.post("/solicitud", tags=["Gestión de solicitudes"])
 def insertar_solicitud(solicitud_data: SolicitudCrear):
