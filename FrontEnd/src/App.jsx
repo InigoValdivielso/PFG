@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 import MainPage from './pages/MainPage';
+import CursoPage from './pages/CursoPage';
 import MainLayout from './components/MainLayout';
 import PrerequisitesPage from './pages/PrerequisitesPage';
 import ScrollToTop from './components/ScrollToTop';
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
     <>
       <Route path='/' element={<MainLayout />}>
         <Route index element={<MainPage />} />
+        <Route path='/curso' element={<ScrollToTop><CursoPage /></ScrollToTop>} />
         <Route path='/prerequisites' element={
         <ScrollToTop><PrerequisitesPage /></ScrollToTop>} />
       </Route>

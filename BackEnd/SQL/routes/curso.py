@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Query
 from sqlalchemy import select, join
 from config.db import conexion
 from models.curso import curso
@@ -35,12 +35,25 @@ def crear_curso(data: Curso):
         "curso_id": curso_id
     }
 
+#@curso_routes.get("/cursos", tags=["Gestión de cursos"])
+#def obtener_cursos():
+   # query = select(curso)
+  #  result = conexion.execute(query).fetchall()
+ #   cursos = [dict(row._mapping) for row in result]  
+#    return cursos
+
+
 @curso_routes.get("/cursos", tags=["Gestión de cursos"])
-def obtener_cursos():
-    query = select(curso)
+def obtener_cursos_limite(page: int = Query(1, gt=0), limit: int = Query(10, gt=0)):
+    offset = (page - 1) * limit
+    query = select(curso).offset(offset).limit(limit)
     result = conexion.execute(query).fetchall()
-    cursos = [dict(row._mapping) for row in result]  
-    return cursos
+    cursos = [dict(row._mapping) for row in result]
+    return {
+        "page": page,
+        "limit": limit,
+        "cursos": cursos
+    }
 
 @curso_routes.get("/cursos/nombres", tags=["Gestión de cursos"])
 def obtener_nombres_cursos():
