@@ -1,24 +1,44 @@
 import React, { useState } from 'react';
 import AccordionItem from './AccordionItem';
+import { useEffect } from 'react';
 
-function Accordion() {
-    // Estado para manejar los ítems del acordeón
-    const [items, setItems] = useState([
-        { id: "123456789A", name: "Pedro", email: "pedro@pendeusto.es", status: "pending" },
-        { id: "123456789B", name: "Maria", email: "maria@pendeusto.es", status: "pending" },
-        { id: "123456789C", name: "Juan", email: "juan@pendeusto.es", status: "pending" },
-        { id: "123456789D", name: "Lucia", email: "lucia@pendeusto.es", status: "pending" },
-    ]);
+function Accordion({ curso }) {
+
+    const [items, setItems] = useState([]);
 
     // Función para eliminar un ítem
     //const handleDelete = (id) => {
     //    setItems(prevItems => prevItems.filter(item => item.id !== id));
     //};
 
+    useEffect(() => {
+        const fetchSolicitudes = async () => {
+            try {
+                const peticionIdCurso = await fetch(`http://localhost:8000/curso/${encodeURIComponent(curso)}`);
+                const idCursoData = await peticionIdCurso.json();
+                const idCurso = idCursoData.id;
+                console.log(idCursoData.id);
+
+                const response = await fetch(`http://localhost:8000/solicitudes_por_curso?id_curso=${encodeURIComponent(idCurso)}`);
+                const solicitudes = await response.json();
+
+                console.log(solicitudes);
+
+            } catch (error) {
+                console.error('Error al obtener solicitudes:', error);
+            }
+        };
+
+        if (curso) {
+            fetchSolicitudes();
+        }
+    }, [curso]);
+
+
     // Función para cambiar el estado a 'accepted'
     const handleAccept = (id) => {
         setItems(prevItems =>
-            prevItems.map(item => 
+            prevItems.map(item =>
                 item.id === id ? { ...item, status: 'accepted' } : item
             )
         );
@@ -27,7 +47,7 @@ function Accordion() {
     // Función para cambiar el estado a 'rejected'
     const handleReject = (id) => {
         setItems(prevItems =>
-            prevItems.map(item => 
+            prevItems.map(item =>
                 item.id === id ? { ...item, status: 'rejected' } : item
             )
         );
@@ -44,91 +64,91 @@ function Accordion() {
             <h3
                 className="titulo"
                 style={{
-                textAlign: "left",
-                paddingBottom: "1%",
-                paddingLeft: "1%",
-                fontWeight: "800",
-                color: "#0153CE",
+                    textAlign: "left",
+                    paddingBottom: "1%",
+                    paddingLeft: "1%",
+                    fontWeight: "800",
+                    color: "#0153CE",
                 }}
             >
                 Solicitantes
             </h3>
             <div className="accordion" id="accordionExample">
-                    {pendingItems.length > 0 ? (
-                        pendingItems.map(item => (
-                            <AccordionItem
-                                key={item.id}
-                                id={item.id}
-                                name={item.name}
-                                email={item.email}
-                                status={item.status}
-                                onAccept={handleAccept}
-                                onReject={handleReject}
-                            />
-                        ))
-                    ) : (
-                        <p>No hay solicitudes</p>
-                    )}
+                {pendingItems.length > 0 ? (
+                    pendingItems.map(item => (
+                        <AccordionItem
+                            key={item.id}
+                            id={item.id}
+                            name={item.name}
+                            email={item.email}
+                            status={item.status}
+                            onAccept={handleAccept}
+                            onReject={handleReject}
+                        />
+                    ))
+                ) : (
+                    <p>No hay solicitudes</p>
+                )}
             </div>
             <h3
                 className="titulo"
                 style={{
-                textAlign: "left",
-                paddingBottom: "1%",
-                paddingLeft: "1%",
-                paddingTop: "2%",
-                fontWeight: "800",
-                color: "#6cd574",
+                    textAlign: "left",
+                    paddingBottom: "1%",
+                    paddingLeft: "1%",
+                    paddingTop: "2%",
+                    fontWeight: "800",
+                    color: "#6cd574",
                 }}
             >
                 Solicitudes aceptadas
             </h3>
             <div className="accordion" id="acceptedAccordion">
-                    {acceptedItems.length > 0 ? (
-                        acceptedItems.map(item => (
-                            <AccordionItem
-                                key={item.id}
-                                id={item.id}
-                                name={item.name}
-                                email={item.email}
-                                status={item.status}
-                                onAccept={handleAccept}
-                                onReject={handleReject}
-                            />
-                        ))
-                    ) : (
-                        <p>No hay solicitudes aceptadas</p>
-                    )}
+                {acceptedItems.length > 0 ? (
+                    acceptedItems.map(item => (
+                        <AccordionItem
+                            key={item.id}
+                            id={item.id}
+                            name={item.name}
+                            email={item.email}
+                            status={item.status}
+                            onAccept={handleAccept}
+                            onReject={handleReject}
+                        />
+                    ))
+                ) : (
+                    <p>No hay solicitudes aceptadas</p>
+                )}
             </div>
             <h3
                 className="titulo"
                 style={{
-                textAlign: "left",
-                paddingBottom: "1%",
-                paddingLeft: "1%",
-                paddingTop: "2%",
-                fontWeight: "800",
-                color: "#da3737",
+                    textAlign: "left",
+                    paddingBottom: "1%",
+                    paddingLeft: "1%",
+                    paddingTop: "2%",
+                    fontWeight: "800",
+                    color: "#da3737",
                 }}
             >
                 Solicitudes rechazadas
             </h3>
             <div className="accordion" id="rejectedAccordion">
-                    {rejectedItems.length > 0 ? (
-                        rejectedItems.map(item => (
-                            <AccordionItem
-                                key={item.id}
-                                id={item.id}
-                                name={item.name}
-                                email={item.email}
-                                status={item.status}
-                                onAccept={handleAccept}
-                                onReject={handleReject}
-                            />
-                        ))
-                    ) : (
-                        <p> No hay solicitudes rechazadas</p>
-                    )}
+                {rejectedItems.length > 0 ? (
+                    rejectedItems.map(item => (
+                        <AccordionItem
+                            key={item.id}
+                            id={item.id}
+                            name={item.name}
+                            email={item.email}
+                            status={item.status}
+                            onAccept={handleAccept}
+                            onReject={handleReject}
+                        />
+                    ))
+                ) : (
+                    <p> No hay solicitudes rechazadas</p>
+                )}
             </div>
 
         </>

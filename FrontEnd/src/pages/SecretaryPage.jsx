@@ -1,25 +1,28 @@
 import React, { useState } from "react";
 import Accordion from "../components/Accordion";
+import { useEffect } from "react";
 
 const SecretaryPage = () => {
   const [componenteSeleccionado, setComponenteSeleccionado] = useState("");
+  const [cursos, setCursos] = useState([]);
 
   const handleSelectChange = (event) => {
     setComponenteSeleccionado(event.target.value);
   };
 
-  const renderComponente = () => {
-    switch (componenteSeleccionado) {
-      case "Componente1":
-        return <Accordion />;
-      case "Componente2":
-        return <Accordion />;
-      case "Componente3":
-        return <Accordion />;
-      default:
-        return null;
-    }
-  };
+  useEffect(() => {
+    const fetchCursos = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/cursos/nombres");
+        const data = await response.json();
+        setCursos(data.cursos);
+      } catch (error) {
+        console.error("Error al obtener los cursos:", error);
+      }
+    };
+
+    fetchCursos();
+  }, []);
 
   return (
     <>
@@ -36,38 +39,24 @@ const SecretaryPage = () => {
       </h1>
 
       <select
-        class="form-select form-select-lg mb-3"
+        className="form-select form-select-lg mb-3"
         aria-label="Large select example"
         onChange={handleSelectChange}
         value={componenteSeleccionado}
       >
-        <option selected>Selecciona un programa</option>
-        <option value="Componente1">Transformación Digital para PYMEs</option>
-        <option value="Componente2">Experto en Derecho Digital</option>
-        <option value="Componente3">
-          Ejecutivo en Administración de Empresas - Máster en Formación a lo
-          Largo de la Vida
-        </option>
-        <option value="3">
-          Máster Ejecutivo en Administración de Empresas
-        </option>
-        <option value="4">Diploma de Experto en Derecho Sanitario</option>
-        <option value="5">
-          Experto en prevención de adicciones con adolescentes y jóvenes
-        </option>
-        <option value="6">
-          Experto en Ética de la digitalización e Inteligencia Artificial
-          aplicada
-        </option>
-        <option value="7">Experto en Dirección General (PDG)</option>
-        <option value="8">
-          Experto en Derechos Humanos de los Pueblos Indígenas
-        </option>
+        <option value="">Selecciona un programa</option>
+        {cursos.map((nombreCurso, index) => (
+          <option key={index} value={nombreCurso}>
+            {nombreCurso}
+          </option>
+        ))}
       </select>
 
       <br></br>
 
-      {renderComponente()}
+      {componenteSeleccionado && (
+        <Accordion curso={componenteSeleccionado} />
+      )}
     </>
   );
 };

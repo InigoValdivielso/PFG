@@ -155,7 +155,7 @@ const CursoPage = () => {
                       src="https://www.deusto.es/estaticos/ud/iconNucleo/calendario.svg"
                     />
                     <h3>Cuándo</h3>
-                    <p>Enero 2025 | Bilbao</p>
+                    <p>Mayo 2025 | Bilbao</p>
                   </div>
                   <div className="col-lg-6 destacadoInfoGrado">
                     <img

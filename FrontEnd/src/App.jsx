@@ -9,11 +9,13 @@ import SecretaryLayout from './components/SecretaryLayout';
 import StudentLoginPage from './pages/StudentLoginPage';
 import StudentPortalPage from './pages/StudentPortalPage';
 import StudentLayout from './components/StudentLayout';
+import SecretaryLoginPage from './pages/SecretaryLoginPage';
 import StudentMicrocredentialPage from './pages/StudentMicrocredentialPage';
 import QRPrerequisitesPage from './pages/QRPrerequisitesPage';
 import SuccessPage from './pages/SuccessPage';
 import QRInicioSesionPage from './pages/QRInicioSesionPage';
 import QREmitirEducationalIDPage from './pages/QREmitirEducationaIDPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,8 +28,9 @@ const router = createBrowserRouter(
       </Route>
       <Route path='/comparteCredenciales' element={<QRPrerequisitesPage />} />
       <Route path='/success/:id' element={<SuccessPage />} />
-      <Route path='/secretary' element={<SecretaryLayout />} />
+      <Route path='/secretary' element={<ProtectedRoute><SecretaryLayout /></ProtectedRoute>} />
       <Route path='/studentLogin' element={<StudentLoginPage />} />
+      <Route path='/secretaryLogin' element={<SecretaryLoginPage />} />
       <Route path='/studentLogin/qr' element={<QRInicioSesionPage />} />
       <Route path='/microcredentials/solicitar/EducationalID' element={<QREmitirEducationalIDPage />}/>
 

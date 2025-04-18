@@ -70,7 +70,7 @@ def obtener_nombres_cursos():
 def obtener_curso_por_nombre(nombre: str):
    
     curso_data = conexion.execute(
-        select([curso]).where(curso.c.nombre == nombre)
+        select(curso).where(curso.c.nombre == nombre)
     ).fetchone()
 
     if not curso_data:
@@ -79,7 +79,7 @@ def obtener_curso_por_nombre(nombre: str):
     
     j = join(requisitos, curso, requisitos.c.requisito_id == curso.c.id)
     reqs = conexion.execute(
-        select([curso]).select_from(j).where(requisitos.c.curso_id == curso_data.id)
+        select(curso).select_from(j).where(requisitos.c.curso_id == curso_data.id)
     ).fetchall()
 
     requisitos_nombres = [{"id": r.id, "nombre": r.nombre} for r in reqs]

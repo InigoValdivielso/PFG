@@ -1,6 +1,20 @@
 import logoDeusto from '../assets/images/LogoDeustoBlanco.png';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function NavBarSecretary() {
+  const navigate = useNavigate();
+  const clearAuthToken = () => {
+    sessionStorage.removeItem('token');  
+  };
+  const handleLogout = async () => {
+    try {
+      clearAuthToken();
+      navigate('/secretaryLogin'); 
+    } catch (error) {
+      console.error("Error al hacer logout:", error);
+    }
+  };
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
@@ -34,6 +48,11 @@ function NavBarSecretary() {
               <li className="nav-item px-3">
                 <a className="nav-link" href="#">
                   Soporte
+                </a>
+              </li>
+              <li className="nav-item px-3">
+                <a className="nav-link" onClick={handleLogout} style={{ cursor: 'pointer', color: 'white' }}>
+                  Cerrar sesión
                 </a>
               </li>
             </ul>
