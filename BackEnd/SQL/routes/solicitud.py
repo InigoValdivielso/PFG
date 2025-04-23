@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy import select
-from config.db import conexion
+from requests import Session
+from config.db import get_db
 from models.curso import curso
 from models.solicitud import solicitud
 from schemas.solicitud import Solicitud, SolicitudCrear
@@ -8,19 +8,19 @@ from schemas.solicitud import Solicitud, SolicitudCrear
 solicitud_routes = APIRouter()
 
 @solicitud_routes.get("/solicitudes", tags=["Gestión de solicitudes"])
-def get_solicitudes():
+def get_solicitudes(db: Session = Depends(get_db)):
     try:
-        result = conexion.execute(solicitud.select()).fetchall()
+        result = db.execute(solicitud.select()).fetchall()
         solicitudes_list = [Solicitud.from_orm(dict(row._mapping)) for row in result]
         return solicitudes_list
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @solicitud_routes.get("/solicitudes_por_curso", tags=["Gestión de solicitudes"])
-def get_solicitudes_por_curso(id_curso: int):
+def get_solicitudes_por_curso(id_curso: int, db: Session = Depends(get_db)):
     try:
         
-        result = conexion.execute(
+        result = db.execute(
             solicitud.select().where(solicitud.c.id_curso == id_curso)
         ).fetchall()
 
@@ -33,10 +33,10 @@ def get_solicitudes_por_curso(id_curso: int):
 
 
 @solicitud_routes.post("/solicitud", tags=["Gestión de solicitudes"])
-def insertar_solicitud(solicitud_data: SolicitudCrear):
+def insertar_solicitud(solicitud_data: SolicitudCrear, db: Session = Depends(get_db)):
     try:
         print(solicitud_data)
-        curso_existente = conexion.execute(
+        curso_existente = db.execute(
             curso.select().where(curso.c.id == solicitud_data.id_curso)
         ).fetchone()
 
@@ -48,8 +48,8 @@ def insertar_solicitud(solicitud_data: SolicitudCrear):
 
         
         new_solicitud = solicitud_data.dict()
-        result = conexion.execute(solicitud.insert().values(new_solicitud))
-        conexion.commit()  
+        result = db.execute(solicitud.insert().values(new_solicitud))
+        db.commit()  
         return {
             "status": "Solicitud insertada",
             "solicitud_id": result.inserted_primary_key[0] if result.inserted_primary_key else None
@@ -62,31 +62,31 @@ def insertar_solicitud(solicitud_data: SolicitudCrear):
         raise HTTPException(status_code=500, detail=str(e))
     
 @solicitud_routes.delete("/solicitud/{id}", tags=["Gestión de solicitudes"])
-def eliminar_solicitud(id: int):
+def eliminar_solicitud(id: int, db: Session = Depends(get_db)):
     try:
-        result = conexion.execute(
+        result = db.execute(
             solicitud.delete().where(solicitud.c.id == id)
         )
         if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="Solicitud no encontrada")
-        conexion.commit()
+        db.commit()
         return {"status": "Solicitud eliminada", "solicitud_id": id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @solicitud_routes.put("/solicitud/{id}", tags=["Gestión de solicitudes"])
-def update_solicitud(id: int, solicitud_data: SolicitudCrear):
+def update_solicitud(id: int, solicitud_data: SolicitudCrear, db: Session = Depends(get_db)):
     try:
         update_values = solicitud_data.dict(exclude_unset=True)
 
-        result = conexion.execute(
+        result = db.execute(
             solicitud.update().where(solicitud.c.id == id).values(update_values)
         )
 
         if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="Solicitud no encontrada")
 
-        conexion.commit()
+        db.commit()
         return {"status": "Solicitud actualizada", "solicitud_id": id}
 
     except HTTPException as http_exc:

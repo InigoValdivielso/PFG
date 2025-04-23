@@ -20,4 +20,9 @@ Base = declarative_base()
 
 meta = MetaData()
 
-conexion = engine.connect()
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
+from requests import Session
 from sqlalchemy import select, join
-from config.db import conexion
+from config.db import get_db
 from models.curso import curso
 from models.requisitos import requisitos
 from schemas.curso import Curso
@@ -8,9 +9,9 @@ from schemas.curso import Curso
 curso_routes = APIRouter()
 
 @curso_routes.post("/crearCurso", tags=["Gestión de cursos"])
-def crear_curso(data: Curso):
+def crear_curso(data: Curso, db: Session = Depends(get_db)):
     
-    result = conexion.execute(curso.insert().values(
+    result = db.execute(curso.insert().values(
         nombre=data.nombre,
         descripcion=data.descripcion,
         duracion=data.duracion
@@ -25,11 +26,11 @@ def crear_curso(data: Curso):
             
             if req_id == curso_id:
                 raise HTTPException(status_code=400, detail="Un curso no puede ser requisito de sí mismo.")
-            conexion.execute(requisitos.insert().values(
+            db.execute(requisitos.insert().values(
                 curso_id=curso_id,
                 requisito_id=req_id
             ))
-    conexion.commit()
+    db.commit()
     return {
         "message": "Curso creado correctamente",
         "curso_id": curso_id
@@ -38,16 +39,16 @@ def crear_curso(data: Curso):
 #@curso_routes.get("/cursos", tags=["Gestión de cursos"])
 #def obtener_cursos():
    # query = select(curso)
-  #  result = conexion.execute(query).fetchall()
+  #  result = db.execute(query).fetchall()
  #   cursos = [dict(row._mapping) for row in result]  
 #    return cursos
 
 
 @curso_routes.get("/cursos", tags=["Gestión de cursos"])
-def obtener_cursos_limite(page: int = Query(1, gt=0), limit: int = Query(10, gt=0)):
+def obtener_cursos_limite(page: int = Query(1, gt=0), limit: int = Query(10, gt=0), db: Session = Depends(get_db)):
     offset = (page - 1) * limit
     query = select(curso).offset(offset).limit(limit)
-    result = conexion.execute(query).fetchall()
+    result = db.execute(query).fetchall()
     cursos = [dict(row._mapping) for row in result]
     return {
         "page": page,
@@ -56,9 +57,9 @@ def obtener_cursos_limite(page: int = Query(1, gt=0), limit: int = Query(10, gt=
     }
 
 @curso_routes.get("/cursos/nombres", tags=["Gestión de cursos"])
-def obtener_nombres_cursos():
+def obtener_nombres_cursos(db: Session = Depends(get_db)):
     
-    cursos = conexion.execute(select(curso.c.nombre)).fetchall()
+    cursos = db.execute(select(curso.c.nombre)).fetchall()
 
     if not cursos:
         raise HTTPException(status_code=404, detail="No se encontraron cursos")
@@ -67,9 +68,9 @@ def obtener_nombres_cursos():
     return {"cursos": [curso[0] for curso in cursos]}
 
 @curso_routes.get("/curso/{nombre}", tags=["Gestión de cursos"])
-def obtener_curso_por_nombre(nombre: str):
+def obtener_curso_por_nombre(nombre: str, db: Session = Depends(get_db)):
    
-    curso_data = conexion.execute(
+    curso_data = db.execute(
         select(curso).where(curso.c.nombre == nombre)
     ).fetchone()
 
@@ -78,7 +79,7 @@ def obtener_curso_por_nombre(nombre: str):
 
     
     j = join(requisitos, curso, requisitos.c.requisito_id == curso.c.id)
-    reqs = conexion.execute(
+    reqs = db.execute(
         select(curso).select_from(j).where(requisitos.c.curso_id == curso_data.id)
     ).fetchall()
 
@@ -92,9 +93,9 @@ def obtener_curso_por_nombre(nombre: str):
         "requisitos": requisitos_nombres
     }
 @curso_routes.delete("/curso/{id}", tags=["Gestión de cursos"])
-def borrar_curso(id: int):
+def borrar_curso(id: int, db: Session = Depends(get_db)):
     
-    curso_data = conexion.execute(
+    curso_data = db.execute(
         select(curso).where(curso.c.id == id)
     ).fetchone()
 
@@ -102,21 +103,21 @@ def borrar_curso(id: int):
         raise HTTPException(status_code=404, detail="Curso no encontrado")
 
     
-    conexion.execute(
+    db.execute(
         requisitos.delete().where(requisitos.c.curso_id == id)
     )
 
    
-    conexion.execute(
+    db.execute(
         curso.delete().where(curso.c.id == id)
     )
 
     return {"message": "Curso eliminado correctamente"}
 
 @curso_routes.put("/curso/{id}", tags=["Gestión de cursos"])
-def modificar_curso(id: int, data: Curso):
+def modificar_curso(id: int, data: Curso, db: Session = Depends(get_db)):
     
-    curso_data = conexion.execute(
+    curso_data = db.execute(
         select(curso).where(curso.c.id == id)
     ).fetchone()
 
@@ -124,7 +125,7 @@ def modificar_curso(id: int, data: Curso):
         raise HTTPException(status_code=404, detail="Curso no encontrado")
 
     
-    conexion.execute(
+    db.execute(
         curso.update().where(curso.c.id == id).values(
             nombre=data.nombre,
             descripcion=data.descripcion,
@@ -133,7 +134,7 @@ def modificar_curso(id: int, data: Curso):
     )
 
     
-    conexion.execute(
+    db.execute(
         requisitos.delete().where(requisitos.c.curso_id == id)
     )
 
@@ -142,10 +143,10 @@ def modificar_curso(id: int, data: Curso):
         for req_id in data.requisitos:
             if req_id == id:
                 raise HTTPException(status_code=400, detail="Un curso no puede ser requisito de sí mismo.")
-            conexion.execute(
+            db.execute(
                 requisitos.insert().values(curso_id=id, requisito_id=req_id)
             )
     
-    conexion.commit()
+    db.commit()
 
     return {"message": "Curso modificado correctamente"}

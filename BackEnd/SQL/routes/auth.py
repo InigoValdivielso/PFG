@@ -1,12 +1,13 @@
 import os
 from dotenv import load_dotenv
-from fastapi import APIRouter, HTTPException, Header, Request, Security
+from fastapi import APIRouter, Depends, HTTPException, Header, Request, Security
 from fastapi.security import APIKeyHeader
+from requests import Session
 from models.secretaria import secretaria
 from schemas.secretaria import LoginRequest, Secretaria
 from functions_jwt import validate_token, write_token
 from fastapi.responses import JSONResponse
-from config.db import conexion
+from config.db import get_db
 from cryptography.fernet import Fernet
 
 
@@ -23,10 +24,10 @@ f = Fernet(key.encode())
 
 
 @auth_routes.post("/login" , tags=["Autentificación"])
-def login(data: LoginRequest):
+def login(data: LoginRequest , db: Session = Depends(get_db)):
     username = data.username
     password = data.password
-    result = conexion.execute(secretaria.select().where(secretaria.c.username == username and secretaria.c.password == f.encrypt(password.encode("utf-8")))).fetchone()
+    result = db.execute(secretaria.select().where(secretaria.c.username == username and secretaria.c.password == f.encrypt(password.encode("utf-8")))).fetchone()
     if result:
         user = Secretaria.from_orm(dict(result._mapping))
         token = write_token(user.dict())
@@ -35,7 +36,7 @@ def login(data: LoginRequest):
         return JSONResponse(content={"status": "error", "message": "Usuario o contraseña incorrectos"}, status_code=404)
 
 @auth_routes.post("/verify/token" , tags=["Autentificación"])
-def verify_token(Authorization: str = Security(api_key_header)):
+def verify_token(Authorization: str = Security(api_key_header), db: Session = Depends(get_db)):
 
     if not Authorization:
         raise HTTPException(status_code=401, detail="Authorization header missing")
