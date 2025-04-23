@@ -17,12 +17,28 @@ function Accordion({ curso }) {
                 const peticionIdCurso = await fetch(`http://localhost:8000/curso/${encodeURIComponent(curso)}`);
                 const idCursoData = await peticionIdCurso.json();
                 const idCurso = idCursoData.id;
-                console.log(idCursoData.id);
+
 
                 const response = await fetch(`http://localhost:8000/solicitudes_por_curso?id_curso=${encodeURIComponent(idCurso)}`);
                 const solicitudes = await response.json();
 
-                console.log(solicitudes);
+                const solicitudesConDatos = await Promise.all(solicitudes.map(async (s) => {
+                    const responsePersona = await fetch(`http://localhost:8000/persona/${s.id_persona}`);
+                    const persona = await responsePersona.json();
+
+                    return {
+                        id: s.id,
+                        nombre: persona.nombre,
+                        primer_apellido: persona.primer_apellido,
+                        correo: persona.correo,
+                        curso: curso,
+                        estado: s.estado
+                    };
+                }));
+
+                setItems(solicitudesConDatos);
+                console.log(solicitudesConDatos);
+
 
             } catch (error) {
                 console.error('Error al obtener solicitudes:', error);
@@ -39,7 +55,7 @@ function Accordion({ curso }) {
     const handleAccept = (id) => {
         setItems(prevItems =>
             prevItems.map(item =>
-                item.id === id ? { ...item, status: 'accepted' } : item
+                item.id === id ? { ...item, estado: 'aceptada' } : item
             )
         );
     };
@@ -48,15 +64,15 @@ function Accordion({ curso }) {
     const handleReject = (id) => {
         setItems(prevItems =>
             prevItems.map(item =>
-                item.id === id ? { ...item, status: 'rejected' } : item
+                item.id === id ? { ...item, estado: 'rechazada' } : item
             )
         );
     };
 
     // Filtrar ítems por estado
-    const pendingItems = items.filter(item => item.status === 'pending');
-    const acceptedItems = items.filter(item => item.status === 'accepted');
-    const rejectedItems = items.filter(item => item.status === 'rejected');
+    const pendingItems = items.filter(item => item.estado === 'pendiente');
+    const acceptedItems = items.filter(item => item.estado === 'aceptada');
+    const rejectedItems = items.filter(item => item.estado === 'rechazada');
 
 
     return (
@@ -79,9 +95,11 @@ function Accordion({ curso }) {
                         <AccordionItem
                             key={item.id}
                             id={item.id}
-                            name={item.name}
-                            email={item.email}
-                            status={item.status}
+                            nombre={item.nombre}
+                            primer_apellido={item.primer_apellido}
+                            correo={item.correo}
+                            curso={item.curso}
+                            estado={item.estado}
                             onAccept={handleAccept}
                             onReject={handleReject}
                         />
@@ -109,9 +127,11 @@ function Accordion({ curso }) {
                         <AccordionItem
                             key={item.id}
                             id={item.id}
-                            name={item.name}
-                            email={item.email}
-                            status={item.status}
+                            nombre={item.nombre}
+                            primer_apellido={item.primer_apellido}
+                            correo={item.correo}
+                            curso={item.curso}
+                            estado={item.estado}
                             onAccept={handleAccept}
                             onReject={handleReject}
                         />
@@ -139,9 +159,11 @@ function Accordion({ curso }) {
                         <AccordionItem
                             key={item.id}
                             id={item.id}
-                            name={item.name}
-                            email={item.email}
-                            status={item.status}
+                            nombre={item.nombre}
+                            primer_apellido={item.primer_apellido}
+                            correo={item.correo}
+                            curso={item.curso}
+                            estado={item.estado}
                             onAccept={handleAccept}
                             onReject={handleReject}
                         />

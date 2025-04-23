@@ -3,7 +3,7 @@ import AccordionTable from "./AccordionTable";
 import CredentialTable from "./CredentialTable";
 import ModalSecretary from './ModalSecretary';
 
-function AccordionItem({ name, email, id, status, onAccept, onReject  }) {
+function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, onAccept, onReject  }) {
     const targetId = `#${id}`;
     const [showAcceptModal, setShowAcceptModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
@@ -24,9 +24,26 @@ function AccordionItem({ name, email, id, status, onAccept, onReject  }) {
         setShowRejectModal(false);
     };
 
-    const confirmAccept = () => {
-        onAccept(id);
+    const confirmAccept = async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/solicitud/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ estado: 'aceptada' }),
+            });
+
+            if (response.ok) {
+                setEstado('aceptada');
+            } else {
+                console.error('Error al aceptar la solicitud');
+            }
+        } catch (error) {
+            console.error('Error de red al aceptar la solicitud:', error);
+        }
         handleCloseAcceptModal();
+        onAccept(id);
     };
 
     const confirmReject = () => {
@@ -38,19 +55,19 @@ function AccordionItem({ name, email, id, status, onAccept, onReject  }) {
         <div className="accordion-item" style={{ background: "#EBEBEB" }}>
             <h2 className="accordion-header">
                 <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={targetId} aria-expanded="false" aria-controls="collapseOne">
-                    {name} - {email} - {id}
+                    {nombre} - {correo} - {id}
                 </button>
             </h2>
             <div id={id} className="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div className="accordion-body">
-                    <AccordionTable name="test1" surname="surname1" email="test1@gmail.com" program="Computer Engineering" />
+                    <AccordionTable name={nombre} surname={primer_apellido} email={correo} program={curso} />
                     <br></br>
                     <h4>Credenciales proporcionadas:</h4>
                     <br></br>
                     
                     <CredentialTable name="EducantionalID" />
                     
-                    {status === 'pending' && (
+                    {estado === 'pendiente' && (
                         <div style={{ marginLeft: "40%" }}>
                             <button className="btn btn-primary" type="button" style={{ marginRight: "5%" }} onClick={handleAccept}>Aceptar</button>
                             <button className="btn btn-danger" type="button" onClick={handleReject}>Rechazar</button>
@@ -61,8 +78,8 @@ function AccordionItem({ name, email, id, status, onAccept, onReject  }) {
             {/* Modal para Accept */}
             {showAcceptModal && (
                 <ModalSecretary
-                    title="Caution"
-                    description="Are you sure you want to accept this enrollment?"
+                    title="Cuidado"
+                    description="¿Estas seguro de que quieres aceptar esta solicitud?"
                     id="Accept"
                     show={showAcceptModal}
                     handleClose={handleCloseAcceptModal}
@@ -72,8 +89,8 @@ function AccordionItem({ name, email, id, status, onAccept, onReject  }) {
             {/* Modal para Reject */}
             {showRejectModal && (
                 <ModalSecretary
-                    title="Warning"
-                    description="Are you sure you want to reject this enrollment?"
+                    title="Cuidado"
+                    description="¿Estas seguro de que quieres rechazar esta solicitud?"
                     id="Reject"
                     show={showRejectModal}
                     handleClose={handleCloseRejectModal}

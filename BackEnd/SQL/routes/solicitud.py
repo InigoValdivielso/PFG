@@ -3,7 +3,7 @@ from requests import Session
 from config.db import get_db
 from models.curso import curso
 from models.solicitud import solicitud
-from schemas.solicitud import Solicitud, SolicitudCrear
+from schemas.solicitud import Solicitud, SolicitudCrear, SolicitudActualizar
 
 solicitud_routes = APIRouter()
 
@@ -75,7 +75,7 @@ def eliminar_solicitud(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @solicitud_routes.put("/solicitud/{id}", tags=["Gestión de solicitudes"])
-def update_solicitud(id: int, solicitud_data: SolicitudCrear, db: Session = Depends(get_db)):
+def update_solicitud(id: int, solicitud_data: SolicitudActualizar, db: Session = Depends(get_db)):
     try:
         update_values = solicitud_data.dict(exclude_unset=True)
 

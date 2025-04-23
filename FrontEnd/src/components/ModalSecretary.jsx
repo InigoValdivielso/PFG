@@ -21,7 +21,7 @@ function ModalSecretary({ id, title, description, show, handleClose, handleConfi
                             {description}
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={handleConfirmAndClose}>Yes</button>
+                            <button type="button" className="btn btn-primary" onClick={handleConfirmAndClose}>Si</button>
                             <button type="button" className="btn btn-danger" onClick={handleClose}>No</button>
                         </div>
                     </div>

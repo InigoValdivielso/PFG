@@ -4,10 +4,10 @@ function AccordionTable({ name, surname, email, program }) {
             <table className="table table-borderless">
                 <thead>
                     <tr>
-                        <th scope="col" style={{ border: "none", background: "#EBEBEB" }}>Name</th>
-                        <th scope="col" style={{ border: "none", background: "#EBEBEB" }}>Surname</th>
-                        <th scope="col" style={{ border: "none", background: "#EBEBEB" }}>Email</th>
-                        <th scope="col" style={{ border: "none", background: "#EBEBEB" }}>Program</th>
+                        <th scope="col" style={{ border: "none", background: "#EBEBEB" }}>Nombre</th>
+                        <th scope="col" style={{ border: "none", background: "#EBEBEB" }}>Apellido</th>
+                        <th scope="col" style={{ border: "none", background: "#EBEBEB" }}>Correo</th>
+                        <th scope="col" style={{ border: "none", background: "#EBEBEB" }}>Curso</th>
                     </tr>
                 </thead>
                 <tbody>
