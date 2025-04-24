@@ -1,19 +1,18 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
 
 class SolicitudCrear(BaseModel):
     id_curso: int
-    id_solicitud_doc: str
     estado: str
     id_persona: int
-
+    credenciales: Optional[List[str]] = []
 
 class Solicitud(BaseModel):
     id: int
     id_curso: int
-    id_solicitud_doc: str
     estado: str
     id_persona: int
+    credenciales: Optional[List[str]] = []
     
     class Config:
         from_attributes = True

@@ -221,7 +221,7 @@ const PrerequisitesPage = () => {
                     <div className="row g-2">
                       <div className="col-md-6">
                         <label className="form-label">
-                          Subir Fotocopia del DNI/NIE
+                          Subir Fotocopia de Requisitos
                         </label>
                         <input
                           type="file"

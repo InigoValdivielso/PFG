@@ -25,6 +25,7 @@ function Accordion({ curso }) {
                 const solicitudesConDatos = await Promise.all(solicitudes.map(async (s) => {
                     const responsePersona = await fetch(`http://localhost:8000/persona/${s.id_persona}`);
                     const persona = await responsePersona.json();
+                    
 
                     return {
                         id: s.id,
@@ -32,7 +33,8 @@ function Accordion({ curso }) {
                         primer_apellido: persona.primer_apellido,
                         correo: persona.correo,
                         curso: curso,
-                        estado: s.estado
+                        estado: s.estado,
+                        credenciales: s.credenciales
                     };
                 }));
 
@@ -100,6 +102,7 @@ function Accordion({ curso }) {
                             correo={item.correo}
                             curso={item.curso}
                             estado={item.estado}
+                            credenciales={item.credenciales}
                             onAccept={handleAccept}
                             onReject={handleReject}
                         />

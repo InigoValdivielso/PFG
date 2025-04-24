@@ -3,7 +3,7 @@ import AccordionTable from "./AccordionTable";
 import CredentialTable from "./CredentialTable";
 import ModalSecretary from './ModalSecretary';
 
-function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, onAccept, onReject  }) {
+function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, credenciales, onAccept, onReject  }) {
     const targetId = `#${id}`;
     const [showAcceptModal, setShowAcceptModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
@@ -46,7 +46,24 @@ function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, onA
         onAccept(id);
     };
 
-    const confirmReject = () => {
+    const confirmReject = async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/solicitud/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ estado: 'rechazada' }),
+            });
+
+            if (response.ok) {
+                setEstado('rechazada');
+            } else {
+                console.error('Error al rechazar la solicitud');
+            }
+        } catch (error) {
+            console.error('Error de red al rechazar la solicitud:', error);
+        }
         onReject(id);
         handleCloseRejectModal();
     };
@@ -65,7 +82,13 @@ function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, onA
                     <h4>Credenciales proporcionadas:</h4>
                     <br></br>
                     
-                    <CredentialTable name="EducantionalID" />
+                    {credenciales && credenciales.length > 0 ? (
+                        credenciales.map((credencial) => (
+                            <CredentialTable name={credencial.name} /> // Aquí pasas la credencial al componente
+                        ))
+                    ) : (
+                        <p>No hay credenciales proporcionadas.</p>
+                    )}
                     
                     {estado === 'pendiente' && (
                         <div style={{ marginLeft: "40%" }}>

@@ -9,16 +9,38 @@ from models.credencial import credencial
 from models.solicitud import solicitud
 from schemas.estudiante import EstudianteCrear, Estudiante
 
+
 estudiante_routes = APIRouter()
 
 @estudiante_routes.get("/estudiante", tags=["Gestión de estudiantes"])
 def get_estudiantes(db: Session = Depends(get_db)):
     try:
-        result = db.execute(estudiante.select()).fetchall()
-        estudiantes_list = [Estudiante.from_orm(dict(row._mapping)) for row in result]
+        estudiantes_raw = db.execute(estudiante.select()).fetchall()
+        estudiantes_list = []
+
+        for row in estudiantes_raw:
+            nia = row._mapping["NIA"]
+
+            # Obtener cursos (solo IDs)
+            cursos = db.execute(
+                select(estudiante_curso.c.curso_id).where(estudiante_curso.c.estudiante_id == nia)
+            ).scalars().all()
+
+            # Obtener credenciales (solo IDs)
+            credenciales = db.execute(
+                select(credencial.c.id).where(credencial.c.estudiante_id == nia)
+            ).scalars().all()
+
+            estudiante_data = dict(row._mapping)
+            estudiante_data["cursos"] = cursos
+            estudiante_data["credenciales"] = credenciales
+
+            estudiantes_list.append(Estudiante(**estudiante_data))
+
         return estudiantes_list
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @estudiante_routes.post("/estudiante", tags=["Gestión de estudiantes"])
 def create_estudiante(estudiante_data: EstudianteCrear, db: Session = Depends(get_db)):
@@ -98,15 +120,16 @@ def obtener_credenciales_estudiante(nia: int, db: Session = Depends(get_db)):
     if not result:
         raise HTTPException(status_code=404, detail="El estudiante no tiene ninguna credencial")
 
-    return [dict(row) for row in result]
+    return [dict(row._mapping) for row in result]
 
-def añadir_credenciales(nia: int, credenciales: List[int], db: Session = Depends(get_db)):
+@estudiante_routes.put("/estudiante/{nia}/credenciales", tags=["Gestión de estudiantes"])
+def añadir_credenciales(nia: int, credenciales: List[str], db: Session = Depends(get_db)):
     try:
         for cred_id in credenciales:
             db.execute(
                 credencial.update()
                 .where(credencial.c.id == cred_id)
-                .values(estudiante_nia=nia)
+                .values(estudiante_id=nia)
             )
         db.commit()
         return {"status": f"Credenciales {credenciales} añadidas al estudiante con NIA {nia}"}

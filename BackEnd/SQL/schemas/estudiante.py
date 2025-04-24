@@ -1,6 +1,7 @@
 from typing import Optional, List
 from pydantic import BaseModel
 
+
 class EstudianteCrear(BaseModel):
     nombre: str
     primer_apellido: str
@@ -10,7 +11,7 @@ class EstudianteCrear(BaseModel):
     genero: str
     did: Optional[str] = None
     cursos: Optional[List[int]] = []
-    credenciales: Optional[List[int]] = []
+    credenciales: Optional[List[str]] = []
 
 class Estudiante(BaseModel):
     NIA: int
@@ -22,7 +23,7 @@ class Estudiante(BaseModel):
     genero: str
     did: Optional[str] = None
     cursos: Optional[List[int]] = []
-    credenciales: Optional[List[int]] = []
+    credenciales: Optional[List[str]] = []
 
     class Config:
         from_attributes = True
