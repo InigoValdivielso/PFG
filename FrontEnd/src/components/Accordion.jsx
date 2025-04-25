@@ -39,7 +39,6 @@ function Accordion({ curso }) {
                 }));
 
                 setItems(solicitudesConDatos);
-                console.log(solicitudesConDatos);
 
 
             } catch (error) {

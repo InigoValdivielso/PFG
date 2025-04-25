@@ -4,13 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
 const CursoPage = () => {
-  const handleButtonClick = () => {
-    navigate("/prerequisites");
-  };
+ 
   const navigate = useNavigate();
 
   const location = useLocation();
-  const { nombre, descripcion, duracion } = location.state || {};
+  const { nombre, descripcion, duracion, requisitos } = location.state || {};
+  const handleButtonClick = () => {
+    
+    navigate("/prerequisites");
+  };
   return (
     <>
       <Helmet>

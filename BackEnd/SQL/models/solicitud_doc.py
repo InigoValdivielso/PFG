@@ -7,6 +7,6 @@ from models.credencial import credencial
 
 
 solicitud_doc = Table("solicitud_doc", meta, 
-                Column('id_solicitud', Integer, ForeignKey('solicitud.id'), primary_key=True),
-                Column('id_credencial', String(255), ForeignKey('credencial.id'), primary_key=True))
+                Column('id_solicitud', Integer, ForeignKey('solicitud.id', ondelete="CASCADE"), primary_key=True),
+                Column('id_credencial', String(255), ForeignKey('credencial.id', ondelete="CASCADE"), primary_key=True))
                 

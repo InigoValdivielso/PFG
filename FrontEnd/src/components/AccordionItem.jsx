@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AccordionTable from "./AccordionTable";
 import CredentialTable from "./CredentialTable";
 import ModalSecretary from './ModalSecretary';
 
 function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, credenciales, onAccept, onReject  }) {
+    const [credencialesData, setCredencialesData] = useState([]);
     const targetId = `#${id}`;
     const [showAcceptModal, setShowAcceptModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
@@ -67,6 +68,28 @@ function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, cre
         onReject(id);
         handleCloseRejectModal();
     };
+    useEffect(() => {
+        const fetchCredentialDetails = async () => {
+            try {
+                
+                const fetchedData = await Promise.all(
+                    credenciales.map(async (credencial) => {
+                        
+                        const response = await fetch(`http://localhost:4000/credenciales/${encodeURIComponent(credencial)}`);
+                        const data = await response.json();
+                        return data.presentationDefinition.input_descriptors[0].id; 
+                    })
+                );
+                setCredencialesData(fetchedData); 
+            } catch (error) {
+                console.error("Error al obtener los detalles de las credenciales:", error);
+            }
+        };
+
+        if (credenciales && credenciales.length > 0) {
+            fetchCredentialDetails();
+        }
+    }, [credenciales]);
 
     return (
         <div className="accordion-item" style={{ background: "#EBEBEB" }}>
@@ -82,9 +105,9 @@ function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, cre
                     <h4>Credenciales proporcionadas:</h4>
                     <br></br>
                     
-                    {credenciales && credenciales.length > 0 ? (
-                        credenciales.map((credencial) => (
-                            <CredentialTable name={credencial.name} /> // Aquí pasas la credencial al componente
+                    {credencialesData.length > 0 ? (
+                        credencialesData.map((credencial, index) => (
+                            <CredentialTable key={index}  name={credencial} /> 
                         ))
                     ) : (
                         <p>No hay credenciales proporcionadas.</p>

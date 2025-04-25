@@ -39,7 +39,7 @@ const MainPage = () => {
     const navigate = useNavigate();
 
     const handleButtonClick = (nombre, descripcion, duracion) => {
-        navigate("/curso", {state: { nombre, descripcion, duracion }}); 
+        navigate("/curso", {state: { nombre, descripcion, duracion, requisitos }}); 
     };
 
     
