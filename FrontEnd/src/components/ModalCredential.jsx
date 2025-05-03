@@ -19,7 +19,7 @@ function ModalCredential({title, description, id}) {
                           <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div className="modal-body">
-                          {description}
+                        <p>Debes de compartir tus microcredenciales: EducationalID {description}</p>
                       </div>
                       <div className="modal-footer">
                           <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>

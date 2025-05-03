@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
     'Accept': '*/*',
     'authorizeBaseUrl': 'openid4vp://authorize',
     'responseMode': 'direct_post',
-    'successRedirectUri': 'http://localhost:5173/success/$id',
+    'successRedirectUri': 'http://localhost:5173/prerequisites',
     'Content-Type': 'application/json'
   };
   //https://verifier.demo.walt.id/openid4vc/verify

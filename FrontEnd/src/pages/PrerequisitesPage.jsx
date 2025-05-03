@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import ModalCredential from "../components/ModalCredential";
 
 const PrerequisitesPage = () => {
   const [email, setEmail] = useState("");
-  const [nombre, setNombre] = useState("");
+  const [nombrePersona, setNombrePersona] = useState("");
   const [primerApellido, setPrimerApellido] = useState("");
   const [segundoApellido, setSegundoApellido] = useState("");
   const [birthDate, setBirthDate] = useState("");
@@ -14,9 +15,63 @@ const PrerequisitesPage = () => {
   const [documentFile, setDocumentFile] = useState(null);
   const [isComplete, setIsComplete] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { nombre, descripcion, duracion, requisitos } = location.state || {};
+  const nombresRequisitos = requisitos?.map(req => req.nombre) || [];
+
+  useEffect(() => {
+          const fetchIdCurso = async () => {
+              try {
+                  const peticionIdCurso = await fetch(`http://localhost:8000/curso/${encodeURIComponent(nombre)}`);
+                  const idCursoData = await peticionIdCurso.json();
+                  const idCurso = idCursoData.id;
+  
+                      return {
+                          id: idCurso
+                      };
+  
+              } catch (error) {
+                  console.error('Error al obtener el id del curso:', error);
+              }
+          };
+        
+        if (nombre) {
+          fetchIdCurso();
+        }
+          
+      });
+
 
   const handleButtonClick = () => {
+
     navigate("/comparteCredenciales");
+  };
+  const enviarSolicitud = async () => {
+    
+    try {
+      const response = await fetch('http://localhost:8000/solicitud', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id_curso: idCurso,
+          estado: "pendiente",
+          id_persona: 0,
+          credenciales: []
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error en la petición: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log('Respuesta del servidor:', data);
+    } catch (error) {
+      console.error('Hubo un error al enviar la solicitud:', error.message);
+    }
+
   };
 
   useEffect(() => {
@@ -60,7 +115,7 @@ const PrerequisitesPage = () => {
 
   const isFormValid =
     (isEmailValid &&
-      nombre &&
+      nombrePesona &&
       primerApellido &&
       segundoApellido &&
       birthDate &&
@@ -117,8 +172,8 @@ const PrerequisitesPage = () => {
                         <input
                           type="text"
                           className="form-control"
-                          value={nombre}
-                          onChange={(e) => setNombre(e.target.value)}
+                          value={nombrePersona}
+                          onChange={(e) => setNombrePersona(e.target.value)}
                           required
                         />
                       </div>
@@ -157,9 +212,8 @@ const PrerequisitesPage = () => {
                         </label>
                         <input
                           type="email"
-                          className={`form-control ${
-                            email && !isEmailValid ? "is-invalid" : ""
-                          }`}
+                          className={`form-control ${email && !isEmailValid ? "is-invalid" : ""
+                            }`}
                           value={email}
                           onChange={handleEmailChange}
                           id="validationCustomUsername"
@@ -221,7 +275,7 @@ const PrerequisitesPage = () => {
                     <div className="row g-2">
                       <div className="col-md-6">
                         <label className="form-label">
-                          Subir Fotocopia de Requisitos
+                          Subir Fotocopia de Requisitos: EducationalID {nombresRequisitos.join(", ")}
                         </label>
                         <input
                           type="file"
@@ -260,21 +314,19 @@ const PrerequisitesPage = () => {
         style={{ paddingTop: "1%" }}
       ></div>
       <div className="botonCompartir">
-        <div className="input-group mb-3">
-          <div className="input-group-text">
-            <input
-              type="checkbox"
-              defaultValue=""
-              aria-label="Checkbox for following text input"
-              className="custom-checkbox"
-              disabled
-              checked={isComplete}
-            />
+        <div className="input-group mb-3 align-items-center">
+          <div className="me-2">
+              <input
+                type="checkbox"
+                defaultValue=""
+                className="custom-checkbox"
+                disabled
+                checked={isComplete}
+              />
           </div>
           <button
-            onClick={() => handleButtonClick()}
+            onClick={handleButtonClick}
             className="btn btn-primary"
-            id="boton"
             type="button"
             disabled={isComplete}
             style={{
@@ -284,12 +336,15 @@ const PrerequisitesPage = () => {
           >
             Comparte tus Microcredenciales
           </button>
-          <div className="col" style={{ paddingTop: "1%" }}>
+          <div className="ms-3">
             <ModalCredential
               title="Comparte tus Microcredenciales"
-              description="Deberás de compartir tu EducationalID"
+              description={nombresRequisitos.join(", ")}
               id="microcredenciales"
             />
+          </div>
+          <div className="ms-2">
+            <p className="mb-0">IMPORTANTE</p>
           </div>
         </div>
       </div>
@@ -312,7 +367,7 @@ const PrerequisitesPage = () => {
           <label className="form-check-label" htmlFor="invalidCheck">
             Acepto los términos y condiciones
           </label>
-          
+
         </div>
       </div>
       <div className="col-12" style={{ paddingTop: "2%" }}>
@@ -321,6 +376,7 @@ const PrerequisitesPage = () => {
           id="boton"
           type="submit"
           disabled={!isFormValid}
+          onClick={() => enviarSolicitud()}
         >
           Enviar Solicitud
         </button>

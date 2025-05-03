@@ -10,8 +10,8 @@ const CursoPage = () => {
   const location = useLocation();
   const { nombre, descripcion, duracion, requisitos } = location.state || {};
   const handleButtonClick = () => {
-    
-    navigate("/prerequisites");
+    console.log("Requisitos:", requisitos);
+    navigate("/prerequisites", {state: { nombre, descripcion, duracion, requisitos }});
   };
   return (
     <>
@@ -65,7 +65,7 @@ const CursoPage = () => {
             <h2 className="explora">
               <img
                 src="https://www.deusto.es/estaticos/ud/img/cerrarModal.svg"
-                alt="Cerrar explora esta secciÃ³n"
+                alt="Cerrar explora esta sección"
                 className=""
               />
               <img

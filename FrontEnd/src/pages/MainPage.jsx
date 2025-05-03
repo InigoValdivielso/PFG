@@ -14,10 +14,10 @@ const MainPage = () => {
         fetch(`http://localhost:8000/cursos?page=${paginaActual}&limit=10`)
             .then(res => res.json())
             .then(data => {
-                const nuevosCursos = data.cursos || []; // aseguramos que sea un array
+                const nuevosCursos = data.cursos || []; 
     
                 if (nuevosCursos.length === 0) {
-                    setHayMas(false); // ya no hay más cursos que cargar
+                    setHayMas(false); 
                 } else {
                     setCursos(prev => {
                         const existentes = new Set(prev.map(c => c.id)); 
@@ -28,17 +28,20 @@ const MainPage = () => {
             })
             .catch(err => console.error(err))
             .finally(() => setCargando(false));
+            
     };
     
 
     useEffect(() => {
         cargarCursos(pagina);
+        
     }, [pagina]);
 
 
     const navigate = useNavigate();
 
-    const handleButtonClick = (nombre, descripcion, duracion) => {
+    const handleButtonClick = (nombre, descripcion, duracion, requisitos) => {
+        console.log("Requisitos:", requisitos);
         navigate("/curso", {state: { nombre, descripcion, duracion, requisitos }}); 
     };
 
@@ -258,7 +261,7 @@ const MainPage = () => {
                                 {cursos.map((curso, idx) => (
                                     <a
                                         key={idx}
-                                        onClick={() => handleButtonClick(curso.nombre, curso.descripcion, curso.duracion)}
+                                        onClick={() => handleButtonClick(curso.nombre, curso.descripcion, curso.duracion, curso.requisitos)}
                                         className="titulacionRelacionada"
                                         target="_blank"
                                         style={{ cursor: 'pointer' }}

@@ -49,7 +49,25 @@ def obtener_cursos_limite(page: int = Query(1, gt=0), limit: int = Query(10, gt=
     offset = (page - 1) * limit
     query = select(curso).offset(offset).limit(limit)
     result = db.execute(query).fetchall()
-    cursos = [dict(row._mapping) for row in result]
+    cursos = []
+
+    for row in result:
+        curso_data = dict(row._mapping)
+
+        # Hacer el join para obtener los requisitos del curso actual
+        j = join(requisitos, curso, requisitos.c.requisito_id == curso.c.id)
+        reqs = db.execute(
+            select(curso).select_from(j).where(requisitos.c.curso_id == curso_data["id"])
+        ).fetchall()
+
+        # Extraer nombres de los requisitos
+        requisitos_nombres = [{"id": r.id, "nombre": r.nombre} for r in reqs]
+
+        # Añadir los requisitos al curso
+        curso_data["requisitos"] = requisitos_nombres
+
+        cursos.append(curso_data)
+
     return {
         "page": page,
         "limit": limit,
