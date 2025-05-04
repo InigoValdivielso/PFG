@@ -18,38 +18,136 @@ const PrerequisitesPage = () => {
   const location = useLocation();
   const { nombre, descripcion, duracion, requisitos } = location.state || {};
   const nombresRequisitos = requisitos?.map(req => req.nombre) || [];
-
-  useEffect(() => {
-          const fetchIdCurso = async () => {
-              try {
-                  const peticionIdCurso = await fetch(`http://localhost:8000/curso/${encodeURIComponent(nombre)}`);
-                  const idCursoData = await peticionIdCurso.json();
-                  const idCurso = idCursoData.id;
-  
-                      return {
-                          id: idCurso
-                      };
-  
-              } catch (error) {
-                  console.error('Error al obtener el id del curso:', error);
-              }
-          };
-        
-        if (nombre) {
-          fetchIdCurso();
-        }
-          
-      });
-
+  const [nombreCurso, setNombreCurso] = useState('');
+  const params = new URLSearchParams(location.search);
+  const idVerificacion = params.get('id');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [enviar, setEnviar] = useState(false);
+  const [idCredencial, setIdCredencial] = useState('');
 
   const handleButtonClick = () => {
-
     navigate("/comparteCredenciales");
   };
-  const enviarSolicitud = async () => {
-    
+  useEffect(() => {
+    if (location.state?.nombre) {
+      localStorage.setItem("nombreCurso", nombre);
+      setNombreCurso(location.state.nombre);
+    } else {
+      const stored = localStorage.getItem("nombreCurso");
+      if (stored) setNombreCurso(stored);
+    }
+    const params = new URLSearchParams(location.search);
+    const verified = params.get('verified') === 'true';
+    if (verified) {
+      setIsComplete(true);
+      const timeout = setTimeout(() => {
+        localStorage.removeItem("verificationComplete");
+        setIsComplete(false);
+      }, 60000); // 1 minuto
+
+      return () => clearTimeout(timeout);
+    }
+
+  }, [location.search]);
+
+  const obtenerDatosUsuario = async () => {
+    setLoading(true);
+    setError(null);
     try {
-      const response = await fetch('http://localhost:8000/solicitud', {
+      const sesionResponse = await fetch(`http://localhost:3000/verificar/infoSesionVerificacion/${idVerificacion}`, {
+        method: "GET",
+        headers: {
+          "accept": "application/json",
+        },
+      });
+
+      if (!sesionResponse.ok) {
+        throw new Error("Error al verificar la sesión");
+      }
+      const sesionData = await sesionResponse.json();
+      setIdCredencial(sesionData._id);
+      const educationalCredentialResult = sesionData?.policyResults?.results?.find(
+        (item) => item.credential === "EducationalID"
+      );
+
+      if (educationalCredentialResult && educationalCredentialResult.policyResults && educationalCredentialResult.policyResults.length > 0) {
+        const userData = educationalCredentialResult.policyResults[0]?.result?.vc?.credentialSubject;
+
+        if (userData) {
+          const { firstName, familyName, dateOfBirth, mail } = userData;
+          const year = dateOfBirth.substring(0, 4);
+          const month = dateOfBirth.substring(4, 6);
+          const day = dateOfBirth.substring(6, 8);
+          const formattedDateOfBirth = `${year}-${month}-${day}`;
+
+          setNombrePersona(firstName);
+          setPrimerApellido(familyName);
+          setBirthDate(formattedDateOfBirth);
+          setEmail(mail);
+        } else {
+          console.log("No se encontraron los datos del usuario dentro de EducationalID.");
+          setError("No se encontraron los datos del usuario.");
+        }
+      } else {
+        console.log("No se encontró la credencial EducationalID en los resultados.");
+        setError("No se encontró la información de la credencial.");
+      }
+    } catch (err) {
+      console.error("Error al obtener datos del usuario:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const enviarSolicitud = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const insertarPersonaResponse = await fetch("http://localhost:8000/persona", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nombre: nombrePersona,
+          primer_apellido: primerApellido,
+          segundo_apellido: segundoApellido || "",
+          fecha_nacimiento: birthDate,
+          dni: DNINIE || "",
+          correo: email,
+          credenciales: [idCredencial]
+        }),
+      });
+
+      if (!insertarPersonaResponse.ok) {
+        const errorData = await insertarPersonaResponse.json();
+        throw new Error(`Error al añadir persona: ${insertarPersonaResponse.status} - ${JSON.stringify(errorData)}`);
+      }
+      const personaData = await insertarPersonaResponse.json();
+      const idPersona = personaData.id;
+
+      if (!idPersona) {
+        console.error("No se obtuvo el id de la persona.");
+        setError("No se obtuvo el ID de la persona.");
+        return;
+      }
+
+      const peticionIdCurso = await fetch(`http://localhost:8000/curso/${encodeURIComponent(nombreCurso)}`);
+      if (!peticionIdCurso.ok) {
+        throw new Error(`Error al obtener ID del curso: ${peticionIdCurso.status}`);
+      }
+      const idCursoData = await peticionIdCurso.json();
+      const idCurso = idCursoData.id;
+
+      if (!idCurso) {
+        console.error('No se pudo obtener el id del curso.');
+        setError("No se pudo obtener el ID del curso.");
+        return;
+      }
+
+      const solicitudResponse = await fetch('http://localhost:8000/solicitud', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,36 +155,41 @@ const PrerequisitesPage = () => {
         body: JSON.stringify({
           id_curso: idCurso,
           estado: "pendiente",
-          id_persona: 0,
-          credenciales: []
-        })
+          id_persona: idPersona,
+          credenciales: [],
+        }),
       });
-  
-      if (!response.ok) {
-        throw new Error(`Error en la petición: ${response.status}`);
-      }
-  
-      const data = await response.json();
-      console.log('Respuesta del servidor:', data);
-    } catch (error) {
-      console.error('Hubo un error al enviar la solicitud:', error.message);
-    }
 
+      if (!solicitudResponse.ok) {
+        const errorDataSolicitud = await solicitudResponse.json();
+        throw new Error(`Error al enviar la solicitud: ${solicitudResponse.status} - ${JSON.stringify(errorDataSolicitud)}`);
+      }
+
+      const solicitudData = await solicitudResponse.json();
+      console.log('Respuesta del servidor (solicitud):', solicitudData);
+      // Aquí podrías redirigir al usuario o mostrar un mensaje de éxito
+    } catch (err) {
+      console.error("Error al enviar la solicitud:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+      setEnviar(false); // Resetear el estado de envío
+    }
+  };
+
+  const handleClickEnviar = () => {
+    obtenerDatosUsuario();
+    setEnviar(true); // Activar el envío después de obtener los datos
   };
 
   useEffect(() => {
-    const verificationComplete = localStorage.getItem("verificationComplete");
-    if (verificationComplete) {
-      setIsComplete(true);
-      const timeout = setTimeout(() => {
-        localStorage.removeItem("verificationComplete");
-        setIsComplete(false);
-      }, 60000); // 1 minuto
-
-      // Limpiar el temporizador si el usuario navega fuera de la página
-      return () => clearTimeout(timeout);
+    if (enviar && nombrePersona && primerApellido && birthDate && email && idCredencial) {
+      enviarSolicitud();
     }
-  }, []);
+  }, [enviar, nombrePersona, primerApellido, birthDate, email, idCredencial]);
+
+
+
 
   useEffect(() => {
     const handleUnload = () => {
@@ -96,6 +199,8 @@ const PrerequisitesPage = () => {
     window.addEventListener("beforeunload", handleUnload);
     return () => window.removeEventListener("beforeunload", handleUnload);
   }, []);
+
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -316,13 +421,13 @@ const PrerequisitesPage = () => {
       <div className="botonCompartir">
         <div className="input-group mb-3 align-items-center">
           <div className="me-2">
-              <input
-                type="checkbox"
-                defaultValue=""
-                className="custom-checkbox"
-                disabled
-                checked={isComplete}
-              />
+            <input
+              type="checkbox"
+              defaultValue=""
+              className="custom-checkbox"
+              disabled
+              checked={isComplete}
+            />
           </div>
           <button
             onClick={handleButtonClick}
@@ -375,8 +480,8 @@ const PrerequisitesPage = () => {
           className="btn btn-primary"
           id="boton"
           type="submit"
-          disabled={!isFormValid}
-          onClick={() => enviarSolicitud()}
+          disabled={!isFormValid || loading}
+          onClick={handleClickEnviar}
         >
           Enviar Solicitud
         </button>

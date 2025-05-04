@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
     'Accept': '*/*',
     'authorizeBaseUrl': 'openid4vp://authorize',
     'responseMode': 'direct_post',
-    'successRedirectUri': 'http://localhost:5173/prerequisites',
+    'successRedirectUri': 'http://localhost:5173/prerequisites?verified=true&id=$id',
     'Content-Type': 'application/json'
   };
   //https://verifier.demo.walt.id/openid4vc/verify
@@ -42,19 +42,15 @@ router.get('/infoSesionVerificacion/:id', async (req, res) => {
     });
 
     const resultadoVerificacion = response.data;
-
+    
     
     const respuestaGuardar = await axios.post('http://localhost:4000/credenciales', resultadoVerificacion, {
       headers: {
         'Content-Type': 'application/json'
       }
     });
-
-    
-    res.status(201).json({
-      mensaje: 'Resultados de la verificación guardados en MongoDB correctamente',
-      datos: respuestaGuardar.data
-    });
+    console.log(respuestaGuardar.data);
+    return res.status(200).json(respuestaGuardar.data); 
 
   } catch (error) {
     console.error('Error al hacer la petición o guardar el resultado de la verificación', error.message);
