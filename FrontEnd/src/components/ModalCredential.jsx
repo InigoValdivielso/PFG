@@ -22,7 +22,7 @@ function ModalCredential({title, description, id}) {
                         <p>Debes de compartir tus microcredenciales: EducationalID {description}</p>
                       </div>
                       <div className="modal-footer">
-                          <button className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                       </div>
                   </div>
               </div>

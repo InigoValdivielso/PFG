@@ -906,7 +906,6 @@ const Header = () => {
                                                 >
                                                   <a
                                                     className="gsst_a"
-                                                    href="javascript:void(0)"
                                                     title="Borrar contenido del cuadro de búsqueda"
                                                     role="button"
                                                     style={{ display: "none" }}

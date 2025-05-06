@@ -15,15 +15,6 @@ const CursoPage = () => {
   };
   return (
     <>
-      <Helmet>
-        <script src="../js/bootstrap.bundle.min.js" />
-        <script src="../js/jflickrfeed.min.js" />
-        <script src="../js/jquery-3.4.1.min.js" />
-        <script src="../js/lazysizes.min.js" />
-        <script src="../js/main.js" />
-        <script src="../js/own.carousel.min.js" />
-        <script src="../js/scripts.min.js" />
-      </Helmet>
       <div className="cabecera">
         <div className="cabeceraPrograma">
           <div className="container">

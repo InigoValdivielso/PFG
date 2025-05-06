@@ -78,8 +78,8 @@ const StudentLoginPage = () => {
             Acceso con EducationalID
             <div style={{ marginLeft: "5px" }}>
               <ModalCredential
-                title="Accede con tus Microcredenciales"
-                description="Accede a tu cuenta con tu credencial verificable"
+                title="Accede con tu EducationalID"
+                description=""
                 id="microcredenciles"
               />
             </div>

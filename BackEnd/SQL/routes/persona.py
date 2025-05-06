@@ -38,11 +38,10 @@ def get_persona(id: int, db: Session = Depends(get_db)):
 def create_persona(persona_data: PersonaCrear, db: Session = Depends(get_db)):
     existing = db.query(persona).filter(persona.c.correo == persona_data.correo).first()
     if existing:
-        raise HTTPException(status_code=400, detail="Ya existe una persona con ese email.")
+        return {"mensaje": "Ya existe una persona con ese email.", "id": existing.id}
 
     try:
         datos = persona_data.dict()
-
         result = db.execute(persona.insert().values(datos))
         nuevo_id = result.inserted_primary_key[0]
         db.commit()

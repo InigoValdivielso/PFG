@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import ModalCredential from "../components/ModalCredential";
+import ModalAceptado from "../components/ModalAceptado";
 
 const PrerequisitesPage = () => {
   const [email, setEmail] = useState("");
@@ -25,6 +26,7 @@ const PrerequisitesPage = () => {
   const [error, setError] = useState(null);
   const [enviar, setEnviar] = useState(false);
   const [idCredencial, setIdCredencial] = useState('');
+  const [mostrarModalExito, setMostrarModalExito] = useState(false);
 
   const handleButtonClick = () => {
     navigate("/comparteCredenciales");
@@ -133,6 +135,21 @@ const PrerequisitesPage = () => {
         setError("No se obtuvo el ID de la persona.");
         return;
       }
+      const insertarCredencial = await fetch(`http://localhost:8000/credencial`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: idCredencial
+        }),
+      });
+      if (!insertarCredencial.ok) {
+        const errorData = await insertarCredencial.json();
+        throw new Error(`Error al añadir credencial: ${insertarCredencial.status} - ${JSON.stringify(errorData)}`);
+      }
+      const credencialData = await insertarCredencial.json();
+      console.log('Respuesta del servidor (credencial):', credencialData);
 
       const peticionIdCurso = await fetch(`http://localhost:8000/curso/${encodeURIComponent(nombreCurso)}`);
       if (!peticionIdCurso.ok) {
@@ -156,7 +173,7 @@ const PrerequisitesPage = () => {
           id_curso: idCurso,
           estado: "pendiente",
           id_persona: idPersona,
-          credenciales: [],
+          credenciales: [idCredencial],
         }),
       });
 
@@ -167,13 +184,23 @@ const PrerequisitesPage = () => {
 
       const solicitudData = await solicitudResponse.json();
       console.log('Respuesta del servidor (solicitud):', solicitudData);
-      // Aquí podrías redirigir al usuario o mostrar un mensaje de éxito
+      if (solicitudData && solicitudData.status === "Solicitud insertada") {
+        setMostrarModalExito(true); 
+        setTimeout(() => {
+          setMostrarModalExito(false);
+          navigate('/');
+        }, 3000);
+      } else {
+        
+        console.log('La solicitud no se insertó correctamente o la respuesta es diferente:', solicitudData);
+      }
+
     } catch (err) {
       console.error("Error al enviar la solicitud:", err);
       setError(err.message);
     } finally {
       setLoading(false);
-      setEnviar(false); // Resetear el estado de envío
+      setEnviar(false); 
     }
   };
 
@@ -485,8 +512,16 @@ const PrerequisitesPage = () => {
         >
           Enviar Solicitud
         </button>
+        {mostrarModalExito && (
+          <ModalAceptado
+            isOpen={mostrarModalExito}
+            onClose={() => setMostrarModalExito(false)} 
+            mensaje="Solicitud registrada correctamente, muchas gracias"
+          />
+        )}
       </div>
-      <style jsx>{`
+
+      <style>{`
         .botonCompartir {
           margin-left: 35%;
         }

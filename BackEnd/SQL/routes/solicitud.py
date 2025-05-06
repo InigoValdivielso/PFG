@@ -21,7 +21,7 @@ def get_solicitudes(db: Session = Depends(get_db)):
             # Obtener las credenciales asociadas a la solicitud
             credenciales = db.execute(
                 solicitud_doc.select().where(solicitud_doc.c.id_solicitud == solicitud_id)
-            ).fetchall()
+            ).mappings().fetchall()
 
             solicitud_dict['credenciales'] = [cred['id_credencial'] for cred in credenciales]
 

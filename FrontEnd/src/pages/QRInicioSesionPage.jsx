@@ -3,7 +3,7 @@ import logoDeusto from "../assets/images/LogoDeusto.png";
 import QRCode from "react-qr-code";
 
 const QRInicioSesionPage = () => {
-  const verificationUrl = `http://localhost:3000/verificar`; // URL de la API de verificación
+  const verificationUrl = `http://localhost:3000/verificar/login`; // URL de la API de verificación
   const [verificationData, setVerificationData] = useState(null);
   const [copyButtonText, setCopyButtonText] = useState(
     "Copiar respuesta al portapapeles"
