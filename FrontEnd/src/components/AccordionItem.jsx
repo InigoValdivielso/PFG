@@ -3,11 +3,91 @@ import AccordionTable from "./AccordionTable";
 import CredentialTable from "./CredentialTable";
 import ModalSecretary from './ModalSecretary';
 
-function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, credenciales, onAccept, onReject  }) {
+function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, dni, curso, curso_id, estado, credenciales, onAccept, onReject }) {
     const [credencialesData, setCredencialesData] = useState([]);
+    const [estudiantedid, setEstudianteDid] = useState([]);
+    const [estudianteIdCredenciales, setEstudianteIdCredenciales] = useState([]);
     const targetId = `#${id}`;
     const [showAcceptModal, setShowAcceptModal] = useState(false);
     const [showRejectModal, setShowRejectModal] = useState(false);
+    const [estudianteData, setEstudianteData] = useState({
+        nombre: nombre,
+        primer_apellido: primer_apellido,
+        segundo_apellido: segundo_apellido,
+        correo: correo,
+        dni: dni,
+        did: estudiantedid,
+        cursos: [curso_id],
+        credenciales: [estudianteIdCredenciales]
+    });
+
+    useEffect(() => {
+        const fetchCredentialDetails = async () => {
+            try {
+
+                const fetchedData = await Promise.all(
+                    credenciales.map(async (credencial) => {
+
+                        const response = await fetch(`http://localhost:4000/credenciales/${encodeURIComponent(credencial)}`);
+                        const data = await response.json();
+                        return {
+                            id: data._id,
+                            nombre_credencial: data.presentationDefinition.input_descriptors[0].id,
+                            did: data.policyResults.results[1].policyResults[0].result.vc.credentialSubject.id
+                        };
+                    })
+                );
+                console.log(fetchedData);
+                const nombresCredenciales = fetchedData.map(item => item.nombre_credencial);
+                setCredencialesData(nombresCredenciales);
+
+                if (fetchedData.length > 0) {
+                    setEstudianteDid(fetchedData[0].did);
+                    setEstudianteIdCredenciales(fetchedData[0].id);
+                } else {
+                    setEstudianteDid(undefined); 
+                    setEstudianteIdCredenciales(undefined);
+                }
+                setEstudianteData(prevData => ({
+                    ...prevData,
+                    did: fetchedData[0].did,
+                    credenciales: fetchedData.map(item => item.id)
+                }));
+
+            } catch (error) {
+                console.error("Error al obtener los detalles de las credenciales:", error);
+            }
+        };
+
+        if (credenciales && credenciales.length > 0) {
+            fetchCredentialDetails();
+        }
+    }, [credenciales]);
+
+    const crearEstudianteEnBackend = async () => {
+        try {
+            const response = await fetch('http://localhost:8000/estudiante', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(estudianteData),
+            });
+            console.log(estudianteData);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Estudiante creado:', data);
+            } else {
+                const errorData = await response.json();
+                console.error('Error al crear estudiante:', errorData);
+
+            }
+        } catch (error) {
+            console.error('Error de red:', error);
+
+        }
+    };
 
     const handleAccept = () => {
         setShowAcceptModal(true);
@@ -19,6 +99,7 @@ function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, cre
 
     const handleCloseAcceptModal = () => {
         setShowAcceptModal(false);
+        crearEstudianteEnBackend();
     };
 
     const handleCloseRejectModal = () => {
@@ -68,34 +149,13 @@ function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, cre
         onReject(id);
         handleCloseRejectModal();
     };
-    useEffect(() => {
-        const fetchCredentialDetails = async () => {
-            try {
-                
-                const fetchedData = await Promise.all(
-                    credenciales.map(async (credencial) => {
-                        
-                        const response = await fetch(`http://localhost:4000/credenciales/${encodeURIComponent(credencial)}`);
-                        const data = await response.json();
-                        return data.presentationDefinition.input_descriptors[0].id; 
-                    })
-                );
-                setCredencialesData(fetchedData); 
-            } catch (error) {
-                console.error("Error al obtener los detalles de las credenciales:", error);
-            }
-        };
 
-        if (credenciales && credenciales.length > 0) {
-            fetchCredentialDetails();
-        }
-    }, [credenciales]);
 
     return (
         <div className="accordion-item" style={{ background: "#EBEBEB" }}>
             <h2 className="accordion-header">
                 <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target={targetId} aria-expanded="false" aria-controls="collapseOne">
-                    {nombre} - {correo} - {id}
+                    {nombre} {primer_apellido} - {correo} - {id}
                 </button>
             </h2>
             <div id={id} className="accordion-collapse collapse" data-bs-parent="#accordionExample">
@@ -104,15 +164,15 @@ function AccordionItem({ nombre, primer_apellido, correo, id, curso, estado, cre
                     <br></br>
                     <h4>Credenciales proporcionadas:</h4>
                     <br></br>
-                    
+
                     {credencialesData.length > 0 ? (
                         credencialesData.map((credencial, index) => (
-                            <CredentialTable key={index}  name={credencial} /> 
+                            <CredentialTable key={index} name={credencial} />
                         ))
                     ) : (
                         <p>No hay credenciales proporcionadas.</p>
                     )}
-                    
+
                     {estado === 'pendiente' && (
                         <div style={{ marginLeft: "40%" }}>
                             <button className="btn btn-primary" type="button" style={{ marginRight: "5%" }} onClick={handleAccept}>Aceptar</button>

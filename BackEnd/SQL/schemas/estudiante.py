@@ -8,7 +8,6 @@ class EstudianteCrear(BaseModel):
     segundo_apellido: str
     correo: str
     dni: str
-    genero: str
     did: Optional[str] = None
     cursos: Optional[List[int]] = []
     credenciales: Optional[List[str]] = []
@@ -20,7 +19,6 @@ class Estudiante(BaseModel):
     segundo_apellido: str
     correo: str
     dni: str
-    genero: str
     did: Optional[str] = None
     cursos: Optional[List[int]] = []
     credenciales: Optional[List[str]] = []

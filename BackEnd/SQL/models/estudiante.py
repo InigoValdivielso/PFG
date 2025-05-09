@@ -12,6 +12,5 @@ estudiante = Table("estudiante", meta,
                 Column("segundo_apellido", String(255)),
                 Column("correo", String(255)),
                 Column("dni", String(255)),
-                Column("genero", String(255)),
                 Column("did", String(255), nullable=True))
 

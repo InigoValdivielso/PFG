@@ -47,6 +47,11 @@ def create_estudiante(estudiante_data: EstudianteCrear, db: Session = Depends(ge
     try:
         datos = estudiante_data.dict()
         
+        existing_estudiante = db.query(estudiante).filter(estudiante.c.did == estudiante_data.did).first()
+        if existing_estudiante:
+            raise HTTPException(status_code=400, detail=f"El estudiante con did '{datos.get('did')}' ya existe.")
+
+
         # Separar los campos del estudiante de los relacionados
         cursos_ids = datos.pop("cursos", [])
         credenciales_ids = datos.pop("credenciales", [])
@@ -58,7 +63,7 @@ def create_estudiante(estudiante_data: EstudianteCrear, db: Session = Depends(ge
 
         # Insertar en tabla intermedia estudiante_curso
         for curso_id in cursos_ids:
-            db.execute(estudiante_curso.insert().values(nia_estudiante=nuevo_nia, id_curso=curso_id))
+            db.execute(estudiante_curso.insert().values(estudiante_id=nuevo_nia, curso_id=curso_id))
 
         
         for cred_id in credenciales_ids:

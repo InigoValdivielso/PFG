@@ -13,10 +13,10 @@ const QRInicioSesionPage = () => {
     const verifyCredential = async () => {
       try {
         const response = await fetch(verificationUrl, { method: "POST" });
-        let data = await response.text(); // Obtener el texto de la respuesta
+        let data = await response.text(); 
         data = data.replace(/^"(.*)"$/, "$1");
-        setVerificationData(data); // Guardar el texto de la respuesta
-        setVerificationStatus("verified"); // O ajusta según la respuesta que esperes
+        setVerificationData(data); 
+        setVerificationStatus("verified"); 
       } catch (error) {
         console.error("Error en la verificación:", error);
         setVerificationStatus("error");
