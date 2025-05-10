@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from requests import Session
 from sqlalchemy import select
 from config.db import get_db
@@ -7,6 +7,7 @@ from models.estudiante import estudiante
 from models.estudiante_curso import estudiante_curso
 from models.credencial import credencial
 from models.solicitud import solicitud
+from models.solicitud_doc import solicitud_doc
 from schemas.estudiante import EstudianteCrear, Estudiante
 
 
@@ -38,6 +39,38 @@ def get_estudiantes(db: Session = Depends(get_db)):
             estudiantes_list.append(Estudiante(**estudiante_data))
 
         return estudiantes_list
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@estudiante_routes.get("/estudiante/correo", tags=["Gestión de estudiantes"])
+def get_estudiante_by_email(correo: str = Query(...), db: Session = Depends(get_db)):
+    try:
+        # Obtener estudiante por email
+        estudiante_row = db.execute(
+            select(estudiante).where(estudiante.c.correo == correo)
+        ).fetchone()
+
+        if not estudiante_row:
+            raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+
+        nia = estudiante_row._mapping["NIA"]
+
+        # Obtener cursos
+        cursos = db.execute(
+            select(estudiante_curso.c.curso_id).where(estudiante_curso.c.estudiante_id == nia)
+        ).scalars().all()
+
+        # Obtener credenciales
+        credenciales = db.execute(
+            select(credencial.c.id).where(credencial.c.estudiante_id == nia)
+        ).scalars().all()
+
+        estudiante_data = dict(estudiante_row._mapping)
+        estudiante_data["cursos"] = cursos
+        estudiante_data["credenciales"] = credenciales
+
+        return Estudiante(**estudiante_data)
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -85,7 +118,21 @@ def borrar_estudiante(nia: int, db: Session = Depends(get_db)):
     if not estudiante_data:
         raise HTTPException(status_code=404, detail="Estudiante no encontrado")
 
-    # Si tienes relaciones, borra de las tablas intermedias si es necesario
+    db.execute(estudiante_curso.delete().where(estudiante_curso.c.estudiante_id == nia))
+    db.commit()
+
+    credenciales_a_borrar = db.execute(
+        select(credencial.c.id).where(credencial.c.estudiante_id == nia)
+    ).scalars().all()
+
+
+    for credencial_id in credenciales_a_borrar:
+        db.execute(solicitud_doc.delete().where(solicitud_doc.c.id_credencial == credencial_id))
+    db.commit()
+
+
+    db.execute(credencial.delete().where(credencial.c.estudiante_id == nia))
+    db.commit()
 
     db.execute(
         estudiante.delete().where(estudiante.c.NIA == nia)

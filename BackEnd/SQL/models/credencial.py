@@ -7,5 +7,5 @@ from config.db import meta
 
 credencial = Table("credencial", meta, 
                    Column("id", String(255), primary_key=True), 
-                   Column("estudiante_id", Integer, ForeignKey("estudiante.NIA")))
+                   Column("estudiante_id", Integer, ForeignKey("estudiante.NIA", ondelete="CASCADE") ))
 

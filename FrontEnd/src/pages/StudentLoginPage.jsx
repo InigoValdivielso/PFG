@@ -1,8 +1,61 @@
+import React from "react";
 import logoDeusto from "../assets/images/LogoDeusto.png";
 import { Link } from "react-router-dom";
 import ModalCredential from "../components/ModalCredential";
+import { useGoogleLogin } from '@react-oauth/google';
+import { useNavigate } from "react-router-dom";
+import { useStudent } from "../components/StudentContext";
+
 
 const StudentLoginPage = () => {
+
+  const navigate = useNavigate();
+  const { setStudentInfo } = useStudent();
+
+  const hostedDomain = 'opendeusto.es';
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      console.log('Token Response:', tokenResponse);
+      const accessToken = tokenResponse.access_token;
+
+      if (accessToken) {
+        try {
+          const response = await fetch('https://www.googleapis.com/oauth2/v1/userinfo', {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          const userData = await response.json();
+          console.log('User Data from Google:', userData);
+
+          if (userData.email && userData.email.endsWith(`@${hostedDomain}`)) {
+            const email = userData.email;
+
+            const backendResponse = await fetch(`http://localhost:8000/estudiante/correo?correo=${email}`);
+            const backendData = await backendResponse.json();
+
+            if (backendResponse.ok) {
+              const studentInfo = backendData;
+              setStudentInfo(studentInfo);
+              navigate('/studentPortal');
+            } else {
+              console.error('Error del backend:', backendData);
+            }
+          } else {
+            console.error('El correo no pertenece a @opendeusto.es');
+          }
+        } catch (error) {
+          console.error('Error al obtener la información del usuario de Google:', error);
+        }
+      } else {
+        console.error('Access token no encontrado.');
+      }
+    },
+    onError: response => console.log('Login Failed:', response),
+    hosted_domain: hostedDomain,
+  });
+
   return (
     <>
       <link
@@ -37,21 +90,19 @@ const StudentLoginPage = () => {
           >
             Acceso con cuenta @opendeusto
           </h5>
-
-          <Link to="/studentPortal">
-            <button
-              className="btn btn-primary"
-              id="loginButton"
-              style={{
-                marginLeft: "37%",
-                marginTop: "5%",
-                marginBottom: "5%",
-                fontSize: "90%",
-              }}
-            >
-              Iniciar sesión
-            </button>
-          </Link>
+          <button
+            className="btn btn-primary"
+            id="loginButton"
+            onClick={googleLogin}
+            style={{
+              marginLeft: "37%",
+              marginTop: "5%",
+              marginBottom: "5%",
+              fontSize: "90%",
+            }}
+          >
+            Iniciar sesión
+          </button>
         </div>
         <div
           className="secondBox"
@@ -84,7 +135,7 @@ const StudentLoginPage = () => {
               />
             </div>
           </h5>
-          
+
 
           <Link to="/studentLogin/qr">
             <button
@@ -100,7 +151,7 @@ const StudentLoginPage = () => {
               Acceder
             </button>
           </Link>
-          <br/>
+          <br />
           <a
             href=""
             style={{ marginLeft: "15%", fontSize: "80%", color: "#6c94e3" }}

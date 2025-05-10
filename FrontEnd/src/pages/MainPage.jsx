@@ -34,6 +34,7 @@ const MainPage = () => {
 
     useEffect(() => {
         cargarCursos(pagina);
+
         
     }, [pagina]);
 

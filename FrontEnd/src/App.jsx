@@ -16,6 +16,7 @@ import SuccessPage from './pages/SuccessPage';
 import QRInicioSesionPage from './pages/QRInicioSesionPage';
 import QREmitirEducationalIDPage from './pages/QREmitirEducationaIDPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import { StudentProvider } from './components/StudentContext';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -48,7 +49,10 @@ const router = createBrowserRouter(
 const App = () => {
   return (
     <>
-      <RouterProvider router={router} />
+      <StudentProvider>
+        <RouterProvider router={router} />
+      </StudentProvider>
+      
     </>
   );
 };

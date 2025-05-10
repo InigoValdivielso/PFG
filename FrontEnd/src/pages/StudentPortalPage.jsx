@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import NavBarStudent from "../components/NavBarStudent";
 
 const StudentPortalPage = () => {
+  const location = useLocation();
+  const studentInfo = location.state;
   return (
     <>
       <link

@@ -14,7 +14,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
         nombre: nombre,
         primer_apellido: primer_apellido,
         segundo_apellido: segundo_apellido,
-        correo: correo,
+        correo: primer_apellido + '.' + nombre + '@opendeusto.es',
         dni: dni,
         did: estudiantedid,
         cursos: [curso_id],
@@ -65,6 +65,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
     }, [credenciales]);
 
     const crearEstudianteEnBackend = async () => {
+        console.log('Crear estudiante en backend llamado');
         try {
             const response = await fetch('http://localhost:8000/estudiante', {
                 method: 'POST',
@@ -117,15 +118,15 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
             });
 
             if (response.ok) {
-                setEstado('aceptada');
+                //setEstado('aceptada');
             } else {
                 console.error('Error al aceptar la solicitud');
             }
         } catch (error) {
             console.error('Error de red al aceptar la solicitud:', error);
         }
-        handleCloseAcceptModal();
         onAccept(id);
+        setShowAcceptModal(false);
     };
 
     const confirmReject = async () => {
@@ -189,7 +190,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
                     id="Accept"
                     show={showAcceptModal}
                     handleClose={handleCloseAcceptModal}
-                    handleConfirm={confirmAccept}  // Llama a handleDelete al hacer clic en Yes
+                    handleConfirm={confirmAccept}  
                 />
             )}
             {/* Modal para Reject */}
