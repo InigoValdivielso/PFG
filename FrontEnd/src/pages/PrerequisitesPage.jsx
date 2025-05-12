@@ -141,7 +141,8 @@ const PrerequisitesPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: idCredencial
+          id: idCredencial,
+          estado: "en propiedad"
         }),
       });
       if (!insertarCredencial.ok) {

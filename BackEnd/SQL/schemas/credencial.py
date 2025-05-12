@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class Credencial(BaseModel):
     id: str
+    estado: str
     estudiante_id: Optional[int] = None
 
     class Config:

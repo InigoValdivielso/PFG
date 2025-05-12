@@ -1,73 +1,67 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBarStudent from "../components/NavBarStudent";
+import { useStudent } from "../components/StudentContext";
 
-const StudentMicrocredentialPage = ({
-  nia,
-  dni,
-  nombre,
-  apellido1,
-  apellido2,
-  genero,
-  email,
-  program,
-}) => {
+const StudentMicrocredentialPage = ({}) => {
   const navigate = useNavigate();
-  const loadedNia = "123456";
-  const loadedDni = "12345678A";
-  const loadedName = "Juan";
-  const loadedFirstSurname = "Perez";
-  const loadedSecondSurname = "Garcia";
-  const loadedGender = "Male";
-  const loadedEmail = "juan@opendeusto.es";
-  const loadedProgram = "Digital Transformation for SMEs";
+  const { studentInfo } = useStudent();
+  const [studentCredentials, setStudentCredentials] = useState([]);
+  const [checkedCredentials, setCheckedCredentials] = useState({});
+  const [selectAll, setSelectAll] = useState(false);
 
-  const [checkedItems, setCheckedItems] = useState(() => ({
-    educationalID: false,
-    microcredencial1: false,
-    microcredencial2: false,
-    microcredencial3: false,
-  }));
+  useEffect(() => {
+    if (studentInfo?.credenciales) {
+      console.log("Credenciales del estudiante:", studentInfo.credenciales);
+      setStudentCredentials(studentInfo.credenciales);
+      const initialChecked = {};
+      studentInfo.credenciales.forEach(credencialId => {
+        initialChecked[credencialId] = false;
+      });
+      setCheckedCredentials(initialChecked);
+    }
+  }, [studentInfo?.credenciales]);
 
   const initialize = async () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
   const handleButtonClick = () => {
-    navigate("/microcredentials/solicitar/EducationalID");
+    const selectedCredentials = Object.keys(checkedCredentials).filter(id => checkedCredentials[id]);
+    navigate("/microcredentials/solicitar/EducationalID"); // Ejemplo de navegación
   };
 
   useEffect(() => {
     const executeInitialization = async () => {
       await initialize();
-      setIsLoading(false);
+      // setIsLoading(false); // Si tuvieras un estado de carga
     };
     executeInitialization();
   }, []);
 
-  const [selectAll, setSelectAll] = useState(false);
-
   const handleSelectAll = () => {
     const newState = !selectAll;
     setSelectAll(newState);
-    setCheckedItems({
-      educationalID: newState,
-      microcredencial1: newState,
-      microcredencial2: newState,
-      microcredencial3: newState,
+    const updatedChecked = {};
+    studentCredentials.forEach(id => {
+      updatedChecked[id] = newState;
     });
+    setCheckedCredentials(updatedChecked);
   };
-  useEffect(() => {
-    setSelectAll(Object.values(checkedItems).every(Boolean));
-  }, [checkedItems]);
 
-  const handleCheckboxChange = (name) => {
-    setCheckedItems((prev) => ({
+  useEffect(() => {
+    setSelectAll(studentCredentials.length > 0 && Object.values(checkedCredentials).every(Boolean));
+  }, [checkedCredentials, studentCredentials]);
+
+  const handleCheckboxChange = (id) => {
+    setCheckedCredentials((prev) => ({
       ...prev,
-      [name]: !prev[name],
+      [id]: !prev[id],
     }));
   };
-  const isAnyChecked = Object.values(checkedItems).some(Boolean);
+
+  const isAnyChecked = Object.values(checkedCredentials).some(Boolean);
+
   return (
     <>
       <link
@@ -94,39 +88,31 @@ const StudentMicrocredentialPage = ({
           <tbody>
             <tr>
               <td style={{ background: "#EBEBEB", fontWeight: "bold" }}>NIA</td>
-              <td style={{ background: "#EBEBEB" }}>{loadedNia}</td>
+              <td style={{ background: "#EBEBEB", paddingRight: "180px" }}>{studentInfo?.NIA}</td>
               <td style={{ background: "#EBEBEB", fontWeight: "bold" }}>
                 DNI, Pasaporte
               </td>
-              <td style={{ background: "#EBEBEB" }}>{loadedDni}</td>
+              <td style={{ background: "#EBEBEB" }}>{studentInfo?.dni}</td>
             </tr>
             <tr>
               <td style={{ background: "#EBEBEB", fontWeight: "bold" }}>
                 Nombre
               </td>
-              <td style={{ background: "#EBEBEB" }}>{loadedName}</td>
+              <td style={{ background: "#EBEBEB" }}>{studentInfo?.nombre}</td>
               <td style={{ background: "#EBEBEB", fontWeight: "bold" }}>
                 Primer Apellido
               </td>
-              <td style={{ background: "#EBEBEB" }}>{loadedFirstSurname}</td>
+              <td style={{ background: "#EBEBEB" }}>{studentInfo?.primer_apellido}</td>
             </tr>
             <tr>
               <td style={{ background: "#EBEBEB", fontWeight: "bold" }}>
                 Segundo Apellido
               </td>
-              <td style={{ background: "#EBEBEB" }}>{loadedSecondSurname}</td>
-              <td style={{ background: "#EBEBEB", fontWeight: "bold" }}>
-                Genero
-              </td>
-              <td style={{ background: "#EBEBEB" }}>{loadedGender}</td>
-            </tr>
-            <tr>
+              <td style={{ background: "#EBEBEB" }}>{studentInfo?.segundo_apellido}</td>
               <td style={{ background: "#EBEBEB", fontWeight: "bold" }}>
                 Email
               </td>
-              <td style={{ background: "#EBEBEB" }}>{loadedEmail}</td>
-              <td style={{ background: "#EBEBEB" }}></td>
-              <td style={{ background: "#EBEBEB" }}></td>
+              <td style={{ background: "#EBEBEB" }}>{studentInfo?.correo}</td>
             </tr>
           </tbody>
         </table>
@@ -167,29 +153,34 @@ const StudentMicrocredentialPage = ({
               id="separacion"
               style={{ paddingTop: "1%" }}
             ></div>
-            {Object.keys(checkedItems).map((key, index) => (
-              <div className="form-check form-switch" key={index}>
+            {studentCredentials.map((credencialId, index) => (
+              <div className="form-check form-switch" key={credencialId}>
                 <input
                   className="form-check-input"
                   type="checkbox"
-                  id={key}
-                  checked={checkedItems[key]}
-                  onChange={() => handleCheckboxChange(key)}
+                  id={credencialId}
+                  checked={checkedCredentials[credencialId] || false}
+                  onChange={() => handleCheckboxChange(credencialId)}
                 />
-                <label className="form-check-label" htmlFor={key}>
-                  {key === "educationalID"
-                    ? "EducationalID"
-                    : `Ejemplo de Microcredencial ${index}`}
+                <label className="form-check-label" htmlFor={credencialId}>
+                  Microcredencial ID: {credencialId} {/* Aquí podrías buscar el nombre real */}
                 </label>
               </div>
             ))}
           </div>
-          <button className="btn btn-primary" id="boton" type="submit" onClick={() => handleButtonClick()} disabled={!isAnyChecked} style={{marginTop: "2%", marginLeft: "45%"}}>
+          <button
+            className="btn btn-primary"
+            id="boton"
+            type="submit"
+            onClick={handleButtonClick}
+            disabled={!isAnyChecked}
+            style={{ marginTop: "2%", marginLeft: "45%" }}
+          >
             Solicitar
           </button>
         </div>
 
-        <style jsx>{`
+        <style>{`
           .listaCredenciales {
             padding: 2%;
             margin: 2%;

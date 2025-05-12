@@ -16,6 +16,22 @@ def get_credenciales(db: Session = Depends(get_db)):
         return credenciales_list
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@credencial_routes.get("/credenciales/{credencial_id}", tags=["Gestión de credenciales"])
+def get_credencial_by_id(credencial_id: str, db: Session = Depends(get_db)):
+    try:
+        result = db.execute(
+            select(credencial).where(credencial.c.id == credencial_id)
+        ).fetchone()
+
+        if not result:
+            raise HTTPException(status_code=404, detail=f"Credencial con ID '{credencial_id}' no encontrada")
+
+        credencial_row = result._mapping["Credencial"]
+        return Credencial.from_orm(credencial_row)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
     
 @credencial_routes.get("/credenciales/{did}", tags=["Gestión de credenciales"])
 def get_credenciales_por_did(did: str, db: Session = Depends(get_db)):

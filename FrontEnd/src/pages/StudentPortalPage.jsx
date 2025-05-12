@@ -4,7 +4,6 @@ import NavBarStudent from "../components/NavBarStudent";
 
 const StudentPortalPage = () => {
   const location = useLocation();
-  const studentInfo = location.state;
   return (
     <>
       <link

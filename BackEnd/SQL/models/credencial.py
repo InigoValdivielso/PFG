@@ -6,6 +6,7 @@ from config.db import meta
 
 
 credencial = Table("credencial", meta, 
-                   Column("id", String(255), primary_key=True), 
+                   Column("id", String(255), primary_key=True),
+                   Column("estado", String(255), nullable=False),
                    Column("estudiante_id", Integer, ForeignKey("estudiante.NIA", ondelete="CASCADE") ))
 
