@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import logoDeusto from "../assets/images/LogoDeusto.png";
 import QRCode from "react-qr-code";
+import { useLocation } from 'react-router-dom';
 
 const QRPrerequisitesPage = () => {
   const verificationUrl = `http://localhost:3000/verificar`; // URL de la API de verificación
@@ -8,6 +9,7 @@ const QRPrerequisitesPage = () => {
   const [copyButtonText, setCopyButtonText] = useState(
     "Copiar respuesta al portapapeles"
   );
+  const location = useLocation();
 
   useEffect(() => {
     const verifyCredential = async () => {
@@ -40,12 +42,27 @@ const QRPrerequisitesPage = () => {
         console.error("Error al copiar al portapapeles", error);
       });
   };
+  const formatRequisitos = (requisitos) => {
+    if (!requisitos || requisitos.length === 0) {
+      return "";
+    } else if (requisitos.length === 1) {
+      return `, ${requisitos[0]}`;
+    } else if (requisitos.length === 2) {
+      return `, ${requisitos[0]} y ${requisitos[1]}`;
+    } else {
+      const lastRequisito = requisitos.pop();
+      return `, ${requisitos.join(', ')} y ${lastRequisito}`;
+    }
+  };
+
+  const nombresRequisitos = location.state?.nombresRequisitos || [];
+  const requisitosFormateados = formatRequisitos(nombresRequisitos);
 
   return (
     <div className="container">
       <img src={logoDeusto} alt="Deusto Logo" className="logo-deusto" />
       <div className="wallet-box">
-        <h1>Comparte tu EducationalID</h1>
+        <h1>Comparte tu EducationalID{requisitosFormateados} </h1>
         {verificationData ? (
           <QRCode value={verificationData} size={200} />
         ) : (

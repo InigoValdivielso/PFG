@@ -3,55 +3,93 @@ import { useNavigate } from "react-router-dom";
 import NavBarStudent from "../components/NavBarStudent";
 import { useStudent } from "../components/StudentContext";
 
-const StudentMicrocredentialPage = ({}) => {
+const StudentMicrocredentialPage = ({ }) => {
   const navigate = useNavigate();
   const { studentInfo } = useStudent();
-  const [studentCredentials, setStudentCredentials] = useState([]);
+  const [solicitableCredentialsInfo, setSolicitableCredentialsInfo] = useState([]);
   const [checkedCredentials, setCheckedCredentials] = useState({});
   const [selectAll, setSelectAll] = useState(false);
 
-  useEffect(() => {
-    if (studentInfo?.credenciales) {
-      console.log("Credenciales del estudiante:", studentInfo.credenciales);
-      setStudentCredentials(studentInfo.credenciales);
-      const initialChecked = {};
-      studentInfo.credenciales.forEach(credencialId => {
-        initialChecked[credencialId] = false;
-      });
-      setCheckedCredentials(initialChecked);
+   const fetchCredentialInfoFromMongo = async (credencialId) => {
+    try {
+      const response = await fetch(`http://localhost:4000/credenciales/${credencialId}`); // Ruta a tu método de MongoDB
+      if (!response.ok) {
+        console.error(`Error fetching info from Mongo for ${credencialId}:`, response.status);
+        return null;
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(`Error fetching info from Mongo for ${credencialId}:`, error);
+      return null;
     }
+  };
+
+  useEffect(() => {
+    const fetchAndProcessCredentials = async () => {
+      if (studentInfo?.credenciales) {
+        const solicitablesWithNames = [];
+        const initialChecked = {};
+
+        for (const credencialId of studentInfo.credenciales) {
+          try {
+            // Primero, verifica si la credencial es "solicitable"
+            const statusResponse = await fetch(`http://localhost:8000/credenciales/${credencialId}`);
+            if (!statusResponse.ok) {
+              console.error(`Error fetching status for ${credencialId}:`, statusResponse.status);
+              continue;
+            }
+            const statusData = await statusResponse.json();
+
+            if (statusData?.estado === "solicitable") {
+              const mongoInfo = await fetchCredentialInfoFromMongo(credencialId);
+              let nameToShow = `Microcredencial ID: ${credencialId}`;
+              if (mongoInfo?.presentationDefinition?.input_descriptors?.[0]?.id) {
+                nameToShow = mongoInfo.presentationDefinition.input_descriptors[0].id;
+              }
+
+              solicitablesWithNames.push({
+                id: credencialId,
+                name: nameToShow,
+              });
+              initialChecked[credencialId] = false;
+            }
+          } catch (error) {
+            console.error(`Error processing credencial ${credencialId}:`, error);
+          }
+        }
+
+        setSolicitableCredentialsInfo(solicitablesWithNames);
+        setCheckedCredentials(initialChecked);
+      }
+    };
+
+    fetchAndProcessCredentials();
   }, [studentInfo?.credenciales]);
 
-  const initialize = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  };
-
   const handleButtonClick = () => {
-    const selectedCredentials = Object.keys(checkedCredentials).filter(id => checkedCredentials[id]);
+    const selectedCredentials = Object.keys(checkedCredentials).filter(
+      (id) => checkedCredentials[id]
+    );
+    console.log("Credenciales seleccionadas:", selectedCredentials);
     navigate("/microcredentials/solicitar/EducationalID"); // Ejemplo de navegación
   };
-
-  useEffect(() => {
-    const executeInitialization = async () => {
-      await initialize();
-      // setIsLoading(false); // Si tuvieras un estado de carga
-    };
-    executeInitialization();
-  }, []);
 
   const handleSelectAll = () => {
     const newState = !selectAll;
     setSelectAll(newState);
     const updatedChecked = {};
-    studentCredentials.forEach(id => {
-      updatedChecked[id] = newState;
+    solicitableCredentialsInfo.forEach(credencial => {
+      updatedChecked[credencial.id] = newState;
     });
     setCheckedCredentials(updatedChecked);
   };
 
   useEffect(() => {
-    setSelectAll(studentCredentials.length > 0 && Object.values(checkedCredentials).every(Boolean));
-  }, [checkedCredentials, studentCredentials]);
+    setSelectAll(
+      solicitableCredentialsInfo.length > 0 &&
+        solicitableCredentialsInfo.every(credencial => checkedCredentials[credencial.id])
+    );
+  }, [checkedCredentials, solicitableCredentialsInfo]);
 
   const handleCheckboxChange = (id) => {
     setCheckedCredentials((prev) => ({
@@ -153,17 +191,17 @@ const StudentMicrocredentialPage = ({}) => {
               id="separacion"
               style={{ paddingTop: "1%" }}
             ></div>
-            {studentCredentials.map((credencialId, index) => (
-              <div className="form-check form-switch" key={credencialId}>
+            {solicitableCredentialsInfo.map((credencial) => (
+              <div className="form-check form-switch" key={credencial.id}>
                 <input
                   className="form-check-input"
                   type="checkbox"
-                  id={credencialId}
-                  checked={checkedCredentials[credencialId] || false}
-                  onChange={() => handleCheckboxChange(credencialId)}
+                  id={credencial.id}
+                  checked={checkedCredentials[credencial.id] || false}
+                  onChange={() => handleCheckboxChange(credencial.id)}
                 />
-                <label className="form-check-label" htmlFor={credencialId}>
-                  Microcredencial ID: {credencialId} {/* Aquí podrías buscar el nombre real */}
+                <label className="form-check-label" htmlFor={credencial.id}>
+                  {credencial.name}
                 </label>
               </div>
             ))}

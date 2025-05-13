@@ -9,7 +9,6 @@ const StudentLoginPage = () => {
 
     const handleLogin = async () => {
         try {
-            console.log("Iniciando sesión con:", username, password);
             const response = await fetch("http://localhost:8000/login", {
                 method: "POST",
                 headers: {

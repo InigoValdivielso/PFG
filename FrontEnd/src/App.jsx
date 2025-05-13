@@ -12,10 +12,10 @@ import StudentLayout from './components/StudentLayout';
 import SecretaryLoginPage from './pages/SecretaryLoginPage';
 import StudentMicrocredentialPage from './pages/StudentMicrocredentialPage';
 import QRPrerequisitesPage from './pages/QRPrerequisitesPage';
-import SuccessPage from './pages/SuccessPage';
 import QRInicioSesionPage from './pages/QRInicioSesionPage';
 import QREmitirEducationalIDPage from './pages/QREmitirEducationaIDPage';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRouteSecretary';
+import ProtectedRouteStudents from './components/ProtectedRouteStudents';
 import { StudentProvider } from './components/StudentContext';
 
 const router = createBrowserRouter(
@@ -28,7 +28,6 @@ const router = createBrowserRouter(
         <ScrollToTop><PrerequisitesPage /></ScrollToTop>} />
       </Route>
       <Route path='/comparteCredenciales' element={<QRPrerequisitesPage />} />
-      <Route path='/success/:id' element={<SuccessPage />} />
       <Route path='/secretary' element={<ProtectedRoute><SecretaryLayout /></ProtectedRoute>} />
       <Route path='/studentLogin' element={<StudentLoginPage />} />
       <Route path='/secretaryLogin' element={<SecretaryLoginPage />} />
@@ -36,11 +35,9 @@ const router = createBrowserRouter(
       <Route path='/microcredentials/solicitar/EducationalID' element={<QREmitirEducationalIDPage />}/>
 
       <Route  element={<StudentLayout />}>
-        <Route index path='/studentPortal' element={<StudentPortalPage />} />
-        <Route path='/microcredentials' element={<StudentMicrocredentialPage />}/>
-      </Route>
-
-      
+        <Route index path='/studentPortal' element={<ProtectedRouteStudents><StudentPortalPage /></ProtectedRouteStudents>} />
+        <Route path='/microcredentials' element={<ProtectedRouteStudents><StudentMicrocredentialPage /></ProtectedRouteStudents>}/>
+      </Route>      
     </>
       
   )

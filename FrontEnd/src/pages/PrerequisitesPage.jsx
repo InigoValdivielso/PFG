@@ -29,8 +29,24 @@ const PrerequisitesPage = () => {
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
 
   const handleButtonClick = () => {
-    navigate("/comparteCredenciales");
+    navigate("/comparteCredenciales", {state : {nombresRequisitos}});
   };
+
+  const formatRequisitos = (requisitos) => {
+    if (!requisitos || requisitos.length === 0) {
+      return "";
+    } else if (requisitos.length === 1) {
+      return `, ${requisitos[0]}`;
+    } else if (requisitos.length === 2) {
+      return `, ${requisitos[0]} y ${requisitos[1]}`;
+    } else {
+      const lastRequisito = requisitos.pop();
+      return `, ${requisitos.join(', ')} y ${lastRequisito}`;
+    }
+  };
+
+  const requisitosFormateados = formatRequisitos(nombresRequisitos);
+
   useEffect(() => {
     if (location.state?.nombre) {
       localStorage.setItem("nombreCurso", nombre);
@@ -408,7 +424,7 @@ const PrerequisitesPage = () => {
                     <div className="row g-2">
                       <div className="col-md-6">
                         <label className="form-label">
-                          Subir Fotocopia de Requisitos: EducationalID {nombresRequisitos.join(", ")}
+                          Subir Fotocopia de Requisitos: EducationalID{requisitosFormateados}
                         </label>
                         <input
                           type="file"
@@ -472,7 +488,7 @@ const PrerequisitesPage = () => {
           <div className="ms-3">
             <ModalCredential
               title="Comparte tus Microcredenciales"
-              description={nombresRequisitos.join(", ")}
+              description={requisitosFormateados}
               id="microcredenciales"
             />
           </div>

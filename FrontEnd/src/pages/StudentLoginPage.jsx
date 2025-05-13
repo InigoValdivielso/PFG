@@ -39,6 +39,7 @@ const StudentLoginPage = () => {
               const studentInfo = backendData;
               setStudentInfo(studentInfo);
               localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
+              sessionStorage.setItem('token', accessToken);
               navigate('/studentPortal');
             } else {
               console.error('Error del backend:', backendData);
