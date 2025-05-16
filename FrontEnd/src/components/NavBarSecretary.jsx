@@ -15,6 +15,14 @@ function NavBarSecretary() {
       console.error("Error al hacer logout:", error);
     }
   };
+  const goToActas = () => {
+    navigate('/secretaryActas');
+  };
+
+  const goToSolicitudes = () => {
+    navigate('/secretary');
+  }
+
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
@@ -36,22 +44,22 @@ function NavBarSecretary() {
           <div className="collapse navbar-collapse" id="navbarText">
             <ul className="navbar-nav me-auto mt-5 mx-5 px-4">
               <li className="nav-item  px-3">
-                <a className="nav-link active" aria-current="page" href="#">
-                  Mis aplicaciones
+                <a className="nav-link" aria-current="page" onClick={goToSolicitudes} href="">
+                  Solicitudes de Ingreso
                 </a>
               </li>
               <li className="nav-item px-3">
-                <a className="nav-link" href="#">
-                  Mi cuenta
+                <a className="nav-link" onClick={goToActas} href=''>
+                  Actas
                 </a>
               </li>
               <li className="nav-item px-3">
-                <a className="nav-link" href="#">
+                <a className="nav-link" href="">
                   Soporte
                 </a>
               </li>
               <li className="nav-item px-3">
-                <a className="nav-link" onClick={handleLogout} style={{ cursor: 'pointer', color: 'white' }}>
+                <a className="nav-link" onClick={handleLogout} href=''>
                   Cerrar sesión
                 </a>
               </li>

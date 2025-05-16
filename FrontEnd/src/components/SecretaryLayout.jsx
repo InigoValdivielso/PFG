@@ -1,12 +1,12 @@
 import NavBarSecretary from './NavBarSecretary';
-import SecretaryPage from '../pages/SecretaryPage';
+import { Outlet } from 'react-router-dom';
 
 const SecretaryLayout = () => {
     return (
         <>
             <NavBarSecretary />
             <div className="mx-5 my-5">
-                <SecretaryPage />
+                <Outlet />
             </div>
             
         </>

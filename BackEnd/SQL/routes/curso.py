@@ -110,6 +110,8 @@ def obtener_curso_por_nombre(nombre: str, db: Session = Depends(get_db)):
         "duracion": curso_data.duracion,
         "requisitos": requisitos_nombres
     }
+
+
 @curso_routes.delete("/curso/{id}", tags=["Gestión de cursos"])
 def borrar_curso(id: int, db: Session = Depends(get_db)):
     

@@ -17,6 +17,8 @@ import QREmitirEducationalIDPage from './pages/QREmitirEducationaIDPage';
 import ProtectedRoute from './components/ProtectedRouteSecretary';
 import ProtectedRouteStudents from './components/ProtectedRouteStudents';
 import { StudentProvider } from './components/StudentContext';
+import SecretaryPage from './pages/SecretaryPage';
+import SecretaryActas from './pages/SecretaryActas';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,11 +30,15 @@ const router = createBrowserRouter(
         <ScrollToTop><PrerequisitesPage /></ScrollToTop>} />
       </Route>
       <Route path='/comparteCredenciales' element={<QRPrerequisitesPage />} />
-      <Route path='/secretary' element={<ProtectedRoute><SecretaryLayout /></ProtectedRoute>} />
       <Route path='/studentLogin' element={<StudentLoginPage />} />
       <Route path='/secretaryLogin' element={<SecretaryLoginPage />} />
       <Route path='/studentLogin/qr' element={<QRInicioSesionPage />} />
       <Route path='/microcredentials/solicitar/EducationalID' element={<QREmitirEducationalIDPage />}/>
+      
+      <Route element={<SecretaryLayout />}>
+        <Route index path='/secretary' element={<ProtectedRoute><SecretaryPage /></ProtectedRoute>} />
+        <Route path='/secretaryActas' element={<ProtectedRoute><SecretaryActas /></ProtectedRoute>} />
+      </Route>
 
       <Route  element={<StudentLayout />}>
         <Route index path='/studentPortal' element={<ProtectedRouteStudents><StudentPortalPage /></ProtectedRouteStudents>} />

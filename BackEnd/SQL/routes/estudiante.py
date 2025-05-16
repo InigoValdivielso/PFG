@@ -96,7 +96,7 @@ def create_estudiante(estudiante_data: EstudianteCrear, db: Session = Depends(ge
 
         # Insertar en tabla intermedia estudiante_curso
         for curso_id in cursos_ids:
-            db.execute(estudiante_curso.insert().values(estudiante_id=nuevo_nia, curso_id=curso_id))
+            db.execute(estudiante_curso.insert().values(estudiante_id=nuevo_nia, curso_id=curso_id, estado="en proceso"))
 
         
         for cred_id in credenciales_ids:
@@ -105,6 +105,24 @@ def create_estudiante(estudiante_data: EstudianteCrear, db: Session = Depends(ge
         db.commit()
 
         return {"status": "Estudiante creado", "nia": nuevo_nia}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@estudiante_routes.get("/estudiante/{curso_id}", tags=["Gestión de estudiantes"])
+def get_estudiantes_en_proceso_por_curso(curso_id: int, db: Session = Depends(get_db)):
+    try:
+        # Selecciona a los estudiantes a través de la tabla intermedia
+        query = estudiante.select().join(
+            estudiante_curso, estudiante.c.NIA == estudiante_curso.c.estudiante_id
+        ).where(
+            (estudiante_curso.c.curso_id == curso_id) & (estudiante_curso.c.estado == "en proceso")
+        )
+
+        result = db.execute(query).fetchall()
+        estudiantes_en_proceso = [row._asdict() for row in result]  # Convertir las filas a diccionarios
+
+        return {"curso_id": curso_id, "estudiantes": estudiantes_en_proceso}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
