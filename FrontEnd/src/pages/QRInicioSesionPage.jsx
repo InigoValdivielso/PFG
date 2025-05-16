@@ -1,40 +1,130 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import logoDeusto from "../assets/images/LogoDeusto.png";
 import QRCode from "react-qr-code";
+import { useStudent } from "../components/StudentContext";
 
 const QRInicioSesionPage = () => {
-  const verificationUrl = `http://localhost:3000/verificar/login`; // URL de la API de verificación
+  const verificationUrl = `http://localhost:3000/verificar/login`;
   const [verificationData, setVerificationData] = useState(null);
-  const [copyButtonText, setCopyButtonText] = useState(
-    "Copiar respuesta al portapapeles"
-  );
+  const [copyButtonText, setCopyButtonText] = useState("Copiar respuesta al portapapeles");
+  const [isVerified, setIsVerified] = useState(false);
+  const [correoConfirmado, setCorreoConfirmado] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { setStudentInfo } = useStudent();
+
+  const [accessToken, setToken] = useState('');
+
+  const generarNuevoToken = () => {
+    const newToken = crypto.randomUUID();
+    setToken(newToken);
+  };
+
 
   useEffect(() => {
+    console.log("Ejecutando el useEffect de verificación...");
+    generarNuevoToken();
     const verifyCredential = async () => {
       try {
         const response = await fetch(verificationUrl, { method: "POST" });
-        let data = await response.text(); 
+        let data = await response.text();
         data = data.replace(/^"(.*)"$/, "$1");
-        setVerificationData(data); 
-        setVerificationStatus("verified"); 
+        setVerificationData(data);
+        console.log("verifyCredential completado.");
+        const params = new URLSearchParams(location.search);
+        const verified = params.get('verified') === 'true';
+        if (verified) {
+          setIsVerified(true);
+        }
       } catch (error) {
         console.error("Error en la verificación:", error);
-        setVerificationStatus("error");
       }
     };
 
     verifyCredential();
-  }, [verificationUrl]);
+    console.log("Llamada a verifyCredential realizada.");
+
+    const params = new URLSearchParams(location.search);
+    const verifiedOnLoad = params.get('verified') === 'true';
+    if (verifiedOnLoad) {
+      setIsVerified(true);
+      const timeout = setTimeout(() => {
+        localStorage.removeItem("verificationComplete");
+        setIsVerified(false);
+      }, 60000);
+      return () => clearTimeout(timeout);
+    }
+    console.log("Fin del useEffect de verificación.");
+  }, [verificationUrl, location.search]);
+
+  useEffect(() => {
+    console.log("Ejecutando el useEffect para obtener el correo si isVerified es true:", isVerified);
+    if (isVerified) {
+      const params = new URLSearchParams(location.search);
+      const idFromQuery = params.get('id');
+      console.log("ID de la query para obtenerCorreo:", idFromQuery);
+      obtenerCorreo(idFromQuery);
+    }
+  }, [isVerified, location.search]);
+
+  const obtenerCorreo = async (currentId) => {
+    console.log("Llamando a obtenerCorreo con ID:", currentId);
+    if (!currentId) return;
+    try {
+      const response = await fetch(`http://localhost:3000/verificar/infoSesionVerificacion/${currentId}`, {
+        method: "GET",
+        headers: { "accept": "application/json" },
+      });
+      if (!response.ok) {
+        throw new Error("Error al verificar la sesión");
+      }
+      const sesionData = await response.json();
+      const educationalCredentialResult = sesionData?.policyResults?.results?.find(
+        (item) => item.credential === "EducationalID"
+      );
+
+      if (educationalCredentialResult?.policyResults?.[0]?.result?.vc?.credentialSubject?.mail) {
+        const mail = educationalCredentialResult.policyResults[0].result.vc.credentialSubject.mail;
+        console.log("Correo encontrado:", mail);
+        console.log("¿Termina con @opendeusto.es?:", mail.endsWith('@opendeusto.es'));
+
+        if (mail.endsWith('@opendeusto.es')) {
+          const backendResponse = await fetch(`http://localhost:8000/estudiante/correo?correo=${mail}`);
+          const backendData = await backendResponse.json();
+
+          if (backendResponse.ok) {
+            const studentInfo = backendData;
+            setStudentInfo(studentInfo);
+            localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
+            sessionStorage.setItem('token', accessToken);
+            setCorreoConfirmado(mail);
+          } else {
+            console.error('Error del backend:', backendData);
+          }
+
+        } else {
+          console.error('El correo no pertenece a @opendeusto.es:', mail);
+        }
+      } else {
+        console.log("No se encontraron los datos del usuario o el correo en EducationalID.");
+      }
+    } catch (error) {
+      console.error("Error al obtener información de la sesión:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isVerified && correoConfirmado) {
+      navigate("/studentPortal");
+    }
+  }, [isVerified, correoConfirmado, navigate]);
 
   const copyToClipboard = () => {
-    navigator.clipboard
-      .writeText(verificationData)
+    navigator.clipboard.writeText(verificationData)
       .then(() => {
-        setCopyButtonText("Copiado"); // Cambia el texto a "Copiado"
-        setTimeout(
-          () => setCopyButtonText("Copiar respuesta al portapapeles"),
-          4000
-        ); // Vuelve al original después de 2 segundos
+        setCopyButtonText("Copiado");
+        setTimeout(() => setCopyButtonText("Copiar respuesta al portapapeles"), 4000);
       })
       .catch((error) => {
         console.error("Error al copiar al portapapeles", error);
@@ -49,8 +139,8 @@ const QRInicioSesionPage = () => {
         {verificationData ? (
           <QRCode value={verificationData} size={200} />
         ) : (
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
           </div>
         )}
         <p className="verification-text">
@@ -64,10 +154,10 @@ const QRInicioSesionPage = () => {
         <button onClick={copyToClipboard} className="btnCopiar">
           {copyButtonText}
         </button>
-        
+
       </div>
 
-      <style jsx>{`
+      <style>{`
         html,
         body,
         #root {

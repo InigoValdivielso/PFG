@@ -18,10 +18,8 @@ const QRPrerequisitesPage = () => {
         let data = await response.text(); // Obtener el texto de la respuesta
         data = data.replace(/^"(.*)"$/, "$1");
         setVerificationData(data); // Guardar el texto de la respuesta
-        setVerificationStatus("verified"); // O ajusta según la respuesta que esperes
       } catch (error) {
         console.error("Error en la verificación:", error);
-        setVerificationStatus("error");
       }
     };
 

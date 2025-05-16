@@ -73,7 +73,7 @@ const PrerequisitesPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const sesionResponse = await fetch(`http://localhost:3000/verificar/infoSesionVerificacion/${idVerificacion}`, {
+      const sesionResponse = await fetch(`http://localhost:3000/verificar/infoSesionVerificacionGuardar/${idVerificacion}`, {
         method: "GET",
         headers: {
           "accept": "application/json",
