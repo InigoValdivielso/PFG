@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends, Query
 from requests import Session
-from sqlalchemy import select
+from sqlalchemy import select, update
 from config.db import get_db
 from models.estudiante import estudiante
 from models.estudiante_curso import estudiante_curso
@@ -110,21 +110,48 @@ def create_estudiante(estudiante_data: EstudianteCrear, db: Session = Depends(ge
         raise HTTPException(status_code=500, detail=str(e))
     
 @estudiante_routes.get("/estudiante/{curso_id}", tags=["Gestión de estudiantes"])
-def get_estudiantes_en_proceso_por_curso(curso_id: int, db: Session = Depends(get_db)):
+def get_estudiantes_con_estado_por_curso(curso_id: int, db: Session = Depends(get_db)):
     try:
-        # Selecciona a los estudiantes a través de la tabla intermedia
-        query = estudiante.select().join(
+        # Selecciona información del estudiante y el estado de la tabla intermedia
+        query = select(
+            estudiante.c.NIA,
+            estudiante.c.nombre,
+            estudiante.c.primer_apellido,
+            estudiante.c.segundo_apellido,
+            estudiante.c.correo,
+            estudiante.c.dni,
+            estudiante.c.did,
+            estudiante_curso.c.estado.label("estado_curso")
+        ).join(
             estudiante_curso, estudiante.c.NIA == estudiante_curso.c.estudiante_id
         ).where(
-            (estudiante_curso.c.curso_id == curso_id) & (estudiante_curso.c.estado == "en proceso")
+            estudiante_curso.c.curso_id == curso_id
         )
 
         result = db.execute(query).fetchall()
-        estudiantes_en_proceso = [row._asdict() for row in result]  # Convertir las filas a diccionarios
+        estudiantes_con_estado = [row._mapping for row in result]
 
-        return {"curso_id": curso_id, "estudiantes": estudiantes_en_proceso}
+        return {"curso_id": curso_id, "estudiantes": estudiantes_con_estado}
 
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@estudiante_routes.put("/estudiante/{estudiante_id}/curso/{curso_id}/estado", tags=["Gestión de estados"])
+def actualizar_estado_estudiante_curso(estudiante_id: int, curso_id: int, nuevo_estado: str, db: Session = Depends(get_db)):
+    try:
+        query = update(estudiante_curso).where(
+            (estudiante_curso.c.estudiante_id == estudiante_id) & (estudiante_curso.c.curso_id == curso_id)
+        ).values(estado=nuevo_estado)
+        result = db.execute(query)
+        db.commit()
+
+        if result.rowcount == 0:
+            raise HTTPException(status_code=404, detail="No se encontró la relación estudiante-curso")
+
+        return {"message": f"Estado actualizado a '{nuevo_estado}' para el estudiante {estudiante_id} en el curso {curso_id}"}
+
+    except Exception as e:
+        db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
 @estudiante_routes.delete("/estudiante/{nia}", tags=["Gestión de estudiantes"])

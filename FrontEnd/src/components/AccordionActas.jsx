@@ -1,32 +1,22 @@
-import React, { useState } from 'react';
-import AccordionItem from './AccordionItem';
-import { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import AccordionItemActas from './AccordionItemActas';
 
 function Accordion({ curso }) {
-
     const [items, setItems] = useState([]);
-
-    // Función para eliminar un ítem
-    //const handleDelete = (id) => {
-    //    setItems(prevItems => prevItems.filter(item => item.id !== id));
-    //};
+    const [idCurso, setIdCurso] = useState(null);
 
     useEffect(() => {
-        const fetchSolicitudes = async () => {
+        const fetchEstudiantes = async () => {
             try {
                 const peticionIdCurso = await fetch(`http://localhost:8000/curso/${encodeURIComponent(curso)}`);
                 const idCursoData = await peticionIdCurso.json();
-                const idCurso = idCursoData.id;
+                const cursoId = idCursoData.id;
+                setIdCurso(cursoId);
 
+                const response = await fetch(`http://localhost:8000/estudiante/${encodeURIComponent(cursoId)}`);
+                const data = await response.json();
 
-                const response = await fetch(`http://localhost:8000/estudiante/${encodeURIComponent(idCurso)}`);
-                const estudiantes = await response.json();
-
-                
-                
-
-                setItems(solicitudesConDatos);
-
+                setItems(data.estudiantes);
 
             } catch (error) {
                 console.error('Error al obtener solicitudes:', error);
@@ -34,105 +24,59 @@ function Accordion({ curso }) {
         };
 
         if (curso) {
-            fetchSolicitudes();
+            fetchEstudiantes();
         }
     }, [curso]);
 
+    // Función para cambiar el estado
+    const handleEstadoChange = (id, nuevoEstado) => {
+        setItems(prevItems =>
+            prevItems.map(item =>
+                item.NIA === id ? { ...item, estado_curso: nuevoEstado } : item
+            )
+        );
+        // Aquí también deberías llamar a la API para actualizar el estado en el backend
+    };
 
-    // Función para cambiar el estado a 'accepted'
     const handleAccept = (id) => {
-        setItems(prevItems =>
-            prevItems.map(item =>
-                item.id === id ? { ...item, estado: 'aceptada' } : item
-            )
-        );
+        handleEstadoChange(id, 'aceptada');
     };
 
-    // Función para cambiar el estado a 'rejected'
     const handleReject = (id) => {
-        setItems(prevItems =>
-            prevItems.map(item =>
-                item.id === id ? { ...item, estado: 'rechazada' } : item
-            )
-        );
+        handleEstadoChange(id, 'rechazada');
     };
 
-    // Filtrar ítems por estado
-    const pendingItems = items.filter(item => item.estado === 'pendiente');
-    const acceptedItems = items.filter(item => item.estado === 'aceptada');
-    const rejectedItems = items.filter(item => item.estado === 'rechazada');
-
+    // Filtrar ítems por estado_curso
+    const pendingItems = items.filter(item => item.estado_curso === 'en proceso');
+    const acceptedItems = items.filter(item => item.estado_curso === 'aceptada');
 
     return (
         <>
-            <h3
-                className="titulo"
-                style={{
-                    textAlign: "left",
-                    paddingBottom: "1%",
-                    paddingLeft: "1%",
-                    fontWeight: "800",
-                    color: "#0153CE",
-                }}
-            >
-                Estudiantes
+            <h3 className="titulo" style={{ textAlign: "left", paddingBottom: "1%", paddingLeft: "1%", fontWeight: "800", color: "#0153CE" }}>
+                Estudiantes Pendientes
             </h3>
-            <div className="accordion" id="accordionExample">
+            <div className="accordion" id="pendingAccordion">
                 {pendingItems.length > 0 ? (
                     pendingItems.map(item => (
-                        <AccordionItem
-                            key={item.id}
-                            id={item.id}
-                            nombre={item.nombre}
-                            primer_apellido={item.primer_apellido}
-                            segundo_apellido={item.segundo_apellido}
-                            dni={item.dni}
-                            correo={item.correo}
-                            curso={item.curso}
-                            curso_id={item.curso_id}
-                            estado={item.estado}
-                            credenciales={item.credenciales}
-                            onAccept={handleAccept}
-                            onReject={handleReject}
-                        />
+                        <AccordionItemActas key={item.NIA} {...item} curso_id={idCurso} curso={curso} onAccept={handleAccept} onReject={handleReject} estado={item.estado_curso} />
                     ))
                 ) : (
-                    <p>No hay solicitudes</p>
+                    <p>No hay estudiantes pendientes</p>
                 )}
             </div>
-            <h3
-                className="titulo"
-                style={{
-                    textAlign: "left",
-                    paddingBottom: "1%",
-                    paddingLeft: "1%",
-                    paddingTop: "2%",
-                    fontWeight: "800",
-                    color: "#6cd574",
-                }}
-            >
+
+            <h3 className="titulo" style={{ textAlign: "left", paddingBottom: "1%", paddingLeft: "1%", paddingTop: "2%", fontWeight: "800", color: "#6cd574" }}>
                 Aprobados
             </h3>
             <div className="accordion" id="acceptedAccordion">
                 {acceptedItems.length > 0 ? (
                     acceptedItems.map(item => (
-                        <AccordionItem
-                            key={item.id}
-                            id={item.id}
-                            nombre={item.nombre}
-                            primer_apellido={item.primer_apellido}
-                            correo={item.correo}
-                            curso={item.curso}
-                            estado={item.estado}
-                            onAccept={handleAccept}
-                            onReject={handleReject}
-                        />
+                        <AccordionItemActas key={item.NIA}  {...item} curso_id={idCurso} curso={curso} onAccept={handleAccept} onReject={handleReject} estado={item.estado_curso} />
                     ))
                 ) : (
-                    <p>No hay solicitudes aceptadas</p>
+                    <p>No hay estudiantes aceptados</p>
                 )}
             </div>
-            
 
         </>
     );
