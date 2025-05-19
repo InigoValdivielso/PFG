@@ -23,7 +23,6 @@ const QRInicioSesionPage = () => {
 
 
   useEffect(() => {
-    console.log("Ejecutando el useEffect de verificación...");
     generarNuevoToken();
     const verifyCredential = async () => {
       try {
@@ -43,7 +42,6 @@ const QRInicioSesionPage = () => {
     };
 
     verifyCredential();
-    console.log("Llamada a verifyCredential realizada.");
 
     const params = new URLSearchParams(location.search);
     const verifiedOnLoad = params.get('verified') === 'true';
@@ -87,7 +85,6 @@ const QRInicioSesionPage = () => {
       if (educationalCredentialResult?.policyResults?.[0]?.result?.vc?.credentialSubject?.mail) {
         const mail = educationalCredentialResult.policyResults[0].result.vc.credentialSubject.mail;
         console.log("Correo encontrado:", mail);
-        console.log("¿Termina con @opendeusto.es?:", mail.endsWith('@opendeusto.es'));
 
         if (mail.endsWith('@opendeusto.es')) {
           const backendResponse = await fetch(`http://localhost:8000/estudiante/correo?correo=${mail}`);
@@ -100,16 +97,20 @@ const QRInicioSesionPage = () => {
             sessionStorage.setItem('token', accessToken);
             setCorreoConfirmado(mail);
           } else {
+            alert("Error al obtener los datos del usuario desde el backend.");
             console.error('Error del backend:', backendData);
           }
 
         } else {
+          alert("El correo no pertenece a @opendeusto.es");
           console.error('El correo no pertenece a @opendeusto.es:', mail);
         }
       } else {
+        alert("No se encontraron los datos del usuario o el correo en el EducationalID.");
         console.log("No se encontraron los datos del usuario o el correo en EducationalID.");
       }
     } catch (error) {
+      alert("Error al obtener el correo del usuario.");
       console.error("Error al obtener información de la sesión:", error);
     }
   };

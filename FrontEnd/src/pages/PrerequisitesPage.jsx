@@ -36,7 +36,7 @@ const PrerequisitesPage = () => {
     if (!requisitos || requisitos.length === 0) {
       return "";
     } else if (requisitos.length === 1) {
-      return `, ${requisitos[0]}`;
+      return ` y ${requisitos[0]}`;
     } else if (requisitos.length === 2) {
       return `, ${requisitos[0]} y ${requisitos[1]}`;
     } else {
@@ -196,7 +196,9 @@ const PrerequisitesPage = () => {
 
       if (!solicitudResponse.ok) {
         const errorDataSolicitud = await solicitudResponse.json();
+        alert("Error al enviar la solicitud: " + errorDataSolicitud.detail);
         throw new Error(`Error al enviar la solicitud: ${solicitudResponse.status} - ${JSON.stringify(errorDataSolicitud)}`);
+
       }
 
       const solicitudData = await solicitudResponse.json();
@@ -208,11 +210,12 @@ const PrerequisitesPage = () => {
           navigate('/');
         }, 3000);
       } else {
-        
+        alert("La solicitud no se insertó correctamente o la respuesta es diferente.");
         console.log('La solicitud no se insertó correctamente o la respuesta es diferente:', solicitudData);
       }
 
     } catch (err) {
+      alert("Error al enviar la solicitud: " + err.message);
       console.error("Error al enviar la solicitud:", err);
       setError(err.message);
     } finally {

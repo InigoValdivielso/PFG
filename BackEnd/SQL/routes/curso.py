@@ -131,6 +131,7 @@ def borrar_curso(id: int, db: Session = Depends(get_db)):
     db.execute(
         curso.delete().where(curso.c.id == id)
     )
+    db.commit()
 
     return {"message": "Curso eliminado correctamente"}
 

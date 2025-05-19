@@ -4,27 +4,13 @@ import QRCode from "react-qr-code";
 import { useLocation } from 'react-router-dom';
 
 const QRPrerequisitesPage = () => {
-  const verificationUrl = `http://localhost:3000/verificar`; // URL de la API de verificación
+  const verificationUrl = `http://localhost:3000/verificar`;
   const [verificationData, setVerificationData] = useState(null);
   const [copyButtonText, setCopyButtonText] = useState(
     "Copiar respuesta al portapapeles"
   );
   const location = useLocation();
 
-  useEffect(() => {
-    const verifyCredential = async () => {
-      try {
-        const response = await fetch(verificationUrl, { method: "POST" });
-        let data = await response.text(); // Obtener el texto de la respuesta
-        data = data.replace(/^"(.*)"$/, "$1");
-        setVerificationData(data); // Guardar el texto de la respuesta
-      } catch (error) {
-        console.error("Error en la verificación:", error);
-      }
-    };
-
-    verifyCredential();
-  }, [verificationUrl]);
 
   const copyToClipboard = () => {
     navigator.clipboard
@@ -44,7 +30,7 @@ const QRPrerequisitesPage = () => {
     if (!requisitos || requisitos.length === 0) {
       return "";
     } else if (requisitos.length === 1) {
-      return `, ${requisitos[0]}`;
+      return ` y ${requisitos[0]}`;
     } else if (requisitos.length === 2) {
       return `, ${requisitos[0]} y ${requisitos[1]}`;
     } else {
@@ -55,6 +41,61 @@ const QRPrerequisitesPage = () => {
 
   const nombresRequisitos = location.state?.nombresRequisitos || [];
   const requisitosFormateados = formatRequisitos(nombresRequisitos);
+
+
+
+  useEffect(() => {
+    const verifyCredential = async () => {
+      const requisitosMap = {
+          "Aprendizaje automático supervisado: Regresión y clasificación": "AprendizajeAutomaticoSupervisado",
+          "Algoritmos avanzados de aprendizaje": "AlgoritmosAvanzadosDeAprendizaje"
+        };
+        
+      try {
+      const request_credentials = [
+        {
+          type: "EducationalID",
+          format: "jwt_vc_json"
+        },
+        ...nombresRequisitos
+          .map((nombreLegible) => {
+            const type = requisitosMap[nombreLegible];
+            if (type) {
+              return {
+                type,
+                format: "jwt_vc_json"
+              };
+            } else {
+              console.warn("Nombre de requisito no reconocido:", nombreLegible);
+              return null;
+            }
+          })
+          .filter(Boolean) 
+      ];
+
+      const requestBody = {
+        request_credentials,
+        vc_policies: ["signature", "expired", "not-before"]
+      };
+
+      const response = await fetch("http://localhost:3000/verificar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      let data = await response.text();
+      data = data.replace(/^"(.*)"$/, "$1");
+      setVerificationData(data);
+    } catch (error) {
+      console.error("Error en la verificación:", error);
+    }
+  };
+
+  verifyCredential();
+}, [nombresRequisitos]);
 
   return (
     <div className="container">
@@ -79,7 +120,7 @@ const QRPrerequisitesPage = () => {
         <button onClick={copyToClipboard} className="btnCopiar">
           {copyButtonText}
         </button>
-        
+
       </div>
 
       <style jsx>{`

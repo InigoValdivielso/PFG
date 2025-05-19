@@ -6,8 +6,7 @@ const fs = require("fs");
 const path = require("path");
 
 router.post('/', async (req, res) => {
-  const presentationDefinition = JSON.parse(fs.readFileSync(path.join(__dirname, "../presentationDefinition/EducationalID.json"), "utf8"));
-
+  const presentationDefinition = req.body;
   // Headers que necesitas enviar
   const headers = {
     'Accept': '*/*',

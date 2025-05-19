@@ -9,6 +9,7 @@ function NavBarStudent() {
 
   const logOut = () => {
     localStorage.removeItem("studentInfo");
+    localStorage.removeItem("token");
     navigate("/studentLogin");
   };
 
@@ -37,7 +38,7 @@ function NavBarStudent() {
             <li><a class="dropdown-item" href="#" style={{fontSize: "90%"}}>Acerca de</a></li>
             <li><a class="dropdown-item" href="#" style={{fontSize: "90%"}}>Contacto</a></li>
             <li><hr class="dropdown-divider"/></li>
-            <li><a class="dropdown-item" href="" style={{fontSize: "90%"}} onClick={() => logOut()}>Log out</a></li>   
+            <li><a class="dropdown-item" href="" style={{fontSize: "90%"}} onClick={() => logOut()}>Cerrar sesion</a></li>   
           </ul>
         </div>
       </div>
