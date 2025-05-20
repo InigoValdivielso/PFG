@@ -82,7 +82,8 @@ def create_estudiante(estudiante_data: EstudianteCrear, db: Session = Depends(ge
         
         existing_estudiante = db.query(estudiante).filter(estudiante.c.did == estudiante_data.did).first()
         if existing_estudiante:
-            raise HTTPException(status_code=400, detail=f"El estudiante con did '{datos.get('did')}' ya existe.")
+            existing_nia = existing_estudiante.NIA
+            raise HTTPException(status_code=400, detail=f"El estudiante con NIA '{existing_nia}' ya existe.")
 
 
         # Separar los campos del estudiante de los relacionados

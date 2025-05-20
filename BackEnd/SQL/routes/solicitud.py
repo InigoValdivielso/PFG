@@ -117,14 +117,21 @@ def insertar_solicitud(solicitud_data: SolicitudCrear, db: Session = Depends(get
 @solicitud_routes.delete("/solicitud/{id}", tags=["Gestión de solicitudes"])
 def eliminar_solicitud(id: int, db: Session = Depends(get_db)):
     try:
+        db.execute(
+            solicitud_doc.delete().where(solicitud_doc.c.id_solicitud == id)
+        )
+        db.commit()
+
+        # Luego, eliminamos la solicitud principal
         result = db.execute(
             solicitud.delete().where(solicitud.c.id == id)
         )
         if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="Solicitud no encontrada")
         db.commit()
-        return {"status": "Solicitud eliminada", "solicitud_id": id}
+        return {"status": "Solicitud y sus relaciones eliminadas", "solicitud_id": id}
     except Exception as e:
+        db.rollback()  # Importante hacer rollback en caso de error
         raise HTTPException(status_code=500, detail=str(e))
 
 @solicitud_routes.put("/solicitud/{id}", tags=["Gestión de solicitudes"])

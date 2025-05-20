@@ -93,7 +93,7 @@ const PrerequisitesPage = () => {
         const userData = educationalCredentialResult.policyResults[0]?.result?.vc?.credentialSubject;
 
         if (userData) {
-          const { firstName, familyName, dateOfBirth, mail } = userData;
+          const { firstName, familyName, dateOfBirth, mail, schacPersonalUniqueID, secondLastName } = userData;
           const year = dateOfBirth.substring(0, 4);
           const month = dateOfBirth.substring(4, 6);
           const day = dateOfBirth.substring(6, 8);
@@ -103,6 +103,9 @@ const PrerequisitesPage = () => {
           setPrimerApellido(familyName);
           setBirthDate(formattedDateOfBirth);
           setEmail(mail);
+          setDNINIE(schacPersonalUniqueID);
+          setSegundoApellido(secondLastName);
+
         } else {
           console.log("No se encontraron los datos del usuario dentro de EducationalID.");
           setError("No se encontraron los datos del usuario.");
@@ -131,9 +134,9 @@ const PrerequisitesPage = () => {
         body: JSON.stringify({
           nombre: nombrePersona,
           primer_apellido: primerApellido,
-          segundo_apellido: segundoApellido || "",
+          segundo_apellido: segundoApellido,
           fecha_nacimiento: birthDate,
-          dni: DNINIE || "",
+          dni: DNINIE,
           correo: email,
           credenciales: [idCredencial]
         }),

@@ -137,9 +137,13 @@ function Accordion({ curso }) {
                             id={item.id}
                             nombre={item.nombre}
                             primer_apellido={item.primer_apellido}
+                            segundo_apellido={item.segundo_apellido}
+                            dni={item.dni}
                             correo={item.correo}
                             curso={item.curso}
+                            curso_id={item.curso_id}
                             estado={item.estado}
+                            credenciales={item.credenciales}
                             onAccept={handleAccept}
                             onReject={handleReject}
                         />
@@ -169,9 +173,13 @@ function Accordion({ curso }) {
                             id={item.id}
                             nombre={item.nombre}
                             primer_apellido={item.primer_apellido}
+                            segundo_apellido={item.segundo_apellido}
+                            dni={item.dni}
                             correo={item.correo}
                             curso={item.curso}
+                            curso_id={item.curso_id}
                             estado={item.estado}
+                            credenciales={item.credenciales}
                             onAccept={handleAccept}
                             onReject={handleReject}
                         />

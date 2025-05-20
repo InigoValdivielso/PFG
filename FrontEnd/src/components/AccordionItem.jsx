@@ -30,9 +30,10 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
 
                         const response = await fetch(`http://localhost:4000/credenciales/${encodeURIComponent(credencial)}`);
                         const data = await response.json();
+                        const nombresCredenciales = data.presentationDefinition.input_descriptors.map(descriptor => descriptor.id);
                         return {
                             id: data._id,
-                            nombre_credencial: data.presentationDefinition.input_descriptors[0].id,
+                            nombre_credencial: nombresCredenciales,
                             did: data.policyResults.results[1].policyResults[0].result.vc.credentialSubject.id
                         };
                     })
@@ -41,11 +42,13 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
                 const nombresCredenciales = fetchedData.map(item => item.nombre_credencial);
                 setCredencialesData(nombresCredenciales);
 
+
+
                 if (fetchedData.length > 0) {
                     setEstudianteDid(fetchedData[0].did);
                     setEstudianteIdCredenciales(fetchedData[0].id);
                 } else {
-                    setEstudianteDid(undefined); 
+                    setEstudianteDid(undefined);
                     setEstudianteIdCredenciales(undefined);
                 }
                 setEstudianteData(prevData => ({
@@ -64,8 +67,42 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
         }
     }, [credenciales]);
 
+    const añadirCredenciales = async (nia, credenciales) => {
+        console.log(credenciales);
+        if (!nia) {
+            console.warn('No se proporcionó NIA para añadir credenciales.');
+            return;
+        }
+        if (!credenciales || credenciales.length === 0) {
+            console.warn('No se proporcionaron credenciales para añadir.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8000/estudiante/${nia}/credenciales`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify( credenciales )
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Credenciales añadidas exitosamente:', data);
+
+            } else {
+                const errorData = await response.json();
+                console.error('Error al añadir credenciales:', errorData);
+
+            }
+        } catch (error) {
+            console.error('Error de red al añadir credenciales:', error);
+
+        }
+    };
+
     const crearEstudianteEnBackend = async () => {
-        console.log('Crear estudiante en backend llamado');
         try {
             const response = await fetch('http://localhost:8000/estudiante', {
                 method: 'POST',
@@ -82,6 +119,20 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
             } else {
                 const errorData = await response.json();
                 console.error('Error al crear estudiante:', errorData);
+                console.log('Error al crear estudiante:', errorData.detail);
+                if (errorData.detail?.includes("ya existe")) {
+                    console.log('El estudiante ya existe, llamando a añadirCredenciales con el NIA.');
+                    const niaMatch = errorData.detail.match(/NIA '(\w+)' ya existe/);
+                    if (niaMatch && niaMatch[1]) {
+                        const existingNIA = niaMatch[1];
+                        añadirCredenciales(existingNIA, estudianteData.credenciales); // Asegúrate de pasar las credenciales
+                    } else {
+                        console.warn('No se pudo extraer el NIA del mensaje de error.');
+                        añadirCredenciales(null, estudianteData.credenciales);
+                    }
+                } else {
+                    console.error('Otro error al crear estudiante:', errorData);
+                }
 
             }
         } catch (error) {
@@ -140,7 +191,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
             });
 
             if (response.ok) {
-                setEstado('rechazada');
+
             } else {
                 console.error('Error al rechazar la solicitud');
             }
@@ -166,10 +217,8 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
                     <h4>Credenciales proporcionadas:</h4>
                     <br></br>
 
-                    {credencialesData.length > 0 ? (
-                        credencialesData.map((credencial, index) => (
-                            <CredentialTable key={index} name={credencial} />
-                        ))
+                    {credencialesData && credencialesData.length > 0 && Array.isArray(credencialesData[0]) ? (
+                        <CredentialTable names={credencialesData[0]} />
                     ) : (
                         <p>No hay credenciales proporcionadas.</p>
                     )}
@@ -190,7 +239,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
                     id="Accept"
                     show={showAcceptModal}
                     handleClose={handleCloseAcceptModal}
-                    handleConfirm={confirmAccept}  
+                    handleConfirm={confirmAccept}
                 />
             )}
             {/* Modal para Reject */}
