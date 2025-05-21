@@ -44,23 +44,23 @@ const StudentMicrocredentialPage = ({ }) => {
               estudiante => estudiante.dni === studentInfo.dni && estudiante.estado_curso === "aceptada"
             );
 
-            // Siempre vamos a mostrar el curso, pero marcado solo si está aceptado
-            let courseName = `Curso ID: ${cursoId}`;
-            try {
-              const cursoInfoResponse = await fetch(`http://localhost:8000/curso/${cursoId}`);
-              if (cursoInfoResponse.ok) {
-                const cursoInfo = await cursoInfoResponse.json();
-                courseName = cursoInfo.nombre;
-              } else {
-                console.warn(`No se pudo obtener el nombre del curso ${cursoId}`);
+            if (isAccepted) {
+              let courseName = `Curso ID: ${cursoId}`;
+              try {
+                const cursoInfoResponse = await fetch(`http://localhost:8000/curso/${cursoId}`);
+                if (cursoInfoResponse.ok) {
+                  const cursoInfo = await cursoInfoResponse.json();
+                  courseName = cursoInfo.nombre;
+                } else {
+                  console.warn(`No se pudo obtener el nombre del curso ${cursoId}`);
+                }
+              } catch (error) {
+                console.error(`Error fetching curso info for ${cursoId}:`, error);
               }
-            } catch (error) {
-              console.error(`Error fetching curso info for ${cursoId}:`, error);
-            }
 
-            const credentialId = cursoId.toString();
-            acceptedCoursesInfo.push({ id: credentialId, name: courseName });
-            initialChecked[credentialId] = isAccepted;
+              acceptedCoursesInfo.push({ id: cursoId, name: courseName });
+              initialChecked[cursoId] = false; // Inicialmente no marcado
+            }
           }
         } catch (error) {
           console.error(`Error processing course ${cursoId}:`, error);
@@ -76,11 +76,15 @@ const StudentMicrocredentialPage = ({ }) => {
 }, [studentInfo?.cursos, studentInfo?.dni]);
 
   const handleButtonClick = () => {
-    const selectedCredentials = Object.keys(checkedCredentials).filter(
+    const selectedCourseIds = Object.keys(checkedCredentials).filter(
       (id) => checkedCredentials[id]
     );
-    console.log("Credenciales seleccionadas:", selectedCredentials);
-    navigate("/microcredentials/solicitar/EducationalID"); // Ejemplo de navegación
+    const selectedCourseNames = solicitableCredentialsInfo
+      .filter(credencial => selectedCourseIds.includes(credencial.id.toString()))
+      .map(credencial => credencial.name);
+
+    console.log("Cursos seleccionados (nombres):", selectedCourseNames);
+    navigate("/microcredentials/solicitar", { state: { selectedCourseNames } }); 
   };
 
   const handleSelectAll = () => {

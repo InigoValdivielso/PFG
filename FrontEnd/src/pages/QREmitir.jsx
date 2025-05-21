@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import logoDeusto from "../assets/images/LogoDeusto.png";
 import QRCode from "react-qr-code";
 
-const QREmitirEducationalIDPage = () => {
+const QREmitir = () => {
   const verificationUrl = `http://localhost:3000/verificar`; // URL de la API de verificación
   const [verificationData, setVerificationData] = useState(null);
   const [copyButtonText, setCopyButtonText] = useState(
@@ -45,7 +45,7 @@ const QREmitirEducationalIDPage = () => {
     <div className="container">
       <img src={logoDeusto} alt="Deusto Logo" className="logo-deusto" />
       <div className="wallet-box">
-        <h1>Comparte tu EducationalID</h1>
+        <h1>Obten tu Microcredencial: </h1>
         {verificationData ? (
           <QRCode value={verificationData} size={200} />
         ) : (
@@ -54,7 +54,7 @@ const QREmitirEducationalIDPage = () => {
           </div>
         )}
         <p className="verification-text">
-          Escanea el código con walt.id para verificar.
+          Escanea el código con walt.id.
         </p>
         <div className="separator">
           <hr />
@@ -203,4 +203,4 @@ const QREmitirEducationalIDPage = () => {
   );
 };
 
-export default QREmitirEducationalIDPage;
+export default QREmitir;

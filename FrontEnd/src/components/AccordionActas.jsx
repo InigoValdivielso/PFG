@@ -8,7 +8,7 @@ function Accordion({ curso }) {
     useEffect(() => {
         const fetchEstudiantes = async () => {
             try {
-                const peticionIdCurso = await fetch(`http://localhost:8000/curso/${encodeURIComponent(curso)}`);
+                const peticionIdCurso = await fetch(`http://localhost:8000/curso/nombre/${encodeURIComponent(curso)}`);
                 const idCursoData = await peticionIdCurso.json();
                 const cursoId = idCursoData.id;
                 setIdCurso(cursoId);

@@ -171,7 +171,7 @@ const PrerequisitesPage = () => {
       const credencialData = await insertarCredencial.json();
       console.log('Respuesta del servidor (credencial):', credencialData);
 
-      const peticionIdCurso = await fetch(`http://localhost:8000/curso/${encodeURIComponent(nombreCurso)}`);
+      const peticionIdCurso = await fetch(`http://localhost:8000/curso/nombre/${encodeURIComponent(nombreCurso)}`);
       if (!peticionIdCurso.ok) {
         throw new Error(`Error al obtener ID del curso: ${peticionIdCurso.status}`);
       }

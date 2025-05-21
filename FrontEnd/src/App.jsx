@@ -13,7 +13,7 @@ import SecretaryLoginPage from './pages/SecretaryLoginPage';
 import StudentMicrocredentialPage from './pages/StudentMicrocredentialPage';
 import QRPrerequisitesPage from './pages/QRPrerequisitesPage';
 import QRInicioSesionPage from './pages/QRInicioSesionPage';
-import QREmitirEducationalIDPage from './pages/QREmitirEducationaIDPage';
+import QREmitirEducationalIDPage from './pages/QREmitir';
 import ProtectedRoute from './components/ProtectedRouteSecretary';
 import ProtectedRouteStudents from './components/ProtectedRouteStudents';
 import { StudentProvider } from './components/StudentContext';
@@ -33,7 +33,7 @@ const router = createBrowserRouter(
       <Route path='/studentLogin' element={<StudentLoginPage />} />
       <Route path='/secretaryLogin' element={<SecretaryLoginPage />} />
       <Route path='/studentLogin/qr' element={<QRInicioSesionPage />} />
-      <Route path='/microcredentials/solicitar/EducationalID' element={<QREmitirEducationalIDPage />}/>
+      <Route path='/microcredentials/solicitar' element={<QREmitirEducationalIDPage />}/>
       
       <Route element={<SecretaryLayout />}>
         <Route index path='/secretary' element={<ProtectedRoute><SecretaryPage /></ProtectedRoute>} />
