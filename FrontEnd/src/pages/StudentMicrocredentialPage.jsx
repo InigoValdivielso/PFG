@@ -10,7 +10,7 @@ const StudentMicrocredentialPage = ({ }) => {
   const [checkedCredentials, setCheckedCredentials] = useState({});
   const [selectAll, setSelectAll] = useState(false);
 
-   const fetchCredentialInfoFromMongo = async (credencialId) => {
+  const fetchCredentialInfoFromMongo = async (credencialId) => {
     try {
       const response = await fetch(`http://localhost:4000/credenciales/${credencialId}`); // Ruta a tu método de MongoDB
       if (!response.ok) {
@@ -25,46 +25,55 @@ const StudentMicrocredentialPage = ({ }) => {
   };
 
   useEffect(() => {
-    const fetchAndProcessCredentials = async () => {
-      if (studentInfo?.credenciales) {
-        const solicitablesWithNames = [];
-        const initialChecked = {};
+  const fetchAndProcessEnrollments = async () => {
+    if (studentInfo?.cursos && studentInfo?.dni) {
+      const acceptedCoursesInfo = [];
+      const initialChecked = {};
 
-        for (const credencialId of studentInfo.credenciales) {
-          try {
-            // Primero, verifica si la credencial es "solicitable"
-            const statusResponse = await fetch(`http://localhost:8000/credenciales/${credencialId}`);
-            if (!statusResponse.ok) {
-              console.error(`Error fetching status for ${credencialId}:`, statusResponse.status);
-              continue;
-            }
-            const statusData = await statusResponse.json();
-
-            if (statusData?.estado === "solicitable") {
-              const mongoInfo = await fetchCredentialInfoFromMongo(credencialId);
-              let nameToShow = `Microcredencial ID: ${credencialId}`;
-              if (mongoInfo?.presentationDefinition?.input_descriptors?.[0]?.id) {
-                nameToShow = mongoInfo.presentationDefinition.input_descriptors[0].id;
-              }
-
-              solicitablesWithNames.push({
-                id: credencialId,
-                name: nameToShow,
-              });
-              initialChecked[credencialId] = false;
-            }
-          } catch (error) {
-            console.error(`Error processing credencial ${credencialId}:`, error);
+      for (const cursoId of studentInfo.cursos) {
+        try {
+          const courseResponse = await fetch(`http://localhost:8000/estudiante/${cursoId}`);
+          if (!courseResponse.ok) {
+            console.error(`Error fetching enrollment for course ${cursoId}:`, courseResponse.status);
+            continue;
           }
+          const courseDetail = await courseResponse.json();
+
+          if (courseDetail?.estudiantes) {
+            const isAccepted = courseDetail.estudiantes.some(
+              estudiante => estudiante.dni === studentInfo.dni && estudiante.estado_curso === "aceptada"
+            );
+
+            // Siempre vamos a mostrar el curso, pero marcado solo si está aceptado
+            let courseName = `Curso ID: ${cursoId}`;
+            try {
+              const cursoInfoResponse = await fetch(`http://localhost:8000/curso/${cursoId}`);
+              if (cursoInfoResponse.ok) {
+                const cursoInfo = await cursoInfoResponse.json();
+                courseName = cursoInfo.nombre;
+              } else {
+                console.warn(`No se pudo obtener el nombre del curso ${cursoId}`);
+              }
+            } catch (error) {
+              console.error(`Error fetching curso info for ${cursoId}:`, error);
+            }
+
+            const credentialId = cursoId.toString();
+            acceptedCoursesInfo.push({ id: credentialId, name: courseName });
+            initialChecked[credentialId] = isAccepted;
+          }
+        } catch (error) {
+          console.error(`Error processing course ${cursoId}:`, error);
         }
-
-        setSolicitableCredentialsInfo(solicitablesWithNames);
-        setCheckedCredentials(initialChecked);
       }
-    };
 
-    fetchAndProcessCredentials();
-  }, [studentInfo?.credenciales]);
+      setSolicitableCredentialsInfo(acceptedCoursesInfo);
+      setCheckedCredentials(initialChecked);
+    }
+  };
+
+  fetchAndProcessEnrollments();
+}, [studentInfo?.cursos, studentInfo?.dni]);
 
   const handleButtonClick = () => {
     const selectedCredentials = Object.keys(checkedCredentials).filter(
@@ -87,7 +96,7 @@ const StudentMicrocredentialPage = ({ }) => {
   useEffect(() => {
     setSelectAll(
       solicitableCredentialsInfo.length > 0 &&
-        solicitableCredentialsInfo.every(credencial => checkedCredentials[credencial.id])
+      solicitableCredentialsInfo.every(credencial => checkedCredentials[credencial.id])
     );
   }, [checkedCredentials, solicitableCredentialsInfo]);
 

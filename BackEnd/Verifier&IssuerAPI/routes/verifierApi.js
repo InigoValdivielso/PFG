@@ -97,4 +97,24 @@ router.get('/infoSesionVerificacionGuardar/:id', async (req, res) => {
     res.status(500).send('Error al procesar la solicitud');
   }
 });
+router.post('/emitirCredencial', async (req, res) => {
+  try {
+    const { credential } = req.body;
+    const response = await axios.post(`http://localhost:7002/openid4vc/jwt/issue`, credential, {
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
+    if (response.status === 200) {
+      return res.status(200).json(response.data);
+    } else {
+      return res.status(response.status).json({ message: "Error al emitir credencial" });
+    }
+  } catch (error) {
+    console.error('Error al emitir credencial', error.message);
+    res.status(500).send('Error al procesar la solicitud');
+  }
+}
+);
 module.exports = router

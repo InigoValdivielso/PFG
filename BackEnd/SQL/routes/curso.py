@@ -6,6 +6,7 @@ from models.curso import curso
 from models.requisitos import requisitos
 from schemas.curso import Curso
 
+
 curso_routes = APIRouter()
 
 @curso_routes.post("/crearCurso", tags=["Gestión de cursos"])
@@ -111,6 +112,31 @@ def obtener_curso_por_nombre(nombre: str, db: Session = Depends(get_db)):
         "requisitos": requisitos_nombres
     }
 
+@curso_routes.get("/curso/{curso_id}", tags=["Gestión de cursos"])
+def obtener_curso_por_id(curso_id: int, db: Session = Depends(get_db)):
+    print(f"Tipo de curso_id: {type(curso_id)}, Valor de curso_id: {curso_id}")
+    curso_data = db.execute(
+        select(curso).where(curso.c.id == curso_id)
+    ).fetchone()
+
+    if not curso_data:
+        raise HTTPException(status_code=404, detail="Curso no encontrado")
+
+    # Obtener los requisitos asociados al curso
+    j = join(requisitos, curso, requisitos.c.requisito_id == curso.c.id)
+    reqs = db.execute(
+        select(curso).select_from(j).where(requisitos.c.curso_id == curso_id)
+    ).fetchall()
+
+    requisitos_nombres = [{"id": r.id, "nombre": r.nombre} for r in reqs]
+
+    return {
+        "id": curso_data.id,
+        "nombre": curso_data.nombre,
+        "descripcion": curso_data.descripcion,
+        "duracion": curso_data.duracion,
+        "requisitos": requisitos_nombres
+    }
 
 @curso_routes.delete("/curso/{id}", tags=["Gestión de cursos"])
 def borrar_curso(id: int, db: Session = Depends(get_db)):
