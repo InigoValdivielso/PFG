@@ -83,7 +83,25 @@ def create_estudiante(estudiante_data: EstudianteCrear, db: Session = Depends(ge
         existing_estudiante = db.query(estudiante).filter(estudiante.c.did == estudiante_data.did).first()
         if existing_estudiante:
             existing_nia = existing_estudiante.NIA
-            raise HTTPException(status_code=400, detail=f"El estudiante con NIA '{existing_nia}' ya existe.")
+            cursos_ids = datos.get("cursos", [])
+            for curso_id in cursos_ids:
+                # Verificar si ya existe la relación estudiante-curso
+                existing_relation = db.query(estudiante_curso).filter(
+                    estudiante_curso.c.estudiante_id == existing_nia,
+                    estudiante_curso.c.curso_id == curso_id
+                ).first()
+                if not existing_relation:
+                    # Insertar la relación si no existe
+                    db.execute(
+                        estudiante_curso.insert().values(
+                            estudiante_id=existing_nia, curso_id=curso_id, estado="en proceso"
+                        )
+                    )
+            db.commit()
+            raise HTTPException(
+                status_code=400,
+                detail=f"El estudiante con NIA '{existing_nia}' ya existe. Se han añadido los nuevos cursos."
+            )
 
 
         # Separar los campos del estudiante de los relacionados
