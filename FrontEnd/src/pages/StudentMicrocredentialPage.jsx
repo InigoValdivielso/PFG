@@ -76,6 +76,7 @@ const StudentMicrocredentialPage = ({ }) => {
 }, [studentInfo?.cursos, studentInfo?.dni]);
 
   const handleButtonClick = () => {
+
     const selectedCourseIds = Object.keys(checkedCredentials).filter(
       (id) => checkedCredentials[id]
     );
