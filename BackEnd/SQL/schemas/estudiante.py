@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Optional, List
 from pydantic import BaseModel
 
@@ -8,9 +9,11 @@ class EstudianteCrear(BaseModel):
     segundo_apellido: str
     correo: str
     dni: str
+    fecha_nacimiento: date
     did: Optional[str] = None
     cursos: Optional[List[int]] = []
     credenciales: Optional[List[str]] = []
+    
 
 class Estudiante(BaseModel):
     NIA: int
@@ -19,6 +22,7 @@ class Estudiante(BaseModel):
     segundo_apellido: str
     correo: str
     dni: str
+    fecha_nacimiento: date
     did: Optional[str] = None
     cursos: Optional[List[int]] = []
     credenciales: Optional[List[str]] = []

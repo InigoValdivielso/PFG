@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, MetaData, Table, Column
+from sqlalchemy import Date, ForeignKey, MetaData, Table, Column
 from sqlalchemy.sql.sqltypes import Integer, String
 from config.db import meta
 from models.solicitud import solicitud
@@ -12,5 +12,6 @@ estudiante = Table("estudiante", meta,
                 Column("segundo_apellido", String(255)),
                 Column("correo", String(255)),
                 Column("dni", String(255)),
+                Column("fecha_nacimiento", Date),
                 Column("did", String(255), nullable=True))
 

@@ -1,40 +1,65 @@
 import React, { useEffect, useState } from "react";
 import logoDeusto from "../assets/images/LogoDeusto.png";
 import QRCode from "react-qr-code";
+import { useStudent } from "../components/StudentContext";
+import { useLocation } from 'react-router-dom';
+import { use } from "react";
+
 
 const QREmitir = () => {
-  const verificationUrl = `http://localhost:3000/verificar`; // URL de la API de verificación
-  const [verificationData, setVerificationData] = useState(null);
+  const issuerUrl = `http://localhost:3000/emitir`;
+  const [issuanceData, setIssueData] = useState(null);
   const [copyButtonText, setCopyButtonText] = useState(
     "Copiar respuesta al portapapeles"
   );
+  const { studentInfo } = useStudent();
+  const location = useLocation();
+  const curso = location.state?.selectedCourseNames[0];
 
   useEffect(() => {
-    const verifyCredential = async () => {
-      try {
-        const response = await fetch(verificationUrl, { method: "POST" });
-        let data = await response.text(); // Obtener el texto de la respuesta
-        data = data.replace(/^"(.*)"$/, "$1");
-        setVerificationData(data); // Guardar el texto de la respuesta
-        setVerificationStatus("verified"); // O ajusta según la respuesta que esperes
-      } catch (error) {
-        console.error("Error en la verificación:", error);
-        setVerificationStatus("error");
-      }
-    };
+    if (curso && studentInfo) {
+      const emissionRequests = {
+        courseName: curso,
+        studentInfo: {
+          email: studentInfo?.correo,
+          fechaNacimiento: studentInfo?.fecha_nacimiento ? `${studentInfo.fecha_nacimiento}T00:00:00+01:00` : '',
+          nombre: studentInfo?.nombre,
+          apellidos: `${studentInfo?.primer_apellido || ''} ${studentInfo?.segundo_apellido || ''}`.trim(),
+          nombreCompleto: `${studentInfo?.nombre || ''} ${studentInfo?.primer_apellido || ''} ${studentInfo?.segundo_apellido || ''}`.trim(),
+          dniPasaporte: studentInfo?.dni,
+        }
+      };
 
-    verifyCredential();
-  }, [verificationUrl]);
+      console.log("Emisión de credenciales iniciada con los siguientes datos:", emissionRequests);
+      const pasarInfo = async () => {
+        try {
+          const response = await fetch(issuerUrl, {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(emissionRequests),
+          });
+          let data = await response.text();
+          data = data.replace(/^"(.*)"$/, "$1");
+          setIssueData(data);
+        } catch (error) {
+          console.error("Error al pasar la información:", error);
+        }
+      };
+      pasarInfo();
+    }
+  }, [issuerUrl, curso, studentInfo]); // Dependencias actualizadas
 
   const copyToClipboard = () => {
     navigator.clipboard
-      .writeText(verificationData)
+      .writeText(issuanceData)
       .then(() => {
-        setCopyButtonText("Copiado"); // Cambia el texto a "Copiado"
+        setCopyButtonText("Copiado");
         setTimeout(
           () => setCopyButtonText("Copiar respuesta al portapapeles"),
           4000
-        ); // Vuelve al original después de 2 segundos
+        );
       })
       .catch((error) => {
         console.error("Error al copiar al portapapeles", error);
@@ -46,8 +71,8 @@ const QREmitir = () => {
       <img src={logoDeusto} alt="Deusto Logo" className="logo-deusto" />
       <div className="wallet-box">
         <h1>Obten tu Microcredencial: </h1>
-        {verificationData ? (
-          <QRCode value={verificationData} size={200} />
+        {issuanceData ? (
+          <QRCode value={issuanceData} size={200} />
         ) : (
           <div class="spinner-border" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -64,7 +89,7 @@ const QREmitir = () => {
         <button onClick={copyToClipboard} className="btnCopiar">
           {copyButtonText}
         </button>
-        
+
       </div>
 
       <style jsx>{`

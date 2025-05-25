@@ -34,6 +34,7 @@ function Accordion({ curso }) {
                         segundo_apellido: persona.segundo_apellido,
                         dni: persona.dni,
                         correo: persona.correo,
+                        fechaNacimiento: persona.fecha_nacimiento,
                         curso: curso,
                         curso_id: idCurso,
                         estado: s.estado,
@@ -104,6 +105,7 @@ function Accordion({ curso }) {
                             segundo_apellido={item.segundo_apellido}
                             dni={item.dni}
                             correo={item.correo}
+                            fechaNacimiento={item.fechaNacimiento}
                             curso={item.curso}
                             curso_id={item.curso_id}
                             estado={item.estado}
@@ -140,6 +142,7 @@ function Accordion({ curso }) {
                             segundo_apellido={item.segundo_apellido}
                             dni={item.dni}
                             correo={item.correo}
+                            fechaNacimiento={item.fechaNacimiento}
                             curso={item.curso}
                             curso_id={item.curso_id}
                             estado={item.estado}
@@ -176,6 +179,7 @@ function Accordion({ curso }) {
                             segundo_apellido={item.segundo_apellido}
                             dni={item.dni}
                             correo={item.correo}
+                            fechaNacimiento={item.fechaNacimiento}
                             curso={item.curso}
                             curso_id={item.curso_id}
                             estado={item.estado}

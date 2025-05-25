@@ -13,8 +13,10 @@ app.use(cors({
 
   
 
-const newsRouter = require('./routes/verifierApi')
-app.use('/verificar', newsRouter)
+const verifierRouter = require('./routes/verifierApi')
+const issuerRouter = require('./routes/issuerApi')
+app.use('/emitir', issuerRouter)
+app.use('/verificar', verifierRouter)
 
 
 app.listen(3000, () => console.log('Server is running on port 3000'))

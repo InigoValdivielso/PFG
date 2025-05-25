@@ -3,7 +3,7 @@ import AccordionTable from "./AccordionTable";
 import CredentialTable from "./CredentialTable";
 import ModalSecretary from './ModalSecretary';
 
-function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, dni, curso, curso_id, estado, credenciales, onAccept, onReject }) {
+function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fechaNacimiento, id, dni, curso, curso_id, estado, credenciales, onAccept, onReject }) {
     const [credencialesData, setCredencialesData] = useState([]);
     const [estudiantedid, setEstudianteDid] = useState([]);
     const [estudianteIdCredenciales, setEstudianteIdCredenciales] = useState([]);
@@ -17,6 +17,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, id, 
         correo: `${primer_apellido.toLowerCase()}.${nombre.toLowerCase()}@opendeusto.es`,
         dni: dni,
         did: estudiantedid,
+        fecha_nacimiento: fechaNacimiento,
         cursos: [curso_id],
         credenciales: [estudianteIdCredenciales]
     });
