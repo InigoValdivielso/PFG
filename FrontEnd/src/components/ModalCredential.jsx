@@ -7,22 +7,22 @@ function ModalCredential({title, description, id}) {
               rel="stylesheet"
               href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
           />
-          <button className="accordion-button material-symbols-outlined" data-bs-toggle="modal" data-bs-target={toggleId}>
+          <button className="accordion-button material-symbols-outlined" data-bs-toggle="modal" data-bs-target={toggleId} aria-label="Mostrar ayuda">
             question_mark
           </button>
 
-          <div className="modal fade" id={id} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div className="modal fade" id={id} tabIndex="-1" aria-labelledby={`${id}-label`} aria-hidden="true" role="dialog" aria-modal="true" data-testid={id}>
               <div className="modal-dialog">
                   <div className="modal-content">
                       <div className="modal-header">
-                          <h1 className="modal-title fs-5" id="exampleModalLabel">{title}</h1>
-                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          <h1 className="modal-title fs-5" id={`${id}-label`}>{title}</h1>
+                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" data-testid="close-button"></button>
                       </div>
                       <div className="modal-body">
                         <p>Debes de compartir tus microcredenciales: EducationalID{description}</p>
                       </div>
                       <div className="modal-footer">
-                          <button className="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                          <button className="btn btn-secondary" role="button" data-bs-dismiss="modal" aria-label="Cerrar modal" data-testid="close-button-footer">Cerrar</button>
                       </div>
                   </div>
               </div>

@@ -29,7 +29,7 @@ const PrerequisitesPage = () => {
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
 
   const handleButtonClick = () => {
-    navigate("/comparteCredenciales", {state : {nombresRequisitos}});
+    navigate("/comparteCredenciales", { state: { nombresRequisitos } });
   };
 
   const formatRequisitos = (requisitos) => {
@@ -207,7 +207,7 @@ const PrerequisitesPage = () => {
       const solicitudData = await solicitudResponse.json();
       console.log('Respuesta del servidor (solicitud):', solicitudData);
       if (solicitudData && solicitudData.status === "Solicitud insertada") {
-        setMostrarModalExito(true); 
+        setMostrarModalExito(true);
         setTimeout(() => {
           setMostrarModalExito(false);
           navigate('/');
@@ -223,7 +223,7 @@ const PrerequisitesPage = () => {
       setError(err.message);
     } finally {
       setLoading(false);
-      setEnviar(false); 
+      setEnviar(false);
     }
   };
 
@@ -270,7 +270,7 @@ const PrerequisitesPage = () => {
 
   const isFormValid =
     (isEmailValid &&
-      nombrePesona &&
+      nombrePersona &&
       primerApellido &&
       segundoApellido &&
       birthDate &&
@@ -323,8 +323,9 @@ const PrerequisitesPage = () => {
                   <form className="row g-3 needs-validation was-validated">
                     <div className="row g-2">
                       <div className="col-md-3">
-                        <label className="form-label">Nombre</label>
+                        <label className="form-label" htmlFor="nombre">Nombre</label>
                         <input
+                          id="nombre"
                           type="text"
                           className="form-control"
                           value={nombrePersona}
@@ -334,8 +335,9 @@ const PrerequisitesPage = () => {
                       </div>
                       <div className="col-md-4">
                         <div className="separar">
-                          <label className="form-label">Primer apellido</label>
+                          <label className="form-label" htmlFor="primerApellido">Primer apellido</label>
                           <input
+                            id="primerApellido"
                             type="text"
                             className="form-control"
                             value={primerApellido}
@@ -346,8 +348,9 @@ const PrerequisitesPage = () => {
                       </div>
                       <div className="col-md-4">
                         <div className="separar">
-                          <label className="form-label">Segundo apellido</label>
+                          <label className="form-label" htmlFor="segundoApellido">Segundo apellido</label>
                           <input
+                            id="segundoApellido"
                             type="text"
                             className="form-control"
                             value={segundoApellido}
@@ -538,7 +541,7 @@ const PrerequisitesPage = () => {
         {mostrarModalExito && (
           <ModalAceptado
             isOpen={mostrarModalExito}
-            onClose={() => setMostrarModalExito(false)} 
+            onClose={() => setMostrarModalExito(false)}
             mensaje="Solicitud registrada correctamente, muchas gracias"
           />
         )}

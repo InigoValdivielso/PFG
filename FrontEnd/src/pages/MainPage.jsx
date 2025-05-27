@@ -320,6 +320,7 @@ const MainPage = () => {
                                         <input
                                             type="button"
                                             id="mas-resultados"
+                                            data-testid="boton-cargar-mas"
                                             value={cargando ? "Cargando..." : "Cargar más"}
                                             onClick={() => setPagina(prev => prev + 1)}
                                             disabled={cargando}

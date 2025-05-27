@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import AccordionItemActas from './AccordionItemActas';
 
-function Accordion({ curso }) {
+function AccordionActas({ curso }) {
     const [items, setItems] = useState([]);
     const [idCurso, setIdCurso] = useState(null);
 
@@ -82,4 +82,4 @@ function Accordion({ curso }) {
     );
 }
 
-export default Accordion;
+export default AccordionActas;

@@ -74,8 +74,8 @@ const QREmitir = () => {
         {issuanceData ? (
           <QRCode value={issuanceData} size={200} />
         ) : (
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
           </div>
         )}
         <p className="verification-text">
@@ -92,7 +92,7 @@ const QREmitir = () => {
 
       </div>
 
-      <style jsx>{`
+      <style>{`
         html,
         body,
         #root {

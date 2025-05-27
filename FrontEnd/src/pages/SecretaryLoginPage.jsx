@@ -2,7 +2,7 @@ import logoDeusto from "../assets/images/LogoDeusto.png";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const StudentLoginPage = () => {
+const SecretaryLoginPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -148,4 +148,4 @@ const StudentLoginPage = () => {
     );
 };
 
-export default StudentLoginPage;
+export default SecretaryLoginPage;

@@ -14,7 +14,6 @@ function AccordionItemActas({ nombre, primer_apellido, segundo_apellido, correo,
 
     const handleCloseAcceptModal = () => {
         setShowAcceptModal(false);
-        crearEstudianteEnBackend();
     };
 
     const confirmAccept = async () => {

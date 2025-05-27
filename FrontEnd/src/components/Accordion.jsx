@@ -6,11 +6,6 @@ function Accordion({ curso }) {
 
     const [items, setItems] = useState([]);
 
-    // Función para eliminar un ítem
-    //const handleDelete = (id) => {
-    //    setItems(prevItems => prevItems.filter(item => item.id !== id));
-    //};
-
     useEffect(() => {
         const fetchSolicitudes = async () => {
             try {
@@ -83,6 +78,7 @@ function Accordion({ curso }) {
     return (
         <>
             <h3
+                id="headingSolicitantes"
                 className="titulo"
                 style={{
                     textAlign: "left",
@@ -94,7 +90,7 @@ function Accordion({ curso }) {
             >
                 Solicitantes
             </h3>
-            <div className="accordion" id="accordionExample">
+            <div className="accordion" id="accordionExample" role="region" aria-labelledby="headingSolicitantes">
                 {pendingItems.length > 0 ? (
                     pendingItems.map(item => (
                         <AccordionItem
@@ -119,6 +115,7 @@ function Accordion({ curso }) {
                 )}
             </div>
             <h3
+                id="headingAceptadas"
                 className="titulo"
                 style={{
                     textAlign: "left",
@@ -131,7 +128,7 @@ function Accordion({ curso }) {
             >
                 Solicitudes aceptadas
             </h3>
-            <div className="accordion" id="acceptedAccordion">
+            <div className="accordion" id="acceptedAccordion" role="region"  aria-labelledby="headingAceptadas">
                 {acceptedItems.length > 0 ? (
                     acceptedItems.map(item => (
                         <AccordionItem
@@ -156,6 +153,7 @@ function Accordion({ curso }) {
                 )}
             </div>
             <h3
+                id="headingRechazadas"
                 className="titulo"
                 style={{
                     textAlign: "left",
@@ -168,7 +166,7 @@ function Accordion({ curso }) {
             >
                 Solicitudes rechazadas
             </h3>
-            <div className="accordion" id="rejectedAccordion">
+            <div className="accordion" id="rejectedAccordion" role="region" aria-labelledby="headingRechazadas">
                 {rejectedItems.length > 0 ? (
                     rejectedItems.map(item => (
                         <AccordionItem

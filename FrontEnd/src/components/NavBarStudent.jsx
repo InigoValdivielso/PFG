@@ -20,25 +20,25 @@ function NavBarStudent() {
     <>
       <div style={{backgroundColor: "#313338", width: "100%", position: "fixed", zIndex: "1000", padding: "0", margin: "0"}}>
         <img src={logoDeusto} alt="logo Deusto" style={{width: "10%", padding: "0.5%"}} />
-        <div class="btn-group" id="menu" style={{marginRight: "2%", marginLeft:"80%"}}>
+        <div className="btn-group" id="menu" style={{marginRight: "2%", marginLeft:"80%"}}>
           <button
-            class="btn btn-secondary btn-sm dropdown-toggle"
+            className="btn btn-secondary btn-sm dropdown-toggle"
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
             id="botonMenu"
             style={{backgroundColor: "#313338"}}
           >
-            <span class="material-symbols-outlined" id="icono">account_circle</span>
+            <span className="material-symbols-outlined" id="icono">account_circle</span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-lg-end" id="submenu" style={{boxShadow: "0px 0px 10px 0px #000000"}}>
-            <li><p class="dropdown-item" style={{fontSize: "90%"}}>Hola {studentInfo?.nombre}!</p></li>
-            <li><hr class="dropdown-divider"/></li>
-            <li><a class="dropdown-item" href="" onClick={() => handleButtonClick()} style={{fontSize: "90%"}}>Mi perfil</a></li>
-            <li><a class="dropdown-item" href="#" style={{fontSize: "90%"}}>Acerca de</a></li>
-            <li><a class="dropdown-item" href="#" style={{fontSize: "90%"}}>Contacto</a></li>
-            <li><hr class="dropdown-divider"/></li>
-            <li><a class="dropdown-item" href="" style={{fontSize: "90%"}} onClick={() => logOut()}>Cerrar sesion</a></li>   
+          <ul className="dropdown-menu dropdown-menu-lg-end" id="submenu" style={{boxShadow: "0px 0px 10px 0px #000000"}}>
+            <li><p className="dropdown-item" style={{fontSize: "90%"}}>Hola {studentInfo?.nombre}!</p></li>
+            <li><hr className="dropdown-divider"/></li>
+            <li><a className="dropdown-item" href="" onClick={() => handleButtonClick()} style={{fontSize: "90%"}}>Mi perfil</a></li>
+            <li><a className="dropdown-item" href="#" style={{fontSize: "90%"}}>Acerca de</a></li>
+            <li><a className="dropdown-item" href="#" style={{fontSize: "90%"}}>Contacto</a></li>
+            <li><hr className="dropdown-divider"/></li>
+            <li><a className="dropdown-item" href="" style={{fontSize: "90%"}} onClick={() => logOut()}>Cerrar sesion</a></li>   
           </ul>
         </div>
       </div>

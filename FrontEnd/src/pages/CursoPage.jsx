@@ -174,7 +174,7 @@ const CursoPage = () => {
                       src="https://www.deusto.es/estaticos/ud/iconNucleo/time-clock.svg"
                     />
                     <h3>Duración</h3>
-                    <p>
+                    <p data-testid="duracion-texto">
                       {duracion} horas de formación presencial o en presencia virtual.
                     </p>
                   </div>

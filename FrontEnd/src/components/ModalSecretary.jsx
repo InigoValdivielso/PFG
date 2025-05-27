@@ -10,7 +10,7 @@ function ModalSecretary({ id, title, description, show, handleClose, handleConfi
 
     return (
         <>
-            <div className="modal show" id={id} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: 'block' }}>
+            <div className="modal show" id={id} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" role="dialog" style={{ display: 'block' }}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">

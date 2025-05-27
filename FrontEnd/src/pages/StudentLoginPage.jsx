@@ -15,48 +15,51 @@ const StudentLoginPage = () => {
   const hostedDomain = 'opendeusto.es';
 
   const googleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
+  onSuccess: async (tokenResponse) => {
+    try {
       console.log('Token Response:', tokenResponse);
+
       const accessToken = tokenResponse.access_token;
+      if (!accessToken) {
+        console.error('Access token no encontrado.');
+        return;
+      }
 
-      if (accessToken) {
-        try {
-          const response = await fetch('https://www.googleapis.com/oauth2/v1/userinfo', {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          const userData = await response.json();
-          console.log('User Data from Google:', userData);
+      const response = await fetch('https://www.googleapis.com/oauth2/v1/userinfo', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-          if (userData.email && userData.email.endsWith(`@${hostedDomain}`)) {
-            const email = userData.email;
+      const userData = await response.json();
+      console.log('User Data from Google:', userData);
 
-            const backendResponse = await fetch(`http://localhost:8000/estudiante/correo?correo=${email}`);
-            const backendData = await backendResponse.json();
+      if (userData.email && userData.email.endsWith(`@${hostedDomain}`)) {
+        const email = userData.email;
 
-            if (backendResponse.ok) {
-              const studentInfo = backendData;
-              setStudentInfo(studentInfo);
-              localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
-              sessionStorage.setItem('token', accessToken);
-              navigate('/studentPortal');
-            } else {
-              console.error('Error del backend:', backendData);
-            }
-          } else {
-            console.error('El correo no pertenece a @opendeusto.es');
-          }
-        } catch (error) {
-          console.error('Error al obtener la información del usuario de Google:', error);
+        const backendResponse = await fetch(`http://localhost:8000/estudiante/correo?correo=${email}`);
+        const backendData = await backendResponse.json();
+
+        if (backendResponse.ok) {
+          const studentInfo = backendData;
+          setStudentInfo(studentInfo);
+          localStorage.setItem('studentInfo', JSON.stringify(studentInfo));
+          sessionStorage.setItem('token', accessToken);
+          navigate('/studentPortal');
+        } else {
+          console.error('Error del backend:', backendData);
         }
       } else {
-        console.error('Access token no encontrado.');
+        console.error('El correo no pertenece a @opendeusto.es');
       }
-    },
-    onError: response => console.log('Login Failed:', response),
-    hosted_domain: hostedDomain,
-  });
+    } catch (error) {
+      console.error('Error al obtener la información del usuario de Google:', error);
+    }
+  },
+  onError: (response) => console.log('Login Failed:', response),
+  hosted_domain: hostedDomain,
+});
+
 
   return (
     <>
@@ -93,6 +96,7 @@ const StudentLoginPage = () => {
             Acceso con cuenta @opendeusto
           </h5>
           <button
+            data-testid="google-login-button"
             className="btn btn-primary"
             id="loginButton"
             onClick={googleLogin}
@@ -241,6 +245,7 @@ const StudentLoginPage = () => {
           </a>
           <br />
           <button
+            data-testid="niu-login-button"
             className="btn btn-primary"
             id="enterButton"
             style={{ marginLeft: "35%", marginBottom: "5%", marginTop: "3%" }}
