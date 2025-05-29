@@ -9,7 +9,7 @@ const path = require("path");
 const courseToTemplateFile = {
   "Aprendizaje automático supervisado: Regresión y clasificación": "AprendizajeAutomaticoSupervisado.json",
   "Algoritmos avanzados de aprendizaje": "AlgoritmosAvanzadosDeAprendizaje.json",
-  "Aprendizaje no supervisado, recomendadores, aprendizaje por refuerzo": "AprendizajeNoSipervisado.json"
+  "Aprendizaje no supervisado, recomendadores, aprendizaje por refuerzo": "AprendizajeNoSupervisado.json"
 };
 
 router.post('/', async (req, res) => {

@@ -1,14 +1,11 @@
+import { MdHelpOutline } from 'react-icons/md';
 function ModalCredential({title, description, id}) {
   const toggleId = `#${id}`;
 
   return (
       <>
-          <link
-              rel="stylesheet"
-              href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
-          />
-          <button className="accordion-button material-symbols-outlined" data-bs-toggle="modal" data-bs-target={toggleId} aria-label="Mostrar ayuda">
-            question_mark
+          <button className="accordion-button" data-bs-toggle="modal" data-bs-target={toggleId} aria-label="Mostrar ayuda">
+            <MdHelpOutline size={24} />
           </button>
 
           <div className="modal fade" id={id} tabIndex="-1" aria-labelledby={`${id}-label`} aria-hidden="true" role="dialog" aria-modal="true" data-testid={id}>

@@ -5,6 +5,7 @@ import ModalCredential from "../components/ModalCredential";
 import { useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from "react-router-dom";
 import { useStudent } from "../components/StudentContext";
+import { MdLock } from 'react-icons/md';
 
 
 const StudentLoginPage = () => {
@@ -214,7 +215,7 @@ const StudentLoginPage = () => {
                 id="basic-addon1"
                 style={{ backgroundColor: "#f8f9fa" }}
               >
-                <span className="material-symbols-outlined">lock</span>
+                <MdLock size={20} />
               </span>
 
               <input

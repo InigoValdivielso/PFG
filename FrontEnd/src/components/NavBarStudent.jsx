@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import logoDeusto from "../assets/images/LogoDeustoBlanco.png";
 import { useStudent } from "./StudentContext";
+import { MdAccountCircle } from 'react-icons/md';
 
 
 function NavBarStudent() {
@@ -29,7 +30,7 @@ function NavBarStudent() {
             id="botonMenu"
             style={{backgroundColor: "#313338"}}
           >
-            <span className="material-symbols-outlined" id="icono">account_circle</span>
+            <MdAccountCircle size={24} />
           </button>
           <ul className="dropdown-menu dropdown-menu-lg-end" id="submenu" style={{boxShadow: "0px 0px 10px 0px #000000"}}>
             <li><p className="dropdown-item" style={{fontSize: "90%"}}>Hola {studentInfo?.nombre}!</p></li>
