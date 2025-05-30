@@ -9,5 +9,3 @@ estudiante_curso = Table("estudiante_curso", meta,
                          Column("curso_id", Integer, ForeignKey("curso.id")),
                          Column("estado", String(50))
 )
-
-

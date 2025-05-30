@@ -71,11 +71,7 @@ def insertar_credencial(credencial_data: Credencial, db: Session = Depends(get_d
 @credencial_routes.delete("/credencial/{id}", tags=["Gestión de credenciales"])
 def eliminar_credencial(id: str, db: Session = Depends(get_db)):
     try:
-        # 1. Eliminar las solicitudes de documento asociadas a la credencial
-        delete_solicitudes = solicitud_doc.delete().where(solicitud_doc.c.id_credencial == id)
-        db.execute(delete_solicitudes)
-
-        # 2. Consultar la credencial para obtener el estudiante asociado ANTES de eliminarla
+       
         credencial_result = db.execute(
             select(credencial).where(credencial.c.id == id)
         ).fetchone()
@@ -85,23 +81,25 @@ def eliminar_credencial(id: str, db: Session = Depends(get_db)):
 
         estudiante_nia = credencial_result[2]
 
-        # 3. Eliminar la credencial
+        delete_solicitudes = solicitud_doc.delete().where(solicitud_doc.c.id_credencial == id)
+        db.execute(delete_solicitudes)
+        
         delete_credencial = credencial.delete().where(credencial.c.id == id)
         result = db.execute(delete_credencial)
         if result.rowcount == 0:
             raise HTTPException(status_code=404, detail="Credencial no encontrada para eliminar")
 
-        # 4. Consultar al estudiante asociado y actualizar sus credenciales
+        
         estudiante_obj = db.execute(
             select(estudiante).where(estudiante.c.NIA == estudiante_nia)
         ).fetchone()
 
         if estudiante_obj:
-            # Asumiendo que la tabla 'estudiante' tiene una columna 'credenciales' que es una lista de IDs
+            
             estudiante_credenciales = estudiante_obj[0].credenciales if hasattr(estudiante_obj[0], 'credenciales') else estudiante_obj._mapping.get('credenciales', [])
             if estudiante_credenciales:
                 nuevas_credenciales = [cred_id for cred_id in estudiante_credenciales if cred_id != id]
-                # Actualizar la columna 'credenciales' del estudiante
+                
                 update_estudiante = estudiante.update().where(estudiante.c.NIA == estudiante_nia).values(credenciales=nuevas_credenciales)
                 db.execute(update_estudiante)
 
@@ -109,4 +107,5 @@ def eliminar_credencial(id: str, db: Session = Depends(get_db)):
         return {"status": "Credencial y solicitudes asociadas eliminadas y estudiante actualizado", "id": id, "estudiante_nia": estudiante_nia}
     except Exception as e:
         db.rollback()
+        print(f"Error al eliminar credencial: {e}")
         raise HTTPException(status_code=500, detail=str(e))

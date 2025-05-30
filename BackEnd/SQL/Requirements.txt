@@ -5,3 +5,7 @@ mysql-connector-python
 authlib
 PyJWT
 cryptography
+pytest
+pytest-asyncio
+httpx
+pytest-sqlalchemy
