@@ -11,7 +11,7 @@ const MainPage = () => {
 
     const cargarCursos = (paginaActual) => {
         setCargando(true);
-        fetch(`http://localhost:8000/cursos?page=${paginaActual}&limit=10`)
+        fetch(`http://localhost:5000/sql/cursos?page=${paginaActual}&limit=10`)
             .then(res => res.json())
             .then(data => {
                 const nuevosCursos = data.cursos || []; 

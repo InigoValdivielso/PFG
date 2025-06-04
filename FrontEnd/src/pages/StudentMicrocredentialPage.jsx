@@ -19,7 +19,7 @@ const StudentMicrocredentialPage = ({ }) => {
 
         for (const cursoId of studentInfo.cursos) {
           try {
-            const courseResponse = await fetch(`http://localhost:8000/estudiante/${cursoId}`);
+            const courseResponse = await fetch(`http://localhost:5000/sql/estudiante/${cursoId}`);
             if (!courseResponse.ok) {
               console.error(`Error fetching enrollment for course ${cursoId}:`, courseResponse.status);
               continue;
@@ -34,7 +34,7 @@ const StudentMicrocredentialPage = ({ }) => {
               if (isAccepted) {
                 let courseName = `Curso ID: ${cursoId}`;
                 try {
-                  const cursoInfoResponse = await fetch(`http://localhost:8000/curso/${cursoId}`);
+                  const cursoInfoResponse = await fetch(`http://localhost:5000/sql/curso/${cursoId}`);
                   if (cursoInfoResponse.ok) {
                     const cursoInfo = await cursoInfoResponse.json();
                     courseName = cursoInfo.nombre;

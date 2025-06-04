@@ -73,7 +73,7 @@ const PrerequisitesPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const sesionResponse = await fetch(`http://localhost:3000/verificar/infoSesionVerificacionGuardar/${idVerificacion}`, {
+      const sesionResponse = await fetch(`http://localhost:5000/verifierIssuer/verificar/infoSesionVerificacionGuardar/${idVerificacion}`, {
         method: "GET",
         headers: {
           "accept": "application/json",
@@ -126,7 +126,7 @@ const PrerequisitesPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const insertarPersonaResponse = await fetch("http://localhost:8000/persona", {
+      const insertarPersonaResponse = await fetch("http://localhost:5000/sql/persona", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -154,7 +154,7 @@ const PrerequisitesPage = () => {
         setError("No se obtuvo el ID de la persona.");
         return;
       }
-      const insertarCredencial = await fetch(`http://localhost:8000/credencial`, {
+      const insertarCredencial = await fetch(`http://localhost:5000/sql/credencial`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -171,7 +171,7 @@ const PrerequisitesPage = () => {
       const credencialData = await insertarCredencial.json();
       console.log('Respuesta del servidor (credencial):', credencialData);
 
-      const peticionIdCurso = await fetch(`http://localhost:8000/curso/nombre/${encodeURIComponent(nombreCurso)}`);
+      const peticionIdCurso = await fetch(`http://localhost:5000/sql/curso/nombre/${encodeURIComponent(nombreCurso)}`);
       if (!peticionIdCurso.ok) {
         throw new Error(`Error al obtener ID del curso: ${peticionIdCurso.status}`);
       }
@@ -184,7 +184,7 @@ const PrerequisitesPage = () => {
         return;
       }
 
-      const solicitudResponse = await fetch('http://localhost:8000/solicitud', {
+      const solicitudResponse = await fetch('http://localhost:5000/sql/solicitud', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

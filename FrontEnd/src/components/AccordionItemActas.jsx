@@ -19,7 +19,7 @@ function AccordionItemActas({ nombre, primer_apellido, segundo_apellido, correo,
     const confirmAccept = async () => {
         try {
             const response = await fetch(
-                `http://localhost:8000/estudiante/${NIA}/curso/${curso_id}/estado?nuevo_estado=aceptada`,
+                `http://localhost:5000/sql/estudiante/${NIA}/curso/${curso_id}/estado?nuevo_estado=aceptada`,
                 {
                     method: 'PUT',
                     headers: {

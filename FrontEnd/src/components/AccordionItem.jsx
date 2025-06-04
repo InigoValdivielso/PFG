@@ -29,7 +29,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
                 const fetchedData = await Promise.all(
                     credenciales.map(async (credencial) => {
 
-                        const response = await fetch(`http://localhost:4000/credenciales/${encodeURIComponent(credencial)}`);
+                        const response = await fetch(`http://localhost:5000/mongo/credenciales/${encodeURIComponent(credencial)}`);
                         const data = await response.json();
                         const nombresCredenciales = data.presentationDefinition.input_descriptors.map(descriptor => descriptor.id);
                         return {
@@ -80,7 +80,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
         }
 
         try {
-            const response = await fetch(`http://localhost:8000/estudiante/${nia}/credenciales`, {
+            const response = await fetch(`http://localhost:5000/sql/estudiante/${nia}/credenciales`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
 
     const crearEstudianteEnBackend = async () => {
         try {
-            const response = await fetch('http://localhost:8000/estudiante', {
+            const response = await fetch('http://localhost:5000/sql/estudiante', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
 
     const confirmAccept = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/solicitud/${id}`, {
+            const response = await fetch(`http://localhost:5000/sql/solicitud/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
 
     const confirmReject = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/solicitud/${id}`, {
+            const response = await fetch(`http://localhost:5000/sql/solicitud/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

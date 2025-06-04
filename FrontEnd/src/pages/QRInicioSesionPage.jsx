@@ -5,7 +5,7 @@ import QRCode from "react-qr-code";
 import { useStudent } from "../components/StudentContext";
 
 const QRInicioSesionPage = () => {
-  const verificationUrl = `http://localhost:3000/verificar/login`;
+  const verificationUrl = `http://localhost:5000/verifierIssuer/verificar/login`;
   const [verificationData, setVerificationData] = useState(null);
   const [copyButtonText, setCopyButtonText] = useState("Copiar respuesta al portapapeles");
   const [isVerified, setIsVerified] = useState(false);
@@ -70,7 +70,7 @@ const QRInicioSesionPage = () => {
     console.log("Llamando a obtenerCorreo con ID:", currentId);
     if (!currentId) return;
     try {
-      const response = await fetch(`http://localhost:3000/verificar/infoSesionVerificacion/${currentId}`, {
+      const response = await fetch(`http://localhost:5000/verifierIssuer/verificar/infoSesionVerificacion/${currentId}`, {
         method: "GET",
         headers: { "accept": "application/json" },
       });
@@ -87,7 +87,7 @@ const QRInicioSesionPage = () => {
         console.log("Correo encontrado:", mail);
 
         if (mail.endsWith('@opendeusto.es')) {
-          const backendResponse = await fetch(`http://localhost:8000/estudiante/correo?correo=${mail}`);
+          const backendResponse = await fetch(`http://localhost:5000/sql/estudiante/correo?correo=${mail}`);
           const backendData = await backendResponse.json();
 
           if (backendResponse.ok) {

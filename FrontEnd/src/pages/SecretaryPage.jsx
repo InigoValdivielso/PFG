@@ -13,7 +13,7 @@ const SecretaryPage = () => {
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const response = await fetch("http://localhost:8000/cursos/nombres");
+        const response = await fetch("http://localhost:5000/sql/cursos/nombres");
         const data = await response.json();
         setCursos(data.cursos);
       } catch (error) {

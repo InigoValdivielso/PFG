@@ -38,7 +38,7 @@ const StudentLoginPage = () => {
       if (userData.email && userData.email.endsWith(`@${hostedDomain}`)) {
         const email = userData.email;
 
-        const backendResponse = await fetch(`http://localhost:8000/estudiante/correo?correo=${email}`);
+        const backendResponse = await fetch(`http://localhost:5000/sql/estudiante/correo?correo=${email}`);
         const backendData = await backendResponse.json();
 
         if (backendResponse.ok) {

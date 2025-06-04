@@ -7,7 +7,7 @@ import { use } from "react";
 
 
 const QREmitir = () => {
-  const issuerUrl = `http://localhost:3000/emitir`;
+  const issuerUrl = `http://localhost:5000/verifierIssuer/emitir`;
   const [issuanceData, setIssueData] = useState(null);
   const [copyButtonText, setCopyButtonText] = useState(
     "Copiar respuesta al portapapeles"

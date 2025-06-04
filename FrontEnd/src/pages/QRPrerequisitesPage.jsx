@@ -4,7 +4,7 @@ import QRCode from "react-qr-code";
 import { useLocation } from 'react-router-dom';
 
 const QRPrerequisitesPage = () => {
-  const verificationUrl = `http://localhost:3000/verificar`;
+  const verificationUrl = `http://localhost:5000/verifierIssuer/verificar`;
   const [verificationData, setVerificationData] = useState(null);
   const [copyButtonText, setCopyButtonText] = useState(
     "Copiar respuesta al portapapeles"
@@ -78,7 +78,7 @@ const QRPrerequisitesPage = () => {
         vc_policies: ["signature", "expired", "not-before"]
       };
 
-      const response = await fetch("http://localhost:3000/verificar", {
+      const response = await fetch("http://localhost:5000/verifierIssuer/verificar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
