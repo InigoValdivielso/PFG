@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "jest-html-reporter": "^4.1.0",
     "supertest": "^7.1.1"
   },
   "scripts": {
@@ -20,7 +21,7 @@
         "jest-html-reporter",
         {
           "pageTitle": "Reporte de tests del microservicio Verifier & Issuer",
-          "outputPath": "jest-report.html",
+          "outputPath": "jest-report-VerifierIssuerAPI.html",
           "includeFailureMsg": true,
           "includeConsoleLog": true
         }

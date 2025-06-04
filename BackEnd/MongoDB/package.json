@@ -22,7 +22,7 @@
         "jest-html-reporter",
         {
           "pageTitle": "Reporte de tests del microservicio Mongo",
-          "outputPath": "jest-report.html",
+          "outputPath": "jest-report-MongoDB.html",
           "includeFailureMsg": true,
           "includeConsoleLog": true
         }
