@@ -15,6 +15,7 @@ dist-ssr
 .pytest_cache/
 .cache/
 __pycache__/
+*.html
 test.db
 *.sqlite
 *.sqlite3

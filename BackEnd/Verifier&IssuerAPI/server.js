@@ -12,7 +12,6 @@ app.use(cors({
   }));
 
   
-
 const verifierRouter = require('./routes/verifierApi')
 const issuerRouter = require('./routes/issuerApi')
 app.use('/emitir', issuerRouter)
@@ -21,7 +20,6 @@ app.use('/verificar', verifierRouter)
 
 app.listen(3000, () => console.log('Server is running on port 3000'))
 
-// Documentation
 
 
-//Para ejecutar el servidor, ejecuta el siguiente comando en la terminal: npm run devStart
+
