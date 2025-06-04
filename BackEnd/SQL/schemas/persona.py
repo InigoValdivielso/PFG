@@ -1,5 +1,5 @@
 from datetime import date
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class PersonaCrear(BaseModel):
     nombre: str
@@ -18,5 +18,4 @@ class Persona(BaseModel):
     dni: str
     fecha_nacimiento: date
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

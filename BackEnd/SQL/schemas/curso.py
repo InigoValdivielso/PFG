@@ -1,5 +1,5 @@
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class Curso(BaseModel):
     nombre: str
@@ -7,11 +7,9 @@ class Curso(BaseModel):
     duracion: str
     requisitos: Optional[List[int]] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class CursoID(BaseModel):
     id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

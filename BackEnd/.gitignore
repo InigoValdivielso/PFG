@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+.pytest_cache/
+.cache/
+__pycache__/
+test.db
+*.sqlite
+*.sqlite3
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

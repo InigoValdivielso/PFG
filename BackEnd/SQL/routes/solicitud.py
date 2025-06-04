@@ -87,7 +87,7 @@ def insertar_solicitud(solicitud_data: SolicitudCrear, db: Session = Depends(get
             )
 
         # Insertar la solicitud en la tabla "solicitud"
-        new_solicitud = solicitud_data.dict(exclude_unset=True)
+        new_solicitud = solicitud_data.model_dump(exclude_unset=True)
         del new_solicitud["credenciales"]  # Eliminar el campo "credenciales" de la inserción
         result = db.execute(solicitud.insert().values(new_solicitud))
         db.commit()
@@ -137,7 +137,7 @@ def eliminar_solicitud(id: int, db: Session = Depends(get_db)):
 @solicitud_routes.put("/solicitud/{id}", tags=["Gestión de solicitudes"])
 def update_solicitud(id: int, solicitud_data: SolicitudActualizar, db: Session = Depends(get_db)):
     try:
-        update_values = solicitud_data.dict(exclude_unset=True)
+        update_values = solicitud_data.model_dump(exclude_unset=True)
 
         # Actualizar la solicitud
         result = db.execute(

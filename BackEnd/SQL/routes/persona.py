@@ -14,7 +14,7 @@ persona_routes = APIRouter()
 def get_personas(db: Session = Depends(get_db)):
     try:
         result = db.execute(persona.select()).fetchall()
-        personas_list = [Persona.from_orm(dict(row._mapping)) for row in result]
+        personas_list = [Persona.model_validate(dict(row._mapping)) for row in result]
         return personas_list
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -29,8 +29,9 @@ def get_persona(id: int, db: Session = Depends(get_db)):
         if not persona_data:
             raise HTTPException(status_code=404, detail="Persona no encontrada")
 
-        return Persona.from_orm(dict(persona_data._mapping))
-    
+        return Persona.model_validate(dict(persona_data._mapping))
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -41,7 +42,7 @@ def create_persona(persona_data: PersonaCrear, db: Session = Depends(get_db)):
         return {"mensaje": "Ya existe una persona con ese email.", "id": existing.id}
 
     try:
-        datos = persona_data.dict()
+        datos = persona_data.model_dump()
         result = db.execute(persona.insert().values(datos))
         nuevo_id = result.inserted_primary_key[0]
         db.commit()

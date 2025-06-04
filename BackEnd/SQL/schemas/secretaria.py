@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class Secretaria(BaseModel):
     id: Optional[int] = None
@@ -7,9 +7,7 @@ class Secretaria(BaseModel):
     email: str
     password: str
 
-    class Config:
-        orm_mode = True  
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
         
 class LoginRequest(BaseModel):
     username: str

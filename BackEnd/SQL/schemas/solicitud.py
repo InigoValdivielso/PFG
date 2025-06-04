@@ -1,21 +1,20 @@
-from typing import List, Optional
-from pydantic import BaseModel
+from typing import List, Literal, Optional
+from pydantic import BaseModel, ConfigDict
 
 class SolicitudCrear(BaseModel):
     id_curso: int
-    estado: str
+    estado: Literal["pendiente", "aceptada", "rechazada"]
     id_persona: int
     credenciales: Optional[List[str]] = []
 
 class Solicitud(BaseModel):
     id: int
     id_curso: int
-    estado: str
+    estado: Literal["pendiente", "aceptada", "rechazada"]
     id_persona: int
     credenciales: Optional[List[str]] = []
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class SolicitudActualizar(BaseModel):
-    estado: Optional[str] = None
+    estado: Optional[Literal["pendiente", "aceptada", "rechazada"]] = None

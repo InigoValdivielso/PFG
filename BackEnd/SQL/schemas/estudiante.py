@@ -1,6 +1,6 @@
 from datetime import date
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class EstudianteCrear(BaseModel):
@@ -27,5 +27,4 @@ class Estudiante(BaseModel):
     cursos: Optional[List[int]] = []
     credenciales: Optional[List[str]] = []
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

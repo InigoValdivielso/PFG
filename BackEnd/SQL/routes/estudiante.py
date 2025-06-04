@@ -78,7 +78,7 @@ def get_estudiante_by_email(correo: str = Query(...), db: Session = Depends(get_
 @estudiante_routes.post("/estudiante", tags=["Gestión de estudiantes"])
 def create_estudiante(estudiante_data: EstudianteCrear, db: Session = Depends(get_db)):
     try:
-        datos = estudiante_data.dict()
+        datos = estudiante_data.model_dump()
         
         existing_estudiante = db.query(estudiante).filter(estudiante.c.did == estudiante_data.did).first()
         if existing_estudiante:
@@ -214,7 +214,6 @@ def actualizar_estudiante(nia: int, estudiante_actu: EstudianteCrear, db: Sessio
             "segundo_apellido": estudiante_actu.segundo_apellido,
             "correo": estudiante_actu.correo,
             "dni": estudiante_actu.dni,
-            "genero": estudiante_actu.genero,
             "did": estudiante_actu.did 
         }
 
@@ -257,7 +256,7 @@ def añadir_cursos(nia: int, cursos: List[int], db: Session = Depends(get_db)):
     try:
         for curso_id in cursos:
             db.execute(
-                estudiante_curso.insert().values(nia=nia, curso_id=curso_id)
+                estudiante_curso.insert().values(estudiante_id=nia, curso_id=curso_id)
             )
         db.commit()
         return {"status": f"Cursos {cursos} añadidos al estudiante con NIA {nia}"}
