@@ -27,7 +27,7 @@ jobs:
 
       - name: Run pytest
         run: |
-          python -m pytest --maxfail=3 --disable-warnings -v
+          python -m pytest tests/routes --html=pytest_report.html --self-contained-html -v
 
   test-node-mongo:
     name: Test Node.js MongoDB API
