@@ -53,9 +53,10 @@ app.include_router(auth_routes)
 app.include_router(persona_routes)
 
 
-meta.create_all(engine)
+
 
 if __name__ == "__main__":
+    meta.create_all(engine)
     import uvicorn
     uvicorn.run(
         "main:app",
