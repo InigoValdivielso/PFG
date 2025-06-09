@@ -88,7 +88,7 @@ describe('AccordionItemActas', () => {
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
-        `http://localhost:8000/estudiante/${baseProps.NIA}/curso/${baseProps.curso_id}/estado?nuevo_estado=aceptada`,
+        `http://localhost:5000/sql/estudiante/${baseProps.NIA}/curso/${baseProps.curso_id}/estado?nuevo_estado=aceptada`,
         expect.objectContaining({ method: 'PUT' })
       );
       expect(baseProps.onAccept).toHaveBeenCalledWith(baseProps.NIA);

@@ -84,7 +84,7 @@ describe('StudentLoginPage', () => {
         expect.any(Object)
       );
       expect(fetch).toHaveBeenCalledWith(
-        'http://localhost:8000/estudiante/correo?correo=usuario@opendeusto.es'
+        'http://localhost:5000/sql/estudiante/correo?correo=usuario@opendeusto.es'
       );
       expect(mockSetStudentInfo).toHaveBeenCalledWith(fakeBackendData);
       expect(localStorage.getItem('studentInfo')).toBe(JSON.stringify(fakeBackendData));
