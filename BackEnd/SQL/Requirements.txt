@@ -10,5 +10,6 @@ pytest-asyncio
 httpx
 pytest-sqlalchemy
 python-dotenv
+pytest-html
 requests
 python-jose[cryptography]
