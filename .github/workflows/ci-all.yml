@@ -26,6 +26,8 @@ jobs:
           pip install -r Requirements.txt
 
       - name: Run pytest
+        env:
+          SQLALCHEMY_DATABASE_URL: "sqlite:///./test.db"
         run: |
           python -m pytest tests/routes --html=pytest_report.html --self-contained-html -v
 
