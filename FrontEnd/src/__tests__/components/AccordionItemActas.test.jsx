@@ -10,7 +10,7 @@ vi.mock('../../components/AccordionTable', () => ({
   ),
 }));
 
-vi.mock('../../components/ModalSecretary', () => ({
+vi.mock('../../components/ModalActas', () => ({
   default: ({ show, handleClose, handleConfirm, title, description }) =>
     show ? (
       <div data-testid="modal">
@@ -75,7 +75,7 @@ describe('AccordionItemActas', () => {
 
     expect(screen.getByTestId('modal')).toBeInTheDocument();
     expect(screen.getByText('Cuidado')).toBeInTheDocument();
-    expect(screen.getByText('¿Estas seguro de que quieres aceptar esta solicitud?')).toBeInTheDocument();
+    expect(screen.getByText('¿Estas seguro de que quieres aceptar este acta?')).toBeInTheDocument();
   });
 
   it('confirma aceptación y llama a onAccept', async () => {

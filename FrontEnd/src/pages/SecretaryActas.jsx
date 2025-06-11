@@ -44,7 +44,7 @@ const SecretaryPage = () => {
         onChange={handleSelectChange}
         value={componenteSeleccionado}
       >
-        <option value="">Selecciona un programa</option>
+        <option value="">Selecciona un curso</option>
         {cursos.map((nombreCurso, index) => (
           <option key={index} value={nombreCurso}>
             {nombreCurso}

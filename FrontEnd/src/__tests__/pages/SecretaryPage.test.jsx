@@ -23,7 +23,7 @@ describe('SecretaryPage', () => {
     render(<SecretaryPage />);
     expect(screen.getByText('Solicitudes de Ingreso')).toBeDefined();
     expect(screen.getByRole('combobox')).toBeDefined();
-    expect(screen.getByRole('option', { name: 'Selecciona un programa' })).toBeDefined();
+    expect(screen.getByRole('option', { name: 'Selecciona un curso' })).toBeDefined();
   });
 
   it('carga y muestra opciones de cursos tras fetch', async () => {

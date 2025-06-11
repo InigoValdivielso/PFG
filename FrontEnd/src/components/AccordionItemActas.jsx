@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AccordionTable from "./AccordionTable";
 
 import ModalSecretary from './ModalSecretary';
+import ModalActas from './ModalActas';
 
 function AccordionItemActas({ nombre, primer_apellido, segundo_apellido, correo, NIA, dni, curso, curso_id, estado, credenciales, onAccept, onReject }) {
     const targetId = `#${NIA}`;
@@ -66,9 +67,9 @@ function AccordionItemActas({ nombre, primer_apellido, segundo_apellido, correo,
             </div>
             {/* Modal para Accept */}
             {showAcceptModal && (
-                <ModalSecretary
+                <ModalActas
                     title="Cuidado"
-                    description="¿Estas seguro de que quieres aceptar esta solicitud?"
+                    description="¿Estas seguro de que quieres aceptar este acta?"
                     id="Accept"
                     show={showAcceptModal}
                     handleClose={handleCloseAcceptModal}
