@@ -7,9 +7,9 @@ const proxy = httpProxy.createProxyServer({});
 proxy.timeout = 10000;
 
 const routeMap = {
-    '/sql': process.env.ROUTE_SQL || 'http://127.0.0.1:8000',
-    '/verifierIssuer': process.env.ROUTE_VERIFIER || 'http://localhost:3000',
-    '/mongo': process.env.ROUTE_MONGO || 'http://localhost:4000'
+    '/sql': process.env.ROUTE_SQL || 'http://sql-api:8000',
+    '/verifierIssuer': process.env.ROUTE_VERIFIER || 'http://verifierissuer-api:3000',
+    '/mongo': process.env.ROUTE_MONGO || 'http://mongodb-api:4000'
 };
 
 const ALLOWED_ORIGIN = 'http://localhost:5173';

@@ -39,10 +39,12 @@ services:
       - ./waltid-identity-0.11.0/docker-compose/.env
     volumes:
       - ./waltid-identity-0.11.0/docker-compose/issuer-api/config:/waltid-issuer-api/config
+    networks:
+      - default
 
   verifier-api:
     platform: linux/x86_64
-    image: docker.io/waltid/verifier-api:${VERSION_TAG:-latest}
+    #image: docker.io/waltid/verifier-api:${VERSION_TAG:-latest}
     profiles:
       - identity
       - all
@@ -56,6 +58,8 @@ services:
       - ./waltid-identity-0.11.0/docker-compose/.env
     volumes:
       - ./waltid-identity-0.11.0/docker-compose/verifier-api/config:/waltid-verifier-api/config
+    networks:
+      - default
 
   #waltid-demo-wallet:
    # image: docker.io/waltid/waltid-demo-wallet:${VERSION_TAG:-latest}
@@ -214,6 +218,8 @@ services:
       - mongo-server
     ports:
       - "9000:9000"
+    networks:
+      - mongodb_network
     environment:
       ME_CONFIG_MONGODB_SERVER: mongo-server
       ME_CONFIG_MONGODB_PORT: 27017
@@ -232,14 +238,7 @@ services:
       - mysql_data:/var/lib/mysql
   
   # Mis servicios
-  api-gateway:
-    build: ./BackEnd/Api-Gateway
-    ports:
-      - "5000:5000"
-    depends_on:
-      - mysql
-      - mongo-server
-
+  
   ebsifake:
     build: ./BackEnd/EbsiFake
     ports:
@@ -255,7 +254,9 @@ services:
       - ./BackEnd/MongoDB/.env
     depends_on:
       - mongo-server
-
+    networks:
+      - mongodb_network
+  
   sql-api:
     build: ./BackEnd/SQL
     ports:
@@ -264,11 +265,32 @@ services:
       - ./BackEnd/SQL/.env
     depends_on:
       - mysql
+    networks:
+      - default
+      
+  api-gateway:
+    build: ./BackEnd/Api-Gateway
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+      - mongo-server
+      - mongodb-api
+      - sql-api
+    networks:
+      - mongodb_network
+      - default
+
 
   verifierissuer-api:
     build: ./BackEnd/VerifierIssuerAPI
     ports:
       - "3000:3000"
+    depends_on:
+      - mongodb-api
+    networks:
+      - mongodb_network
+      - default
 
   frontend:
     build: ./FrontEnd

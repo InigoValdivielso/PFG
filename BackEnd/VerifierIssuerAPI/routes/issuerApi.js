@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
       credentialPayload = replacePlaceholders(credentialPayload, studentInfo);
 
       const response = await axios.post(
-        'http://localhost:7002/openid4vc/jwt/issue',
+        'http://issuer-api:7002/openid4vc/jwt/issue',
         credentialPayload
       );
       res.json(response.data); 

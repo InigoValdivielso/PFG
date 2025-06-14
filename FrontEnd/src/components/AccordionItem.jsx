@@ -31,7 +31,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
 
                         const response = await fetch(`http://localhost:5000/mongo/credenciales/${encodeURIComponent(credencial)}`);
                         const data = await response.json();
-                        const nombresCredenciales = data.presentationDefinition.input_descriptors.map(descriptor => descriptor.id);
+                        const nombresCredenciales = data.tokenResponse.presentation_submission.descriptor_map.map(descriptor => descriptor.id);
                         return {
                             id: data._id,
                             nombre_credencial: nombresCredenciales,

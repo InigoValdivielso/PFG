@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
   //https://verifier.demo.walt.id/openid4vc/verify
   try {
     const response = await axios.post(
-      'http://localhost:7003/openid4vc/verify',
+      'http://verifier-api:7003/openid4vc/verify',
       presentationDefinition, // El cuerpo de la petición
       { headers } // Pasando los headers
     );
@@ -42,7 +42,7 @@ router.post('/login', async (req, res) => {
   //https://verifier.demo.walt.id/openid4vc/verify
   try {
     const response = await axios.post(
-      'http://localhost:7003/openid4vc/verify',
+      'http://verifier-api:7003/openid4vc/verify',
       presentationDefinition, // El cuerpo de la petición
       { headers } // Pasando los headers
     );
@@ -56,7 +56,7 @@ router.get('/infoSesionVerificacion/:id', async (req, res) => {
   //https://verifier.demo.walt.id/openid4vc/session/${id}
   try {
     const { id } = req.params;
-    const response = await axios.get(`http://localhost:7003/openid4vc/session/${id}`, {
+    const response = await axios.get(`http://verifier-api:7003/openid4vc/session/${id}`, {
       headers: {
         'accept': 'application/json',
       },
@@ -75,16 +75,16 @@ router.get('/infoSesionVerificacionGuardar/:id', async (req, res) => {
   //https://verifier.demo.walt.id/openid4vc/session/${id}
   try {
     const { id } = req.params;
-    const response = await axios.get(`http://localhost:7003/openid4vc/session/${id}`, {
+    const response = await axios.get(`http://verifier-api:7003/openid4vc/session/${id}`, {
       headers: {
         'accept': 'application/json',
       },
     });
 
     const resultadoVerificacion = response.data;
-    
-    
-    const respuestaGuardar = await axios.post('http://localhost:4000/credenciales', resultadoVerificacion, {
+
+
+    const respuestaGuardar = await axios.post('http://mongodb-api:4000/credenciales', resultadoVerificacion, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -100,7 +100,7 @@ router.get('/infoSesionVerificacionGuardar/:id', async (req, res) => {
 router.post('/emitirCredencial', async (req, res) => {
   try {
     const { credential } = req.body;
-    const response = await axios.post(`http://localhost:7002/openid4vc/jwt/issue`, credential, {
+    const response = await axios.post(`http://issuer-api:7002/openid4vc/jwt/issue`, credential, {
       headers: {
         'accept': 'application/json',
         'Content-Type': 'application/json'
