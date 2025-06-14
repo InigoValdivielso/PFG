@@ -32,36 +32,44 @@ describe('AccordionItem', () => {
 
   const fetchedCredencialsResponse = {
     _id: 'cred1-id',
-    presentationDefinition: {
-      input_descriptors: [{ id: 'cred1-name' }, { id: 'cred1-name-2' }],
+    tokenResponse: {
+      presentation_submission: {
+        descriptor_map: [
+          { id: 'cred1-name' }, { id: 'cred1-name-2' }
+        ]
+      }
     },
     policyResults: {
       results: [
         {},
         {
           policyResults: [
-            { result: { vc: { credentialSubject: { id: 'did:example:123' } } } },
-          ],
-        },
-      ],
-    },
+            { result: { vc: { credentialSubject: { id: 'did:example:123' } } } }
+          ]
+        }
+      ]
+    }
   };
 
   const fetchedCredencialsResponse2 = {
     _id: 'cred2-id',
-    presentationDefinition: {
-      input_descriptors: [{ id: 'cred2-name' }],
+    tokenResponse: {
+      presentation_submission: {
+        descriptor_map: [
+          { id: 'cred2-name' }, { id: 'cred2-name-2' }
+        ]
+      }
     },
     policyResults: {
       results: [
         {},
         {
           policyResults: [
-            { result: { vc: { credentialSubject: { id: 'did:example:456' } } } },
-          ],
-        },
-      ],
-    },
+            { result: { vc: { credentialSubject: { id: 'did:example:456' } } } }
+          ]
+        }
+      ]
+    }
   };
 
   beforeEach(() => {
