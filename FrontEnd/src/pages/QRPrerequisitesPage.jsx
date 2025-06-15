@@ -24,6 +24,7 @@ const QRPrerequisitesPage = () => {
       })
       .catch((error) => {
         console.error("Error al copiar al portapapeles", error);
+        alert("Error al copiar al portapapeles. Por favor, inténtalo de nuevo.");
       });
   };
   const formatRequisitos = (requisitos) => {
@@ -91,6 +92,7 @@ const QRPrerequisitesPage = () => {
       setVerificationData(data);
     } catch (error) {
       console.error("Error en la verificación:", error);
+      alert("Error al verificar la credencial. Por favor, inténtalo de nuevo más tarde.");
     }
   };
 

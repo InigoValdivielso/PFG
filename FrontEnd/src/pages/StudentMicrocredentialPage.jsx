@@ -22,6 +22,7 @@ const StudentMicrocredentialPage = ({ }) => {
             const courseResponse = await fetch(`http://localhost:5000/sql/estudiante/${cursoId}`);
             if (!courseResponse.ok) {
               console.error(`Error fetching enrollment for course ${cursoId}:`, courseResponse.status);
+              alert("Error al cargar la información del curso. Por favor, inténtalo de nuevo más tarde.");
               continue;
             }
             const courseDetail = await courseResponse.json();
@@ -43,6 +44,7 @@ const StudentMicrocredentialPage = ({ }) => {
                   }
                 } catch (error) {
                   console.error(`Error fetching curso info for ${cursoId}:`, error);
+                  alert("Error al cargar la información del curso. Por favor, inténtalo de nuevo más tarde.");
                 }
 
                 acceptedCoursesInfo.push({ id: cursoId, name: courseName });
@@ -51,6 +53,7 @@ const StudentMicrocredentialPage = ({ }) => {
             }
           } catch (error) {
             console.error(`Error processing course ${cursoId}:`, error);
+            alert("Error al cargar la información del curso. Por favor, inténtalo de nuevo más tarde.");
           }
         }
 

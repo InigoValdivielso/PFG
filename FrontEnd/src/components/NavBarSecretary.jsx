@@ -13,6 +13,7 @@ function NavBarSecretary() {
       navigate('/secretaryLogin'); 
     } catch (error) {
       console.error("Error al hacer logout:", error);
+      alert("Error al cerrar sesión. Por favor, inténtalo de nuevo más tarde.");
     }
   };
   const goToActas = () => {

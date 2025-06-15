@@ -60,6 +60,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
 
             } catch (error) {
                 console.error("Error al obtener los detalles de las credenciales:", error);
+                alert("Error al cargar las credenciales. Por favor, inténtalo de nuevo más tarde.");
             }
         };
 
@@ -95,10 +96,12 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
             } else {
                 const errorData = await response.json();
                 console.error('Error al añadir credenciales:', errorData);
+                alert('Error al añadir credenciales. Por favor, inténtalo de nuevo más tarde.');
 
             }
         } catch (error) {
             console.error('Error de red al añadir credenciales:', error);
+            alert('Error de red al añadir credenciales. Por favor, inténtalo de nuevo más tarde.');
 
         }
     };
@@ -120,7 +123,7 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
             } else {
                 const errorData = await response.json();
                 console.error('Error al crear estudiante:', errorData);
-                console.log('Error al crear estudiante:', errorData.detail);
+                alert('Error al crear estudiante. Por favor, inténtalo de nuevo más tarde.');
                 if (errorData.detail?.includes("ya existe")) {
                     console.log('El estudiante ya existe, llamando a añadirCredenciales con el NIA.');
                     const niaMatch = errorData.detail.match(/NIA '(\w+)' ya existe/);
@@ -133,11 +136,13 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
                     }
                 } else {
                     console.error('Otro error al crear estudiante:', errorData);
+                    alert('Error al crear estudiante. Por favor, inténtalo de nuevo más tarde.');
                 }
 
             }
         } catch (error) {
             console.error('Error de red:', error);
+            alert('Error de red al crear estudiante. Por favor, inténtalo de nuevo más tarde.');
 
         }
     };
@@ -173,9 +178,11 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
                 //setEstado('aceptada');
             } else {
                 console.error('Error al aceptar la solicitud');
+                alert('Error al aceptar la solicitud. Por favor, inténtalo de nuevo más tarde.');
             }
         } catch (error) {
             console.error('Error de red al aceptar la solicitud:', error);
+            alert('Error de red al aceptar la solicitud. Por favor, inténtalo de nuevo más tarde.');
         }
         onAccept(id);
         setShowAcceptModal(false);
@@ -195,9 +202,11 @@ function AccordionItem({ nombre, primer_apellido, segundo_apellido, correo, fech
 
             } else {
                 console.error('Error al rechazar la solicitud');
+                alert('Error al rechazar la solicitud. Por favor, inténtalo de nuevo más tarde.');
             }
         } catch (error) {
             console.error('Error de red al rechazar la solicitud:', error);
+            alert('Error de red al rechazar la solicitud. Por favor, inténtalo de nuevo más tarde.');
         }
         onReject(id);
         handleCloseRejectModal();

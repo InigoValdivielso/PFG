@@ -116,6 +116,7 @@ const PrerequisitesPage = () => {
       }
     } catch (err) {
       console.error("Error al obtener datos del usuario:", err);
+      alert("Error al obtener los datos del usuario: " + err.message);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -151,6 +152,7 @@ const PrerequisitesPage = () => {
 
       if (!idPersona) {
         console.error("No se obtuvo el id de la persona.");
+        alert("No se obtuvo el ID de la persona.");
         setError("No se obtuvo el ID de la persona.");
         return;
       }
@@ -180,6 +182,7 @@ const PrerequisitesPage = () => {
 
       if (!idCurso) {
         console.error('No se pudo obtener el id del curso.');
+        alert("No se pudo obtener el ID del curso.");
         setError("No se pudo obtener el ID del curso.");
         return;
       }

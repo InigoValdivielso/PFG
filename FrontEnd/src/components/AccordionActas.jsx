@@ -20,6 +20,7 @@ function AccordionActas({ curso }) {
 
             } catch (error) {
                 console.error('Error al obtener solicitudes:', error);
+                alert('Error al cargar las solicitudes. Por favor, inténtalo de nuevo más tarde.');
             }
         };
 

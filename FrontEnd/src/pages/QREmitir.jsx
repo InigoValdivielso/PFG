@@ -45,6 +45,7 @@ const QREmitir = () => {
           setIssueData(data);
         } catch (error) {
           console.error("Error al pasar la información:", error);
+          alert("Error al emitir la credencial. Por favor, inténtalo de nuevo más tarde.");
         }
       };
       pasarInfo();
@@ -63,6 +64,7 @@ const QREmitir = () => {
       })
       .catch((error) => {
         console.error("Error al copiar al portapapeles", error);
+        alert("Error al copiar al portapapeles. Por favor, inténtalo de nuevo.");
       });
   };
 

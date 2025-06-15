@@ -49,12 +49,15 @@ const StudentLoginPage = () => {
           navigate('/studentPortal');
         } else {
           console.error('Error del backend:', backendData);
+          alert('Error al iniciar sesión. Por favor, inténtalo de nuevo más tarde.');
         }
       } else {
         console.error('El correo no pertenece a @opendeusto.es');
+        alert('Por favor, utiliza una cuenta de correo electrónico de @opendeusto.es para iniciar sesión.');
       }
     } catch (error) {
       console.error('Error al obtener la información del usuario de Google:', error);
+      alert('Error al iniciar sesión. Por favor, inténtalo de nuevo más tarde.');
     }
   },
   onError: (response) => console.log('Login Failed:', response),

@@ -32,6 +32,7 @@ const SecretaryLoginPage = () => {
             }
         } catch (error) {
             console.error("Error de conexión:", error);
+            alert("Error de conexión. Por favor, inténtalo de nuevo más tarde.");
         }
     };
 

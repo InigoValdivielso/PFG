@@ -38,6 +38,7 @@ const QRInicioSesionPage = () => {
         }
       } catch (error) {
         console.error("Error en la verificación:", error);
+        alert("Error al verificar la credencial. Por favor, inténtalo de nuevo más tarde.");
       }
     };
 

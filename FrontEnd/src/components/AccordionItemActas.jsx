@@ -32,17 +32,19 @@ function AccordionItemActas({ nombre, primer_apellido, segundo_apellido, correo,
             if (response.ok) {
                 console.log('Estado actualizado a aceptada');
                 setShowAcceptModal(false);
-                // Llama a la función onAccept que pasaste desde el Accordion para actualizar la UI
+                
                 if (onAccept) {
                     onAccept(NIA);
                 }
             } else {
                 console.error('Error al actualizar el estado:', response.status);
-                // Aquí podrías mostrar un mensaje de error al usuario
+                alert('Error al aceptar el acta. Por favor, inténtalo de nuevo más tarde.');
+                
             }
         } catch (error) {
             console.error('Error al comunicarse con el servidor:', error);
-            // Aquí podrías mostrar un mensaje de error al usuario
+            alert('Error al aceptar el acta. Por favor, inténtalo de nuevo más tarde.');
+            
         }
     };
 
