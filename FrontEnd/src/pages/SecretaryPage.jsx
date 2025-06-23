@@ -18,7 +18,7 @@ const SecretaryPage = () => {
         setCursos(data.cursos);
       } catch (error) {
         console.error("Error al obtener los cursos:", error);
-        alert("Error al cargar los cursos. Por favor, inténtalo de nuevo más tarde.");
+        
       }
     };
 
